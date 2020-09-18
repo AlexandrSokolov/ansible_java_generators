@@ -1,0 +1,83 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <!--  must have no parent!!!-->
+  <groupId>{{ group_id }}</groupId>
+  <artifactId>{{ artifact_id }}-deps</artifactId>
+  <version>{{ version }}</version>
+
+  <packaging>pom</packaging>
+  <name>Common versions and dependencies</name>
+
+  <properties>
+
+    <javaee-api.version>{{ javaee_api_version }}</javaee-api.version>
+    <google-guava.version>{{ google_guava_version }}</google-guava.version>
+    <apache-commons-lang3.version>{{ apache_commons_lang3_version }}</apache-commons-lang3.version>
+    <apache-commons-logging.version>{{ apache_commons_logging_version }}</apache-commons-logging.version>
+
+    <!-- test frameworks -->
+    <junit.version>{{ junit_version }}</junit.version>
+    <mockito.version>{{ mockito_version }}</mockito.version>
+
+    <maven-deploy-plugin.version>{{ maven_deploy_plugin_version }}</maven-deploy-plugin.version>
+  </properties>
+
+  <dependencyManagement>
+    <dependencies>
+      <dependency>
+        <groupId>javax</groupId>
+        <artifactId>javaee-api</artifactId>
+        <version>${javaee-api.version}</version>
+        <scope>provided</scope>
+      </dependency>
+      <dependency>
+        <groupId>com.google.guava</groupId>
+        <artifactId>guava</artifactId>
+        <version>${google-guava.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.commons</groupId>
+        <artifactId>commons-lang3</artifactId>
+        <version>${apache-commons-lang3.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>commons-logging</groupId>
+        <artifactId>commons-logging</artifactId>
+        <version>${apache-commons-logging.version}</version>
+      </dependency>
+
+      <!-- TEST START -->
+      <dependency>
+        <groupId>junit</groupId>
+        <artifactId>junit</artifactId>
+        <version>${junit.version}</version>
+        <scope>test</scope>
+      </dependency>
+      <dependency>
+        <groupId>org.mockito</groupId>
+        <artifactId>mockito-all</artifactId>
+        <version>${mockito.version}</version>
+        <scope>test</scope>
+      </dependency>
+      <!-- TEST END -->
+    </dependencies>
+
+  </dependencyManagement>
+
+  <build>
+    <plugins>
+      <!-- `deps` doesn't depend on parent, so `maven-deploy-plugin` must be configured explicitly -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-deploy-plugin</artifactId>
+        <version>${maven-deploy-plugin.version}</version>
+        <configuration>
+          <skip>true</skip>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
+
+</project>

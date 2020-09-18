@@ -1,4 +1,26 @@
 ---
 - debug:
-    msg: Hello
-    verbosity: 1
+      msg: "test {{ mvn_project_basedir }}"
+      verbosity: 1
+
+- name: "Create initial folder structure"
+  file:
+      state: directory
+      path: "{{ item }}"
+      owner: "{{ lookup('env', 'USER') }}"
+      group: "{{ lookup('env', 'USER') }}"
+  with_items:
+      - "{{ mvn_project_basedir }}"
+      - "{{ mvn_project_basedir }}/deps"
+
+- name: "Generate parent and `deps` pom files"
+  template:
+      src: "{{ item }}.j2"
+      dest: "{{ mvn_project_basedir }}/{{ item }}"
+      mode: 0644
+      owner: "{{ lookup('env', 'USER') }}"
+      group: "{{ lookup('env', 'USER') }}"
+      force: yes
+  with_items:
+      - pom.xml
+      - deps/pom.xml

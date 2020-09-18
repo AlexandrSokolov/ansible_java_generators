@@ -1,0 +1,1 @@
+- add git properties into the main pom.xml
