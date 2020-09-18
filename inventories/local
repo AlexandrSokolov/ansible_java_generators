@@ -1,0 +1,6 @@
+127.0.0.1
+
+[all:vars]
+ansible_connection=local
+#do not set become globally!
+#ansible_become=yes

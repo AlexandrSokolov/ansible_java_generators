@@ -1,0 +1,8 @@
+---
+- hosts: all
+
+  tasks:
+
+    - include_role:
+        name: parent_and_dep
+        tasks_from: main.yml
