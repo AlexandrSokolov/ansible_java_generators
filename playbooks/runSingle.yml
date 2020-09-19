@@ -4,5 +4,5 @@
   tasks:
 
     - include_role:
-        name: parent_and_dep
+        name: init_war_project
         tasks_from: main.yml
