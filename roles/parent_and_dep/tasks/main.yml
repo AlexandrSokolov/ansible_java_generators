@@ -14,3 +14,5 @@
 - import_tasks: tasks/domain_module.yml
 
 - import_tasks: tasks/rest_api_module.yml
+
+- import_tasks: tasks/front_end_war_module.yml

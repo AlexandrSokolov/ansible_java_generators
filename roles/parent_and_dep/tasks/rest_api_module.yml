@@ -23,8 +23,8 @@
   include_role:
     name: gen_java_class_from_template
   with_items:
-    - src: rest_api/src/main/java/api/.keep
-      dst: "{{ mvn_project_basedir }}/rest_api/src/main/java/{{ group_id }}/rest/api/.keep"
+    - src: rest_api/src/main/java/api/MockRestApi.java.j2
+      dst: "{{ mvn_project_basedir }}/rest_api/src/main/java/{{ group_id }}/rest/api/MockRestApi.java"
     - src: rest_api/src/main/java/dto/.keep
       dst: "{{ mvn_project_basedir }}/rest_api/src/main/java/{{ group_id }}/rest/dto/.keep"
     - src: rest_api/src/main/java/jackson/deserializer/LocalDateTimeDeserializer.java.j2
