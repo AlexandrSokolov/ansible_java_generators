@@ -17,6 +17,12 @@
     <url>{{ organization_url }}</url>
   </organization>
 
+    <scm>
+      <connection>scm:git:{{ git_connection }}</connection>
+      <developerConnection>scm:git:{{ git_connection }}</developerConnection>
+      <url>{{ scm_url }}</url>
+    </scm>
+
   <properties>
     <failOnMissingWebXml>false</failOnMissingWebXml>
     <maven.compiler.source>{{ java_version }}</maven.compiler.source>
@@ -49,6 +55,8 @@
 
   <modules>
     <module>deps</module>
+    <module>domain_api</module>
+    <module>domain</module>
   </modules>
 
   <build>

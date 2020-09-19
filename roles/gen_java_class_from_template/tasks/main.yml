@@ -1,0 +1,17 @@
+---
+- name: "Create '{{ item.dst | dirname }}' folder"
+  file:
+    state: directory
+    path: "{{ item.dst | dirname }}"
+    owner: "{{ lookup('env', 'USER') }}"
+    group: "{{ lookup('env', 'USER') }}"
+
+- name: "Adjust '{{ item.src }}' into '{{ item.dst }}'"
+  template:
+    src: "{{ item.src }}"
+    dest: "{{ item.dst }}"
+    mode: 0644
+    owner: "{{ lookup('env', 'USER') }}"
+    group: "{{ lookup('env', 'USER') }}"
+    force: yes
+

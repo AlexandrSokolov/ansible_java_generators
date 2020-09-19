@@ -1,1 +1,8 @@
-- add git properties into the main pom.xml
+- generate config module
+- rest-api with war without react modules
+- dataaccess mudule
+- cron-job module
+- add react support to the war module
+- add different examples, script with --help options with different combinations
+- add long-running classes
+- add base-tests

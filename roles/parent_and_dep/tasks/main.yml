@@ -12,8 +12,10 @@
   with_items:
       - "{{ mvn_project_basedir }}"
       - "{{ mvn_project_basedir }}/deps"
+      - "{{ mvn_project_basedir }}/domain_api"
+      - "{{ mvn_project_basedir }}/domain"
 
-- name: "Generate parent and `deps` pom files"
+- name: "Generate pom files"
   template:
       src: "{{ item }}.j2"
       dest: "{{ mvn_project_basedir }}/{{ item }}"
@@ -24,3 +26,14 @@
   with_items:
       - pom.xml
       - deps/pom.xml
+      - domain_api/pom.xml
+      - domain/pom.xml
+
+- name: "Generate java classes"
+  include_role:
+    name: gen_java_class_from_template
+  with_items:
+    - src: domain_api/src/main/java/ExampleApi.java.j2
+      dst: "{{ mvn_project_basedir }}/domain_api/src/main/java/{{ group_id }}/api/ExampleApi.java"
+    - src: domain/src/main/java/ApplicationService.java.j2
+      dst: "{{ mvn_project_basedir }}/domain/src/main/java/{{ group_id }}/app/ApplicationService.java"
