@@ -11,9 +11,19 @@
       group: "{{ lookup('env', 'USER') }}"
   with_items:
       - "{{ mvn_project_basedir }}"
+      - "{{ mvn_project_basedir }}/code_quality"
       - "{{ mvn_project_basedir }}/deps"
       - "{{ mvn_project_basedir }}/domain_api"
       - "{{ mvn_project_basedir }}/domain"
+
+- name: "Generate findbugs config file"
+  template:
+    src: "code_quality/findbugs-exclude.xml.j2"
+    dest: "{{ mvn_project_basedir }}/code_quality/findbugs-exclude.xml"
+    mode: 0644
+    owner: "{{ lookup('env', 'USER') }}"
+    group: "{{ lookup('env', 'USER') }}"
+    force: yes
 
 - name: "Generate pom files"
   template:

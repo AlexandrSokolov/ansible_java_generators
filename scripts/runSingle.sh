@@ -12,7 +12,7 @@ echo "Qtest $mvn_project_basedir"
 #ANSIBLE_KEEP_REMOTE_FILES=1 ansible-playbook \
 #   --extra-vars "some-variable=${someValue}" \
 ansible-playbook \
-  -vvv \
+  -v \
   -i inventories/local \
   --extra-vars \
     "group_id=com.savdev.ans.test.project \
