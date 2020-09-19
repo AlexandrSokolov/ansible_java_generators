@@ -1,0 +1,27 @@
+---
+- name: "Create `domain_api` folder if does not exist"
+  file:
+    state: directory
+    path: "{{ item }}"
+    owner: "{{ lookup('env', 'USER') }}"
+    group: "{{ lookup('env', 'USER') }}"
+  with_items:
+    - "{{ mvn_project_basedir }}/domain_api"
+
+- name: "Generate domain_api/pom.xml file"
+  template:
+    src: "{{ item }}.j2"
+    dest: "{{ mvn_project_basedir }}/{{ item }}"
+    mode: 0644
+    owner: "{{ lookup('env', 'USER') }}"
+    group: "{{ lookup('env', 'USER') }}"
+    force: yes
+  with_items:
+    - domain_api/pom.xml
+
+- name: "Generate java classes of `domain_api` module"
+  include_role:
+    name: gen_java_class_from_template
+  with_items:
+    - src: domain_api/src/main/java/ExampleApi.java.j2
+      dst: "{{ mvn_project_basedir }}/domain_api/src/main/java/{{ group_id }}/api/ExampleApi.java"

@@ -6,3 +6,4 @@
 - add different examples, script with --help options with different combinations
 - add long-running classes
 - add base-tests
+- todo add serializer, decerializers

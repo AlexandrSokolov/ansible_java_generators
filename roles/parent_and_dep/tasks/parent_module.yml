@@ -1,0 +1,20 @@
+---
+- name: "Create {{ mvn_project_basedir }}  folder if not exist"
+  file:
+    state: directory
+    path: "{{ item }}"
+    owner: "{{ lookup('env', 'USER') }}"
+    group: "{{ lookup('env', 'USER') }}"
+  with_items:
+    - "{{ mvn_project_basedir }}"
+
+- name: "Generate parent `pom.xml` file"
+  template:
+    src: "{{ item }}.j2"
+    dest: "{{ mvn_project_basedir }}/{{ item }}"
+    mode: 0644
+    owner: "{{ lookup('env', 'USER') }}"
+    group: "{{ lookup('env', 'USER') }}"
+    force: yes
+  with_items:
+    - pom.xml

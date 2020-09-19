@@ -1,49 +1,16 @@
 ---
 - debug:
-      msg: "test {{ mvn_project_basedir }}"
-      verbosity: 1
+    msg: "Current project folder for project generation: `{{ mvn_project_basedir }}`"
+    verbosity: 1
 
-- name: "Create initial folder structure"
-  file:
-      state: directory
-      path: "{{ item }}"
-      owner: "{{ lookup('env', 'USER') }}"
-      group: "{{ lookup('env', 'USER') }}"
-  with_items:
-      - "{{ mvn_project_basedir }}"
-      - "{{ mvn_project_basedir }}/code_quality"
-      - "{{ mvn_project_basedir }}/deps"
-      - "{{ mvn_project_basedir }}/domain_api"
-      - "{{ mvn_project_basedir }}/domain"
+- import_tasks: tasks/code_quality.yml
 
-- name: "Generate findbugs config file"
-  template:
-    src: "code_quality/findbugs-exclude.xml.j2"
-    dest: "{{ mvn_project_basedir }}/code_quality/findbugs-exclude.xml"
-    mode: 0644
-    owner: "{{ lookup('env', 'USER') }}"
-    group: "{{ lookup('env', 'USER') }}"
-    force: yes
+- import_tasks: tasks/parent_module.yml
 
-- name: "Generate pom files"
-  template:
-      src: "{{ item }}.j2"
-      dest: "{{ mvn_project_basedir }}/{{ item }}"
-      mode: 0644
-      owner: "{{ lookup('env', 'USER') }}"
-      group: "{{ lookup('env', 'USER') }}"
-      force: yes
-  with_items:
-      - pom.xml
-      - deps/pom.xml
-      - domain_api/pom.xml
-      - domain/pom.xml
+- import_tasks: tasks/deps_module.yml
 
-- name: "Generate java classes"
-  include_role:
-    name: gen_java_class_from_template
-  with_items:
-    - src: domain_api/src/main/java/ExampleApi.java.j2
-      dst: "{{ mvn_project_basedir }}/domain_api/src/main/java/{{ group_id }}/api/ExampleApi.java"
-    - src: domain/src/main/java/ApplicationService.java.j2
-      dst: "{{ mvn_project_basedir }}/domain/src/main/java/{{ group_id }}/app/ApplicationService.java"
+- import_tasks: tasks/domain_api_module.yml
+
+- import_tasks: tasks/domain_module.yml
+
+- import_tasks: tasks/rest_api_module.yml

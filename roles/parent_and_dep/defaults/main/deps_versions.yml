@@ -3,5 +3,6 @@ javaee_api_version: 7.0
 google_guava_version: 18.0
 apache_commons_lang3_version: 3.9
 apache_commons_logging_version: 1.2
+jackson_version: 2.11.0
 junit_version: 4.12
 mockito_version: 1.9.5

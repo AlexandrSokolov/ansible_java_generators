@@ -17,6 +17,8 @@
     <apache-commons-lang3.version>{{ apache_commons_lang3_version }}</apache-commons-lang3.version>
     <apache-commons-logging.version>{{ apache_commons_logging_version }}</apache-commons-logging.version>
 
+    <jackson.version>{{ jackson_version }}</jackson.version>
+
     <!-- test frameworks -->
     <junit.version>{{ junit_version }}</junit.version>
     <mockito.version>{{ mockito_version }}</mockito.version>
@@ -46,6 +48,22 @@
         <groupId>commons-logging</groupId>
         <artifactId>commons-logging</artifactId>
         <version>${apache-commons-logging.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>com.fasterxml.jackson.core</groupId>
+        <artifactId>jackson-databind</artifactId>
+        <version>${jackson.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>com.fasterxml.jackson.jaxrs</groupId>
+        <artifactId>jackson-jaxrs-json-provider</artifactId>
+        <version>${jackson.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>com.fasterxml.jackson.core</groupId>
+        <artifactId>jackson-annotations</artifactId>
+        <version>${jackson.version}</version>
       </dependency>
 
       <!-- TEST START -->
