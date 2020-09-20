@@ -4,7 +4,12 @@
     path: "{{ mvn_project_basedir }}/commons_config"
   register: commons_config_path
 
-- import_tasks: tasks/file_config.yml
+- block:
+
+  - import_tasks: tasks/commons_config.yml
+
+  - import_tasks: tasks/config.yml
+
   when: not commons_config_path.stat.exists
 
 - debug:
