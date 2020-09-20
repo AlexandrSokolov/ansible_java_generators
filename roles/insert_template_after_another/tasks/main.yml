@@ -1,0 +1,18 @@
+---
+- name: Insert one template after another in the file debug message
+  debug:
+    msg:
+      - "File to update: '{{ item.path }}'"
+      - "Search template:"
+      - "{{ lookup('template', '{{ item.insert_after_template }}') }}"
+      - "Insert template:"
+      - "{{ lookup('template', '{{ item.insert_template }}') }}"
+    verbosity: 1
+
+- name: Insert one template after another in the file
+  shell: >-
+    java
+    -jar {{ role_path }}/../../files/insert-after.jar
+    --path {{ item.path }}
+    --insert-after '{{ lookup('template', '{{ item.insert_after_template }}') }}'
+    --insert-text '{{ lookup('template', '{{ item.insert_template }}') }}'

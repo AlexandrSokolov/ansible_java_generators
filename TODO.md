@@ -1,4 +1,5 @@
 - generate config module
+- fix <version>1.0.0</version>, store variables from the main task
 - cron-job module
 - rest-api tests
 - dataaccess mudule

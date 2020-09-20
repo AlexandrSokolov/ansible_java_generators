@@ -17,5 +17,16 @@
     group: "{{ lookup('env', 'USER') }}"
     force: yes
   with_items:
-    - commons_config/pom.xml.j2
-    - commons_config/README.md.j2
+    - commons_config/pom.xml
+    - commons_config/README.md
+
+- name: "Add dependencies on 'commons_config' module"
+  include_role:
+    name: insert_template_after_another
+  with_items:
+    - path: "{{ mvn_project_basedir }}/domain/pom.xml"
+      insert_after_template: "{{ role_path }}/templates/domain/insert_after_template.j2"
+      insert_template: "{{ role_path }}/templates/domain/insert_template.j2"
+    - path: "{{ mvn_project_basedir }}/pom.xml"
+      insert_after_template: "{{ role_path }}/templates/parent/insert_after_template.j2"
+      insert_template: "{{ role_path }}/templates/parent/insert_template.j2"
