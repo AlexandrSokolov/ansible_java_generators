@@ -8,20 +8,14 @@
   with_items:
     - "{{ mvn_project_basedir }}/commons_config"
 
-- name: "Generate commons_config/pom.xml file"
+- name: "Generate files into commons_config folder"
   template:
-    src: "commons_config/pom.xml.j2"
-    dest: "{{ mvn_project_basedir }}/commons_config/pom.xml"
+    src: "{{ item }}.j2"
+    dest: "{{ mvn_project_basedir }}/{{ item }}"
     mode: 0644
     owner: "{{ lookup('env', 'USER') }}"
     group: "{{ lookup('env', 'USER') }}"
     force: yes
-
-- name: "Add commons_config/READ file"
-  template:
-    src: "commons_config/pom.xml.j2"
-    dest: "{{ mvn_project_basedir }}/commons_config/pom.xml"
-    mode: 0644
-    owner: "{{ lookup('env', 'USER') }}"
-    group: "{{ lookup('env', 'USER') }}"
-    force: yes
+  with_items:
+    - commons_config/pom.xml.j2
+    - commons_config/README.md.j2

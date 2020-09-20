@@ -4,10 +4,11 @@
     path: "{{ mvn_project_basedir }}/commons_config"
   register: commons_config_path
 
-- debug:
-    msg: "{{ mvn_project_basedir }}/commons_config DOES NOT exist"
+- import_tasks: tasks/file_config.yml
   when: not commons_config_path.stat.exists
 
 - debug:
-    msg: "{{ mvn_project_basedir }}/commons_config exist"
+    msg:
+      - "ERROR: '{{ mvn_project_basedir }}/commons_config' already exist"
+      - "       To generate 'commons_config' module first delete the previous one."
   when: commons_config_path.stat.exists
