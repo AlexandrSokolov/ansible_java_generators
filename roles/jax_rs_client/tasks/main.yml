@@ -1,0 +1,17 @@
+---
+- name: "Ansible check for `commons_jax_rs_client` module."
+  stat:
+    path: "{{ mvn_project_basedir }}/commons_jax_rs_client"
+  register: commons_jax_rs_client_path
+
+- block:
+
+  - import_tasks: tasks/commons_jax_rs_client.yml
+
+  when: not commons_jax_rs_client_path.stat.exists
+
+- debug:
+    msg:
+      - "ERROR: '{{ mvn_project_basedir }}/commons_jax_rs_client' already exist"
+      - "       To generate 'commons_jax_rs_client' module first delete the previous one."
+  when: commons_jax_rs_client_path.stat.exists

@@ -1,13 +1,8 @@
-- generate config module
+- jax rs client
+- config file downloading    
+- cron-job module with 
+- add long-running classes 
 - fix <version>1.0.0</version>, store variables from the main task
-- cron-job module
-- rest-api tests
-- dataaccess mudule
-- add react support to the war module
-- add different examples, script with --help options with different combinations
-- add long-running classes
-- add base-tests
-- add SecurityDomainName with web.xml security constants
 - deployments functionality:
 ```
 cat nexus_deploy.yml
@@ -57,5 +52,14 @@ front_end_war/pom.xml
       </plugin>
 
 ```
+- add dependency on bm nexus
+- jax_rs_client readme
+- rest-api tests
+- other tests
+- dataaccess mudule
+- add react support to the war module
+- add different examples, script with --help options with different combinations
+- add base-tests
+- add SecurityDomainName with web.xml security constants
 
 - todo add serializer, decerializers
