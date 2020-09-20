@@ -1,0 +1,13 @@
+---
+- name: "Ansible check for `commons_config` module."
+  stat:
+    path: "{{ mvn_project_basedir }}/commons_config"
+  register: commons_config_path
+
+- debug:
+    msg: "{{ mvn_project_basedir }}/commons_config DOES NOT exist"
+  when: not commons_config_path.stat.exists
+
+- debug:
+    msg: "{{ mvn_project_basedir }}/commons_config exist"
+  when: commons_config_path.stat.exists

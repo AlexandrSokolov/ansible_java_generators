@@ -4,4 +4,4 @@
   tasks:
 
     - include_role:
-        name: project_file_configuration
+        name: init_war_project

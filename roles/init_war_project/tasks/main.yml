@@ -3,16 +3,29 @@
     msg: "Current project folder for project generation: `{{ mvn_project_basedir }}`"
     verbosity: 1
 
-- import_tasks: tasks/code_quality.yml
+- name: "Ansible check for {{ mvn_project_basedir }} project folder."
+  stat:
+      path: "{{ mvn_project_basedir }}"
+  register: mvn_project_basedir_path
 
-- import_tasks: tasks/parent_module.yml
+- block:
+    - import_tasks: tasks/code_quality.yml
 
-- import_tasks: tasks/deps_module.yml
+    - import_tasks: tasks/parent_module.yml
 
-- import_tasks: tasks/domain_api_module.yml
+    - import_tasks: tasks/deps_module.yml
 
-- import_tasks: tasks/domain_module.yml
+    - import_tasks: tasks/domain_api_module.yml
 
-- import_tasks: tasks/rest_api_module.yml
+    - import_tasks: tasks/domain_module.yml
 
-- import_tasks: tasks/front_end_war_module.yml
+    - import_tasks: tasks/rest_api_module.yml
+
+    - import_tasks: tasks/front_end_war_module.yml
+  when: not mvn_project_basedir_path.stat.exists
+
+- debug:
+    msg:
+      - "ERROR: {{ mvn_project_basedir }} already exist, new project will not be generated"
+      - "       To generate a new project delete first the previous one."
+  when: mvn_project_basedir_path.stat.exists

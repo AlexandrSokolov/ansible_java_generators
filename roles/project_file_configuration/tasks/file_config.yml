@@ -1,28 +1,26 @@
 ---
-- name: "Create `{{ mvn_project_basedir }}` project folder if it does not exist"
+- name: "Create `commons_config` folder if does not exist"
   file:
     state: directory
     path: "{{ item }}"
     owner: "{{ lookup('env', 'USER') }}"
     group: "{{ lookup('env', 'USER') }}"
   with_items:
-    - "{{ mvn_project_basedir }}"
+    - "{{ mvn_project_basedir }}/commons_config"
 
-- name: "Generate parent `pom.xml` file"
+- name: "Generate commons_config/pom.xml file"
   template:
-    src: "{{ item }}.j2"
-    dest: "{{ mvn_project_basedir }}/{{ item }}"
+    src: "commons_config/pom.xml.j2"
+    dest: "{{ mvn_project_basedir }}/commons_config/pom.xml"
     mode: 0644
     owner: "{{ lookup('env', 'USER') }}"
     group: "{{ lookup('env', 'USER') }}"
     force: yes
-  with_items:
-    - pom.xml
 
-- name: "Add `.gitignore` file"
+- name: "Add commons_config/READ file"
   template:
-    src: ".gitignore"
-    dest: "{{ mvn_project_basedir }}/.gitignore"
+    src: "commons_config/pom.xml.j2"
+    dest: "{{ mvn_project_basedir }}/commons_config/pom.xml"
     mode: 0644
     owner: "{{ lookup('env', 'USER') }}"
     group: "{{ lookup('env', 'USER') }}"

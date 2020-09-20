@@ -19,4 +19,4 @@ ansible-playbook \
     project_url=/my/custom/url \
     mvn_project_basedir=$mvn_project_basedir \
     " \
-  playbooks/runSingle.yml
+  playbooks/javaGenMultiModuleWarProject.yml
