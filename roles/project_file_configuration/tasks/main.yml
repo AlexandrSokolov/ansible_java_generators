@@ -10,6 +10,10 @@
 
   - import_tasks: tasks/config.yml
 
+  - import_tasks: tasks/rest_api.yml
+
+  - import_tasks: tasks/front_end_war.yml
+
   when: not commons_config_path.stat.exists
 
 - debug:

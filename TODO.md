@@ -1,8 +1,18 @@
-- jax rs client
-- config file downloading    
-- cron-job module with 
-- add long-running classes 
+ 
+- jax rs client code generate into java class
+- jax rs client for test generation (to invoke IT tests)
+- jax_rs_client readme
+
+- PAUSE
+
 - fix <version>1.0.0</version>, store variables from the main task
+- adopt existing scripts regarding to required parameters
+    add help
+    
+- cron-job module with rest endpoint
+- cron-job client generation
+- add long-running classes 
+
 - deployments functionality:
 ```
 cat nexus_deploy.yml
@@ -53,7 +63,6 @@ front_end_war/pom.xml
 
 ```
 - add dependency on bm nexus
-- jax_rs_client readme
 - rest-api tests
 - other tests
 - dataaccess mudule

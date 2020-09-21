@@ -42,7 +42,9 @@
     - path: "{{ mvn_project_basedir }}/deps/pom.xml"
       insert_after_template: "{{ role_path }}/templates/deps/deps/tests/insert_after_template.j2"
       insert_template: "{{ role_path }}/templates/deps/deps/tests/insert_template.j2"
-
+    - path: "{{ mvn_project_basedir }}/code_quality/findbugs-exclude.xml"
+      insert_after_template: "{{ role_path }}/templates/deps/code_quality/findbug_filter_insert_after.j2"
+      insert_template: "{{ role_path }}/templates/deps/code_quality/findbug_filter_insert.j2"
 
 - name: "Generate java classes of `commons_jax_rs_client` module"
   include_role:
