@@ -6,6 +6,9 @@
 
 - block:
 
+  - name: Load shared variables
+    include_vars: "{{ mvn_project_basedir }}/.ansible/ansible_shared_variables.yml"
+
   - import_tasks: tasks/commons_config.yml
 
   - import_tasks: tasks/config.yml

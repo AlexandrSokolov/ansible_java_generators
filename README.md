@@ -8,7 +8,7 @@
   Run: `javaGenMultiModuleWarProject.sh`
   
   In the output you'll find an actual information about expected parameters.
-  Prepare the full command and run from within you ${projects} folder
+  Prepare the full command and run from within you `${projects}` folder
 
   **Notes**:
   
@@ -21,4 +21,13 @@
   - `artifact-id` is used as a maven project base dir, 
     so a new project will be generated in `${projects}/${artifact-id}` folder
     
-####  
+#### 3 Add file configuration support
+
+  Run: `javaAddFileConfiguration.sh` 
+  
+  In the output you'll find an actual information about expected parameters.
+  Prepare the full command and run from within you 
+  `${projects}/${artifact-id}` folder
+  
+  **Note:** `config-folder-sys-variable` is a system variable that refers
+  to the folder with a configuration file.

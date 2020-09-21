@@ -1,14 +1,15 @@
+
  
 - jax rs client code generate into java class
 - jax rs client for test generation (to invoke IT tests)
 - jax_rs_client readme
 
+- main project readme.md, how to run everything
+
 - PAUSE
 
 - fix <version>1.0.0</version>, store variables from the main task
-- adopt existing scripts regarding to required parameters
-    add help
-    
+   
 - cron-job module with rest endpoint
 - cron-job client generation
 - add long-running classes 
