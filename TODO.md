@@ -4,9 +4,13 @@
 - jax rs client for test generation (to invoke IT tests)
 - jax_rs_client readme
 
+
+
 - main project readme.md, how to run everything
 
 - PAUSE
+
+- fix changePwd2AnsibleJava $artifact_id it is not known
 
 - fix <version>1.0.0</version>, store variables from the main task
    

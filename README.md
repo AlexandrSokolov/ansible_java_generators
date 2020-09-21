@@ -31,3 +31,7 @@
   
   **Note:** `config-folder-sys-variable` is a system variable that refers
   to the folder with a configuration file.
+  
+#### 4 Add Jax RS (rest) client support  
+
+  Run: `javaAddCommonsJaxRsClient.sh` 

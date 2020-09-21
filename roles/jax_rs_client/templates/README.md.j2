@@ -1,0 +1,83 @@
+## Usage:
+
+#### Example with JWT through basic authentication:
+```
+Configuration config = ...
+
+JaxRsProxyConfig proxyConfig = JaxRsProxyConfig.builder()
+  .withDomain(config.domain())
+  .withClazz4Logging(ApplicationService.class)
+  .withJwtViaBasicAuth(
+    config.login(),
+    config.password(),
+    AuthJwtApi.class,
+    authJwtService -> authJwtService.authenticate().getJwtToken())
+  .build();
+
+...
+proxyConfig
+  .proxy(RestServiceApi.class)
+  .items();
+```
+
+Where:
+  - `AuthJwtApi` - the auth service that returns JWT token
+    based on basic authentication
+  - `RestServiceApi` REST API interface
+  - `ApplicationService` your own service,
+    from which you want to send rest requests,
+    `debug` and `error` logging will be enabled for its package.
+
+#### Customize request and response handling:
+
+  In Jax RS with `Jackson` you can customize requests and responses
+  with `ObjectMapper`.
+
+  `ObjectMapper` is configured  in `rest_api` module by `JacksonProvider`.
+  You can use it as:
+  ```
+
+    JaxRsProxyConfig proxyConfig = JaxRsProxyConfig.builder()
+      ...
+      .withObjectMapper(JacksonProvider
+        .instance()
+        objectMapper())
+      ...
+      .build();
+  ```
+
+  With external rest services,
+  you can use the custom `ObjectMapper` instances:
+  ```
+    JaxRsProxyConfig proxyConfig = JaxRsProxyConfig.builder()
+      ...
+      .withObjectMapper(new CustomObjectMapper())
+      ...
+      .build();
+
+    ...
+    public class CustomObjectMapper extends ObjectMapper {
+
+      public CustomObjectMapper() {
+        super();
+        SimpleModule module = new SimpleModule();
+        module.addSerializer(LocalDateTime.class, new LocalDateTimeSerializer());
+        module.addDeserializer(LocalDateTime.class, new LocalDateTimeDeserializer());
+        this.registerModule(module);
+      }
+    }
+  ```
+
+#### `AuthJwtApi` example:
+
+```
+@Path(AUTH_JWT_PATH)
+@Produces(MediaType.APPLICATION_JSON)
+public interface AuthJwtApi {
+
+  String AUTH_JWT_PATH = "/jwt/auth/service";
+
+  @GET
+  AuthToken authenticate();
+}
+```
