@@ -1,0 +1,18 @@
+---
+- name: "Create `.ansible` folder to store used variables"
+  file:
+    state: directory
+    path: "{{ item }}"
+    owner: "{{ lookup('env', 'USER') }}"
+    group: "{{ lookup('env', 'USER') }}"
+  with_items:
+    - "{{ mvn_project_basedir }}/.ansible"
+
+- name: "Generate parent `pom.xml` file"
+  template:
+    src: ".ansible/ansible_shared_variables.j2"
+    dest: "{{ mvn_project_basedir }}/.ansible/ansible_shared_variables.yml"
+    mode: 0644
+    owner: "{{ lookup('env', 'USER') }}"
+    group: "{{ lookup('env', 'USER') }}"
+    force: yes

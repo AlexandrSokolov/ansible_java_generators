@@ -9,6 +9,17 @@
   register: mvn_project_basedir_path
 
 - block:
+    - name: "Create `{{ mvn_project_basedir }}` project folder if it does not exist"
+      file:
+        state: directory
+        path: "{{ item }}"
+        owner: "{{ lookup('env', 'USER') }}"
+        group: "{{ lookup('env', 'USER') }}"
+      with_items:
+        - "{{ mvn_project_basedir }}"
+
+    - import_tasks: tasks/store_ansible_variables.yml
+
     - import_tasks: tasks/code_quality.yml
 
     - import_tasks: tasks/parent_module.yml

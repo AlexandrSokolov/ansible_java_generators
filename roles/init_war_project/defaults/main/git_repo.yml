@@ -1,3 +1,2 @@
 ---
 git_connection: git@github.com:SomeUser/some-git-repo-url.git
-scm_url: https://github.com/SomeUser/some-git-repo-url/wiki
