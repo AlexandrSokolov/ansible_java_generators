@@ -24,18 +24,18 @@
     name: gen_java_class_from_template
   with_items:
     - src: rest_api/src/main/java/api/MockRestApi.java.j2
-      dst: "{{ mvn_project_basedir }}/rest_api/src/main/java/{{ group_id }}/rest/api/MockRestApi.java"
+      dst: "{{ mvn_project_basedir }}/rest_api/src/main/java/{{ group_id_path }}/rest/api/MockRestApi.java"
     - src: rest_api/src/main/java/dto/.keep
-      dst: "{{ mvn_project_basedir }}/rest_api/src/main/java/{{ group_id }}/rest/dto/.keep"
+      dst: "{{ mvn_project_basedir }}/rest_api/src/main/java/{{ group_id_path }}/rest/dto/.keep"
     - src: rest_api/src/main/java/jackson/deserializer/LocalDateTimeDeserializer.java.j2
-      dst: "{{ mvn_project_basedir }}/rest_api/src/main/java/{{ group_id }}/rest/jackson/deserializer/LocalDateTimeDeserializer.java"
+      dst: "{{ mvn_project_basedir }}/rest_api/src/main/java/{{ group_id_path }}/rest/jackson/deserializer/LocalDateTimeDeserializer.java"
     - src: rest_api/src/main/java/jackson/serializer/LocalDateTimeSerializer.java.j2
-      dst: "{{ mvn_project_basedir }}/rest_api/src/main/java/{{ group_id }}/rest/jackson/serializer/LocalDateTimeSerializer.java"
+      dst: "{{ mvn_project_basedir }}/rest_api/src/main/java/{{ group_id_path }}/rest/jackson/serializer/LocalDateTimeSerializer.java"
     - src: rest_api/src/main/java/jackson/serializer/MoneySerializer.java.j2
-      dst: "{{ mvn_project_basedir }}/rest_api/src/main/java/{{ group_id }}/rest/jackson/serializer/MoneySerializer.java"
+      dst: "{{ mvn_project_basedir }}/rest_api/src/main/java/{{ group_id_path }}/rest/jackson/serializer/MoneySerializer.java"
     - src: rest_api/src/main/java/jackson/DateTimeUtils.java.j2
-      dst: "{{ mvn_project_basedir }}/rest_api/src/main/java/{{ group_id }}/rest/jackson/DateTimeUtils.java"
+      dst: "{{ mvn_project_basedir }}/rest_api/src/main/java/{{ group_id_path }}/rest/jackson/DateTimeUtils.java"
     - src: rest_api/src/main/java/jackson/JacksonProvider.java.j2
-      dst: "{{ mvn_project_basedir }}/rest_api/src/main/java/{{ group_id }}/rest/jackson/JacksonProvider.java"
+      dst: "{{ mvn_project_basedir }}/rest_api/src/main/java/{{ group_id_path }}/rest/jackson/JacksonProvider.java"
     - src: rest_api/src/main/resources/doc/enunciate/enunciate.xml.j2
       dst: "{{ mvn_project_basedir }}/rest_api/src/main/resources/doc/enunciate/enunciate.xml"

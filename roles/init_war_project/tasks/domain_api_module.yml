@@ -24,4 +24,4 @@
     name: gen_java_class_from_template
   with_items:
     - src: domain_api/src/main/java/ExampleApi.java.j2
-      dst: "{{ mvn_project_basedir }}/domain_api/src/main/java/{{ group_id }}/api/ExampleApi.java"
+      dst: "{{ mvn_project_basedir }}/domain_api/src/main/java/{{ group_id_path }}/api/ExampleApi.java"

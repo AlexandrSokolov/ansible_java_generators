@@ -4,4 +4,4 @@
     name: gen_java_class_from_template
   with_items:
     - src: rest_api/src/main/java/ConfigRestApi.java.j2
-      dst: "{{ mvn_project_basedir }}/rest_api/src/main/java/{{ group_id }}/rest/api/ConfigRestApi.java"
+      dst: "{{ mvn_project_basedir }}/rest_api/src/main/java/{{ group_id_path }}/rest/api/ConfigRestApi.java"

@@ -33,10 +33,10 @@
     name: gen_java_class_from_template
   with_items:
     - src: commons_config/src/main/java/ConfigFactory.java.j2
-      dst: "{{ mvn_project_basedir }}/commons_config/src/main/java/{{ group_id }}/commons/config/ConfigFactory.java"
+      dst: "{{ mvn_project_basedir }}/commons_config/src/main/java/{{ group_id_path }}/commons/config/ConfigFactory.java"
     - src: commons_config/src/main/java/Configs.java.j2
-      dst: "{{ mvn_project_basedir }}/commons_config/src/main/java/{{ group_id }}/commons/config/Configs.java"
+      dst: "{{ mvn_project_basedir }}/commons_config/src/main/java/{{ group_id_path }}/commons/config/Configs.java"
     - src: commons_config/src/main/java/FileConfig.java.j2
-      dst: "{{ mvn_project_basedir }}/commons_config/src/main/java/{{ group_id }}/commons/config/FileConfig.java"
+      dst: "{{ mvn_project_basedir }}/commons_config/src/main/java/{{ group_id_path }}/commons/config/FileConfig.java"
     - src: commons_config/src/main/java/PropertyKey.java.j2
-      dst: "{{ mvn_project_basedir }}/commons_config/src/main/java/{{ group_id }}/commons/config/PropertyKey.java"
+      dst: "{{ mvn_project_basedir }}/commons_config/src/main/java/{{ group_id_path }}/commons/config/PropertyKey.java"

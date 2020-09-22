@@ -1,13 +1,3 @@
-
- 
-- jax rs client code generate into java class
-- jax rs client for test generation (to invoke IT tests)
-- jax_rs_client readme
-
-
-
-- main project readme.md, how to run everything
-
 - PAUSE
 
 - fix changePwd2AnsibleJava $artifact_id it is not known
@@ -77,3 +67,32 @@ front_end_war/pom.xml
 - add SecurityDomainName with web.xml security constants
 
 - todo add serializer, decerializers
+- add bm jwt auth
+/home/alex/projects/si/Disney/cs-disney-activation-chargeback/domain/src/main/java/com/brandmaker/cs/disney/activ_chargeback/auth
+
+jax rs client example
+
+- add custom maven repo
+```
+parent:
+  <repositories>
+    <repository>
+      <id>brandmaker-release-repository</id>
+      <url>https://nexus.todo.com/content/repositories/releases</url>
+    </repository>
+  </repositories>
+deps:
+    <maps-rest-client.version>3.4.1</maps-rest-client.version>
+      <dependency>
+        <groupId>com.brandmaker.maps</groupId>
+        <artifactId>maps-rest-client</artifactId>
+        <version>${maps-rest-client.version}</version>
+      </dependency>
+
+domain:
+      <dependency>
+        <groupId>com.brandmaker.maps</groupId>
+        <artifactId>maps-rest-client</artifactId>
+      </dependency>
+```
+-

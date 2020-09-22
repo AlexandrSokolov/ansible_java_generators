@@ -24,13 +24,13 @@
     name: gen_java_class_from_template
   with_items:
     - src: front_end_war/src/main/java/app/.keep
-      dst: "{{ mvn_project_basedir }}/front_end_war/src/main/java/{{ group_id }}/rest/app/.keep"
+      dst: "{{ mvn_project_basedir }}/front_end_war/src/main/java/{{ group_id_path }}/rest/app/.keep"
     - src: front_end_war/src/main/java/config/JAXRSConfiguration.java.j2
-      dst: "{{ mvn_project_basedir }}/front_end_war/src/main/java/{{ group_id }}/rest/config/JAXRSConfiguration.java"
+      dst: "{{ mvn_project_basedir }}/front_end_war/src/main/java/{{ group_id_path }}/rest/config/JAXRSConfiguration.java"
     - src: front_end_war/src/main/java/config/ServerSideJacksonProvider.java.j2
-      dst: "{{ mvn_project_basedir }}/front_end_war/src/main/java/{{ group_id }}/rest/config/ServerSideJacksonProvider.java"
+      dst: "{{ mvn_project_basedir }}/front_end_war/src/main/java/{{ group_id_path }}/rest/config/ServerSideJacksonProvider.java"
     - src: front_end_war/src/main/java/mappers/WebApplicationExceptionMapper.java.j2
-      dst: "{{ mvn_project_basedir }}/front_end_war/src/main/java/{{ group_id }}/rest/mappers/WebApplicationExceptionMapper.java"
+      dst: "{{ mvn_project_basedir }}/front_end_war/src/main/java/{{ group_id_path }}/rest/mappers/WebApplicationExceptionMapper.java"
     - src: front_end_war/src/main/resources/build.properties
       dst: "{{ mvn_project_basedir }}/front_end_war/src/main/resources/build.properties"
     - src: front_end_war/src/main/webapp/WEB-INF/beans.xml

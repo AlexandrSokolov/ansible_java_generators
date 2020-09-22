@@ -51,19 +51,19 @@
     name: gen_java_class_from_template
   with_items:
     - src: src/main/java/JaxRsProxyConfig.java.j2
-      dst: "{{ mvn_project_basedir }}/commons_jax_rs_client/src/main/java/{{ group_id }}/commons/jax/rs/client/JaxRsProxyConfig.java"
+      dst: "{{ mvn_project_basedir }}/commons_jax_rs_client/src/main/java/{{ group_id_path }}/commons/jax/rs/client/JaxRsProxyConfig.java"
     - src: src/main/java/JaxRsProxyConfigBuilder.java.j2
-      dst: "{{ mvn_project_basedir }}/commons_jax_rs_client/src/main/java/{{ group_id }}/commons/jax/rs/client/JaxRsProxyConfigBuilder.java"
+      dst: "{{ mvn_project_basedir }}/commons_jax_rs_client/src/main/java/{{ group_id_path }}/commons/jax/rs/client/JaxRsProxyConfigBuilder.java"
     - src: src/main/java/JaxRsExceptionsUtils.java.j2
-      dst: "{{ mvn_project_basedir }}/commons_jax_rs_client/src/main/java/{{ group_id }}/commons/jax/rs/client/JaxRsExceptionsUtils.java"
+      dst: "{{ mvn_project_basedir }}/commons_jax_rs_client/src/main/java/{{ group_id_path }}/commons/jax/rs/client/JaxRsExceptionsUtils.java"
     - src: src/main/java/filter/JacksonProvider.java.j2
-      dst: "{{ mvn_project_basedir }}/commons_jax_rs_client/src/main/java/{{ group_id }}/commons/jax/rs/client/filter/JacksonProvider.java"
+      dst: "{{ mvn_project_basedir }}/commons_jax_rs_client/src/main/java/{{ group_id_path }}/commons/jax/rs/client/filter/JacksonProvider.java"
     - src: src/main/java/filter/LogDebugFilter.java.j2
-      dst: "{{ mvn_project_basedir }}/commons_jax_rs_client/src/main/java/{{ group_id }}/commons/jax/rs/client/filter/LogDebugFilter.java"
+      dst: "{{ mvn_project_basedir }}/commons_jax_rs_client/src/main/java/{{ group_id_path }}/commons/jax/rs/client/filter/LogDebugFilter.java"
     - src: src/main/java/filter/LogErrorFilter.java.j2
-      dst: "{{ mvn_project_basedir }}/commons_jax_rs_client/src/main/java/{{ group_id }}/commons/jax/rs/client/filter/LogErrorFilter.java"
+      dst: "{{ mvn_project_basedir }}/commons_jax_rs_client/src/main/java/{{ group_id_path }}/commons/jax/rs/client/filter/LogErrorFilter.java"
     - src: src/main/java/filter/RequestResponseInfo.java.j2
-      dst: "{{ mvn_project_basedir }}/commons_jax_rs_client/src/main/java/{{ group_id }}/commons/jax/rs/client/filter/RequestResponseInfo.java"
+      dst: "{{ mvn_project_basedir }}/commons_jax_rs_client/src/main/java/{{ group_id_path }}/commons/jax/rs/client/filter/RequestResponseInfo.java"
     - src: src/main/java/filter/AuthClientRequestFilterFactory.java.j2
-      dst: "{{ mvn_project_basedir }}/commons_jax_rs_client/src/main/java/{{ group_id }}/commons/jax/rs/client/filter/AuthClientRequestFilterFactory.java"
+      dst: "{{ mvn_project_basedir }}/commons_jax_rs_client/src/main/java/{{ group_id_path }}/commons/jax/rs/client/filter/AuthClientRequestFilterFactory.java"
 

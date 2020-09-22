@@ -44,6 +44,6 @@
     name: gen_java_class_from_template
   with_items:
     - src: config/src/main/java/Configuration.java.j2
-      dst: "{{ mvn_project_basedir }}/config/src/main/java/{{ group_id }}/config/Configuration.java"
+      dst: "{{ mvn_project_basedir }}/config/src/main/java/{{ group_id_path }}/config/Configuration.java"
     - src: config/src/main/java/ConfigurationProducer.java.j2
-      dst: "{{ mvn_project_basedir }}/config/src/main/java/{{ group_id }}/config/ConfigurationProducer.java"
+      dst: "{{ mvn_project_basedir }}/config/src/main/java/{{ group_id_path }}/config/ConfigurationProducer.java"

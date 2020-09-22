@@ -18,6 +18,10 @@
       with_items:
         - "{{ mvn_project_basedir }}"
 
+    - name: "Set `group_id_path` variable from `group_id`"
+      set_fact:
+        group_id_path: "{{ group_id | replace('.', '/') }}"
+
     - import_tasks: tasks/store_ansible_variables.yml
 
     - import_tasks: tasks/code_quality.yml
