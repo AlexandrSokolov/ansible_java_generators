@@ -1,18 +1,75 @@
 package {{ group_id }}.async.example;
 
+import java.time.LocalDateTime;
+import java.util.Map;
+import java.util.concurrent.atomic.AtomicLong;
+
+import com.google.common.collect.Maps;
+
 public class LongJobStatistics {
+
+  private LocalDateTime startDateTime = LocalDateTime.now();
+
+  private LocalDateTime endDateTime;
+
+  private AtomicLong itemsNumber = new AtomicLong(0);
+
+  private Map<Integer, String> processedItems = Maps.newConcurrentMap();
+
+  private Map<Integer, String> filterErrors = Maps.newConcurrentMap();
+
+  private Map<Integer, String> handlingErrors = Maps.newConcurrentMap();
+
   public void finish() {
+    this.endDateTime = LocalDateTime.now();
   }
 
   public void notHandledItem(CustomItemType item) {
+    System.out.println(item);
   }
 
-  public void filterError(CustomItemType item) {
+  public void filterError(CustomItemType item, Exception e) {
+    this.filterErrors.put(
+      item.getId(),
+      JaxRsExceptionsUtils.extractErrorFromResponse(e));
   }
 
-  public void successfullyHandled(CustomItemType item) {
+  public void successfullyHandled(
+    CustomItemType item,
+    String changedValues) {
+    this.itemsNumber.incrementAndGet();
+    this.processedItems.put(
+      item.getId(),
+      changedValues);
   }
 
-  public void handlerError(CustomItemType item) {
+  public void handlerError(CustomItemType item, Exception e) {
+    this.handlingErrors.put(
+      item.getId(),
+      JaxRsExceptionsUtils.extractErrorFromResponse(e));
+  }
+
+  public LocalDateTime getStartDateTime() {
+    return startDateTime;
+  }
+
+  public LocalDateTime getEndDateTime() {
+    return endDateTime;
+  }
+
+  public AtomicLong getItemsNumber() {
+    return itemsNumber;
+  }
+
+  public Map<Integer, String> getProcessedItems() {
+    return processedItems;
+  }
+
+  public Map<Integer, String> getFilterErrors() {
+    return filterErrors;
+  }
+
+  public Map<Integer, String> getHandlingErrors() {
+    return handlingErrors;
   }
 }

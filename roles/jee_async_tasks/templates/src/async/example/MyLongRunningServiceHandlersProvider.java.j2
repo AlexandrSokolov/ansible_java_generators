@@ -37,7 +37,7 @@ public class MyLongRunningServiceHandlersProvider {
       myLongRunningService.runVeryLongJob(
         interruptionChecker,
         item -> itemFilter.test(Pair.of(item, statistics)),
-        row -> itemHandler.accept(Pair.of(row, statistics)));
+        item -> itemHandler.accept(Pair.of(item, statistics)));
     } finally {
       statistics.finish();
     }
@@ -61,7 +61,7 @@ public class MyLongRunningServiceHandlersProvider {
       }
       return shouldBeHandled;
     } catch( Exception e) {
-      statistics.filterError(item);
+      statistics.filterError(item, e);
       return false;
     }
   }
@@ -77,7 +77,7 @@ public class MyLongRunningServiceHandlersProvider {
       handleItem(item);
       statistics.successfullyHandled(item);
     } catch( Exception e) {
-      statistics.handlerError(item);
+      statistics.handlerError(item, e);
     }
   }
 
