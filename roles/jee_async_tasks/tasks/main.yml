@@ -16,23 +16,50 @@
       insert_after_template: "{{ role_path }}/templates/deps/domain/insert_after_template.j2"
       insert_template: "{{ role_path }}/templates/deps/domain/insert_template.j2"
 
-- name: "Add JEE Async Support source files"
+- name: "Add JEE Async Support source files into the `domain` module"
   include_role:
     name: gen_java_class_from_template
   with_items:
-    - src: src/async/TriFunction.java.j2
+    - src: domain/src/async/TriFunction.java.j2
       dst: "{{ mvn_project_basedir }}/domain/src/main/java/{{ group_id_path }}/async/TriFunction.java"
-    - src: src/async/JeeAsyncHandler.java.j2
+    - src: domain/src/async/JeeAsyncHandler.java.j2
       dst: "{{ mvn_project_basedir }}/domain/src/main/java/{{ group_id_path }}/async/JeeAsyncHandler.java"
-    - src: src/async/JeeAsyncInternalHelper.java.j2
+    - src: domain/src/async/JeeAsyncInternalHelper.java.j2
       dst: "{{ mvn_project_basedir }}/domain/src/main/java/{{ group_id_path }}/async/JeeAsyncInternalHelper.java"
-    - src: src/async/example/CustomItemType.java.j2
+    - src: domain/src/async/example/CustomItemType.java.j2
       dst: "{{ mvn_project_basedir }}/domain/src/main/java/{{ group_id_path }}/async/example/CustomItemType.java"
-    - src: src/async/example/MyLongRunningService.java.j2
+    - src: domain/src/async/example/MyLongRunningService.java.j2
       dst: "{{ mvn_project_basedir }}/domain/src/main/java/{{ group_id_path }}/async/example/MyLongRunningService.java"
-    - src: src/async/example/LongJobStatistics.java.j2
+    - src: domain/src/async/example/LongJobStatistics.java.j2
       dst: "{{ mvn_project_basedir }}/domain/src/main/java/{{ group_id_path }}/async/example/LongJobStatistics.java"
-    - src: src/async/example/MyLongRunningServiceHandlersProvider.java.j2
+    - src: domain/src/async/example/MyLongRunningServiceHandlersProvider.java.j2
       dst: "{{ mvn_project_basedir }}/domain/src/main/java/{{ group_id_path }}/async/example/MyLongRunningServiceHandlersProvider.java"
-    - src: src/async/example/MyLongRunningServiceAsyncTrigger.java.j2
+    - src: domain/src/async/example/MyLongRunningServiceAsyncTrigger.java.j2
       dst: "{{ mvn_project_basedir }}/domain/src/main/java/{{ group_id_path }}/async/example/MyLongRunningServiceAsyncTrigger.java"
+
+- name: "Add ability to run async tasks via rest, add files into `rest_api` module"
+  include_role:
+    name: gen_java_class_from_template
+  with_items:
+    - src: rest_api/src/rest/dto/TaskDto.java.j2
+      dst: "{{ mvn_project_basedir }}/rest_api/src/main/java/{{ group_id_path }}/rest/dto/TaskDto.java"
+    - src: rest_api/src/rest/api/LongRunningTaskRestApi.java.j2
+      dst: "{{ mvn_project_basedir }}/rest_api/src/main/java/{{ group_id_path }}/rest/api/LongRunningTaskRestApi.java"
+
+- name: "Add ability to run async tasks via rest, add files into `front_end_war` module"
+  include_role:
+    name: gen_java_class_from_template
+  with_items:
+    - src: front_end_war/src/rest/app/LongRunningTaskRestService.java.j2
+      dst: "{{ mvn_project_basedir }}/front_end_war/src/main/java/{{ group_id_path }}/rest/app/LongRunningTaskRestService.java"
+
+- name: "Update jax rs configuration with `LongRunningTaskRestService` service"
+  include_role:
+    name: insert_template_after_another
+  with_items:
+    - path: "{{ mvn_project_basedir }}/front_end_war/src/main/java/{{ group_id_path }}/rest/config/JAXRSConfiguration.java"
+      insert_after_template: "{{ role_path }}/templates/front_end_war/src/rest/config/import_insert_after.j2"
+      insert_template: "{{ role_path }}/templates/front_end_war/src/rest/config/import_insert.j2"
+    - path: "{{ mvn_project_basedir }}/front_end_war/src/main/java/{{ group_id_path }}/rest/config/JAXRSConfiguration.java"
+      insert_after_template: "{{ role_path }}/templates/front_end_war/src/rest/config/jax_rs_config_insert_after.j2"
+      insert_template: "{{ role_path }}/templates/front_end_war/src/rest/config/jax_rs_config_insert.j2"

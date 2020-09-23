@@ -1,0 +1,22 @@
+package {{ group_id }}.rest.api;
+
+
+
+import {{ group_id }}.rest.dto.TaskDto;
+
+import javax.ws.rs.POST;
+import javax.ws.rs.Path;
+import javax.ws.rs.Produces;
+import javax.ws.rs.core.MediaType;
+
+import static {{ group_id }}.rest.api.LongRunningTaskRestApi.SERVICE_REST_URL;
+
+@Path(SERVICE_REST_URL)
+@Produces(MediaType.APPLICATION_JSON)
+public interface LongRunningTaskRestApi {
+
+  String SERVICE_REST_URL = "/trigger";
+
+  @POST
+  TaskDto triggerJob();
+}

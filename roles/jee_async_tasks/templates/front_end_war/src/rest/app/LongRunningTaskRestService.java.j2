@@ -1,0 +1,22 @@
+package {{ group_id }}.rest.app;
+
+import {{ group_id }}.async.example.MyLongRunningServiceAsyncTrigger;
+import {{ group_id }}.rest.api.LongRunningTaskRestApi;
+import {{ group_id }}.rest.dto.TaskDto;
+
+import javax.inject.Inject;
+
+public class LongRunningTaskRestService implements LongRunningTaskRestApi {
+
+  @Inject
+  MyLongRunningServiceAsyncTrigger service;
+
+  @Override
+  public TaskDto triggerJob() {
+    service.trigger();
+
+    TaskDto dto = new JobDto();
+    dto.setStatus("triggered");
+    return dto;
+  }
+}
