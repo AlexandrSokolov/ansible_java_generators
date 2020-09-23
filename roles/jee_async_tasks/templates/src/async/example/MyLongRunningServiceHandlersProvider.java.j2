@@ -1,0 +1,92 @@
+package {{ group_id }}.async.example;
+
+import java.util.function.Consumer;
+import java.util.function.Predicate;
+import java.util.function.Supplier;
+
+import javax.inject.Inject;
+
+import org.apache.commons.lang3.tuple.Pair;
+
+/**
+ *  This consumer is responsible for:
+ *  1. Gathering statistics, the method must return it from its main method
+ *  2. Providing item filter method, updating statistics about items which are not handled.
+ *  3. Providing item handler, updating statistics about filtered item.
+ *
+ */
+public class MyLongRunningServiceHandlersProvider {
+
+  @Inject
+  MyLongRunningService myLongRunningService;
+
+  /*
+   * The signature of this method, must accept exactly this set of parameters:
+   *  - interruption checker
+   *  - item filter
+   *  - item handler
+   *  It is required to be able to pass this function into `JeeAsyncHandler`
+   */
+  public LongJobStatistics runVeryLongJobWithStatistics(
+    final Supplier<Boolean> interruptionChecker,
+    final Predicate<Pair<CustomItemType, LongJobStatistics>> itemFilter,
+    final Consumer<Pair<CustomItemType, LongJobStatistics>> itemHandler) {
+
+    LongJobStatistics statistics = new LongJobStatistics();
+    try {
+      myLongRunningService.runVeryLongJob(
+        interruptionChecker,
+        item -> itemFilter.test(Pair.of(item, statistics)),
+        row -> itemHandler.accept(Pair.of(row, statistics)));
+    } finally {
+      statistics.finish();
+    }
+    return statistics;
+  }
+
+  /**
+   *
+   * @param pair
+   * @return `true` if an item should be handled.
+   *         `false` if an item should NOT be handled
+   */
+  public boolean itemFilter(Pair<CustomItemType, LongJobStatistics> pair) {
+    CustomItemType item = pair.getLeft();
+    LongJobStatistics statistics = pair.getRight();
+    try {
+      //heck if item should be handled:
+      boolean shouldBeHandled = checkIfShoulbBeHandled(item);
+      if (!shouldBeHandled) {
+        statistics.notHandledItem(item);
+      }
+      return shouldBeHandled;
+    } catch( Exception e) {
+      statistics.filterError(item);
+      return false;
+    }
+  }
+
+
+  public void itemHandler(Pair<CustomItemType, LongJobStatistics> pair) {
+    CustomItemType item = pair.getLeft();
+    LongJobStatistics statistics = pair.getRight();
+
+    //you can per each 10000 handled items send an email,
+    //if it takes really long
+    try {
+      handleItem(item);
+      statistics.successfullyHandled(item);
+    } catch( Exception e) {
+      statistics.handlerError(item);
+    }
+  }
+
+  private boolean checkIfShoulbBeHandled(CustomItemType item) {
+    System.out.println(item);
+    return true;
+  }
+
+  private void handleItem(CustomItemType item) {
+    System.out.println(item);
+  }
+}

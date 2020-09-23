@@ -1,12 +1,18 @@
-- PAUSE
+- long running jobs - rest endpoint
 
-- fix changePwd2AnsibleJava $artifact_id it is not known
-
-- fix <version>1.0.0</version>, store variables from the main task
-   
 - cron-job module with rest endpoint
 - cron-job client generation
-- add long-running classes 
+
+- config usage for test purpose
+- jax rs config for test purpose generation
+
+- fix changePwd2AnsibleJava $artifact_id it is not known
+- fix issue, when project folder name is renamed and 
+    does equal to `artifact_id`
+    
+- fix <version>1.0.0</version>, store variables from the main task
+   
+
 
 - deployments functionality:
 ```

@@ -1,0 +1,55 @@
+package {{ group_id }}.async.example;
+
+import java.util.LinkedList;
+import java.util.List;
+import java.util.function.Consumer;
+import java.util.function.Predicate;
+import java.util.function.Supplier;
+
+/**
+ * You have a `runVeryLongJob` service method, that accepts:
+ *
+ * - parameters to run a long running process to handle items (of any type).
+ *     It might be, that these parameters are not passed at all.
+ *     The service method might take them from the instance variables of the service.
+ *
+ * - interruption checker - supplier that checks if a long running process should be interrupted.
+ *           This parameter does not depend on businees logic.
+ *           `JeeAsyncInternalHelper` is responsible for passing a certain supplier.
+ *
+ * - filter - predicate, that checks if an item meets its requirements and should be handled.
+ *     This predicate accepts an item as input parameter and returns boolean.
+ *
+ * - item handler - consumer, that handles an item, which meets the requirements of the filter.
+ *     The consumer accepts an item as input parameter and returns nothing (`void`).
+ *
+ * This service method has no knowledge about:
+ *    - gathering statistics
+ *    - async nature of its invocation
+ */
+public class MyLongRunningService {
+
+  public void runVeryLongJob(
+    final Supplier<Boolean> interruptionChecker,
+    final Predicate<CustomItemType> itemFilter,
+    final Consumer<CustomItemType> itemHandler) {
+
+    try {
+      List<CustomItemType> hugeList = new LinkedList<>();
+      // streams in Java 8 are not interpretable.
+      // since Java 9 you can use:
+      //    Stream.takeWhile() to interrupt it
+      for (CustomItemType item : hugeList) {
+        if (interruptionChecker.get()) {
+          return;
+        }
+        if (itemFilter.test(item)) {
+          itemHandler.accept(item);
+        }
+      }
+    } catch (Exception e) {
+      throw new IllegalStateException(
+        "Could not handle runVeryLongJob", e);
+    }
+  }
+}

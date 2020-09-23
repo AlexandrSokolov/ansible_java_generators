@@ -1,0 +1,79 @@
+package {{ group_id }}.async;
+
+import java.util.concurrent.Future;
+import java.util.concurrent.Semaphore;
+import java.util.concurrent.TimeUnit;
+import java.util.function.Consumer;
+import java.util.function.Predicate;
+import java.util.function.Supplier;
+
+import javax.annotation.Resource;
+import javax.ejb.AsyncResult;
+import javax.ejb.Asynchronous;
+import javax.ejb.SessionContext;
+import javax.ejb.Stateless;
+import javax.enterprise.inject.Instance;
+import javax.inject.Inject;
+
+@Stateless
+public class JeeAsyncInternalHelper {
+
+  private static final int PARALLEL_TASKS = 5;
+
+  @Resource
+  SessionContext sessionContext;
+
+  @Inject
+  Instance<JeeAsyncInternalHelper> that;
+
+  @Asynchronous
+  public <T, R> Future<Void> asyncTrigger(
+    final TriFunction<Supplier<Boolean>, Predicate<T>, Consumer<T>, R> longJob,
+    final Predicate<T> itemFilter,
+    final Consumer<T> singleItemHandler,
+    final Consumer<R> resultConsumer) {
+    //this semaphore does not allow us to put into the queue to many items
+    //if the number of current threads = PARALLEL_TASKS, application blocks.
+    Semaphore semaphorePutInQueue = new Semaphore(PARALLEL_TASKS);
+    //this semaphore does not allow us to leave this function,
+    //  until all the currently invoked tasks do not finish:
+    Semaphore semaphoreTriggered = new Semaphore(PARALLEL_TASKS);
+    resultConsumer.accept(
+      longJob.apply(
+        () -> sessionContext.wasCancelCalled(),
+        itemFilter,
+        t -> {
+          try {
+            semaphorePutInQueue.acquire();
+            that.get().asyncTaskTrigger(semaphorePutInQueue, semaphoreTriggered, t, singleItemHandler);
+            if (sessionContext.wasCancelCalled()) {
+              semaphoreTriggered.tryAcquire(PARALLEL_TASKS, 30, TimeUnit.SECONDS);
+            }
+          } catch (InterruptedException e) {
+            throw new IllegalStateException(e);
+          }
+        }));
+    return new AsyncResult<>(null);
+  }
+
+  /**
+   * this task is run, only if application is not undeployed and there are free threads in the pool
+   *
+   */
+  @Asynchronous
+  public <T> void asyncTaskTrigger(
+    final Semaphore semaphorePutInQueue,
+    final Semaphore semaphoreTriggered,
+    final T input,
+    final Consumer<T> consumer) {
+    try {
+      semaphoreTriggered.acquire();
+      consumer.accept(input);
+    } catch (InterruptedException e) {
+      throw new IllegalStateException(e);
+    } finally {
+      semaphorePutInQueue.release();
+      semaphoreTriggered.release();
+    }
+  }
+}

@@ -35,3 +35,7 @@
 #### 4 Add Jax RS (rest) client support  
 
   Run: `javaAddCommonsJaxRsClient.sh` 
+  
+#### 5 JEE Async support for long running jobs
+
+  Run: `javaAddJeeAsyncSupport.sh`

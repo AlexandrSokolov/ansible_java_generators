@@ -1,0 +1,38 @@
+---
+- name: Load shared variables
+  include_vars: "{{ mvn_project_basedir }}/.ansible/ansible_shared_variables.yml"
+
+- name: "Add dependencies for using JEE Async Support"
+  include_role:
+    name: insert_template_after_another
+  with_items:
+    - path: "{{ mvn_project_basedir }}/deps/pom.xml"
+      insert_after_template: "{{ role_path }}/templates/deps/deps/properties/insert_after_template.j2"
+      insert_template: "{{ role_path }}/templates/deps/deps/properties/insert_template.j2"
+    - path: "{{ mvn_project_basedir }}/deps/pom.xml"
+      insert_after_template: "{{ role_path }}/templates/deps/deps/jboss-ejb3-ext-api/insert_after_template.j2"
+      insert_template: "{{ role_path }}/templates/deps/deps/jboss-ejb3-ext-api/insert_template.j2"
+    - path: "{{ mvn_project_basedir }}/domain/pom.xml"
+      insert_after_template: "{{ role_path }}/templates/deps/domain/insert_after_template.j2"
+      insert_template: "{{ role_path }}/templates/deps/domain/insert_template.j2"
+
+- name: "Add JEE Async Support source files"
+  include_role:
+    name: gen_java_class_from_template
+  with_items:
+    - src: src/async/TriFunction.java.j2
+      dst: "{{ mvn_project_basedir }}/domain/src/main/java/{{ group_id_path }}/async/TriFunction.java"
+    - src: src/async/JeeAsyncHandler.java.j2
+      dst: "{{ mvn_project_basedir }}/domain/src/main/java/{{ group_id_path }}/async/JeeAsyncHandler.java"
+    - src: src/async/JeeAsyncInternalHelper.java.j2
+      dst: "{{ mvn_project_basedir }}/domain/src/main/java/{{ group_id_path }}/async/JeeAsyncInternalHelper.java"
+    - src: src/async/example/CustomItemType.java.j2
+      dst: "{{ mvn_project_basedir }}/domain/src/main/java/{{ group_id_path }}/async/example/CustomItemType.java"
+    - src: src/async/example/MyLongRunningService.java.j2
+      dst: "{{ mvn_project_basedir }}/domain/src/main/java/{{ group_id_path }}/async/example/MyLongRunningService.java"
+    - src: src/async/example/LongJobStatistics.java.j2
+      dst: "{{ mvn_project_basedir }}/domain/src/main/java/{{ group_id_path }}/async/example/LongJobStatistics.java"
+    - src: src/async/example/MyLongRunningServiceHandlersProvider.java.j2
+      dst: "{{ mvn_project_basedir }}/domain/src/main/java/{{ group_id_path }}/async/example/MyLongRunningServiceHandlersProvider.java"
+    - src: src/async/example/MyLongRunningServiceAsyncTrigger.java.j2
+      dst: "{{ mvn_project_basedir }}/domain/src/main/java/{{ group_id_path }}/async/example/MyLongRunningServiceAsyncTrigger.java"

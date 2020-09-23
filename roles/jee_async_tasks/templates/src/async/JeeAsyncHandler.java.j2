@@ -1,0 +1,52 @@
+package {{ group_id }}.async;
+
+import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
+import java.util.function.Consumer;
+import java.util.function.Predicate;
+import java.util.function.Supplier;
+
+import javax.annotation.PreDestroy;
+import javax.ejb.Singleton;
+import javax.inject.Inject;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.jboss.ejb3.annotation.TransactionTimeout;
+
+@Singleton
+public class JeeAsyncHandler {
+
+  private static final Log logger = LogFactory.getLog(JeeAsyncHandler.class);
+
+  @Inject
+  JeeAsyncInternalHelper asyncInternalHelper;
+
+  Future<Void> longJobFuture;
+
+  @TransactionTimeout(value = 3, unit = TimeUnit.HOURS)
+  public <T, R> void trigger(
+    final TriFunction<Supplier<Boolean>, Predicate<T>, Consumer<T>, R> longJob,
+    final Predicate<T> itemFilter,
+    final Consumer<T> singleItemHandler,
+    final Consumer<R> resultConsumer) {
+    if (longJobFuture == null || longJobFuture.isDone()) {
+      logger.info("No async jobs in progress. Run a new long running job.");
+      longJobFuture = asyncInternalHelper.asyncTrigger(
+        longJob,
+        itemFilter,
+        singleItemHandler,
+        resultConsumer);
+    } else {
+      logger.info("Nothing is triggered. Async job is still in progress.");
+    }
+  }
+
+  @PreDestroy
+  void cancelJob() {
+    if (longJobFuture != null && !longJobFuture.isCancelled()) {
+      longJobFuture.cancel(true);
+    }
+  }
+
+}
