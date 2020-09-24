@@ -15,7 +15,7 @@ public class LongRunningTaskRestService implements LongRunningTaskRestApi {
   public TaskDto triggerJob() {
     service.trigger();
 
-    TaskDto dto = new JobDto();
+    TaskDto dto = new TaskDto();
     dto.setStatus("triggered");
     return dto;
   }

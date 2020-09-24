@@ -25,3 +25,5 @@
   with_items:
     - src: domain/src/main/java/ApplicationService.java.j2
       dst: "{{ mvn_project_basedir }}/domain/src/main/java/{{ group_id_path }}/app/ApplicationService.java"
+    - src: domain/src/main/resources/META-INF/beans.xml
+      dst: "{{ mvn_project_basedir }}/domain/src/main/resources/META-INF/beans.xml"

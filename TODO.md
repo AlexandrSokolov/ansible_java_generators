@@ -1,7 +1,12 @@
-- long running jobs - rest endpoint
+- domain, configuration beans.xml
 
 - cron-job module with rest endpoint
 - cron-job client generation
+
+- testing per a single node
+- testing async invocation nature, how it works, different usecases
+    todo add thread name into log
+- testing update PO, see how it works    
 
 - config usage for test purpose
 - jax rs config for test purpose generation

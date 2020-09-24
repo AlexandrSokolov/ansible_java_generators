@@ -47,3 +47,5 @@
       dst: "{{ mvn_project_basedir }}/config/src/main/java/{{ group_id_path }}/config/Configuration.java"
     - src: config/src/main/java/ConfigurationProducer.java.j2
       dst: "{{ mvn_project_basedir }}/config/src/main/java/{{ group_id_path }}/config/ConfigurationProducer.java"
+    - src: config/src/main/resources/META-INF/beans.xml
+      dst: "{{ mvn_project_basedir }}/config/src/main/resources/META-INF/beans.xml"
