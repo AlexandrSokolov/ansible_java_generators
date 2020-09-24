@@ -1,0 +1,8 @@
+---
+- name: "Add `maven-deploy-plugin` maven plugin in `front_end_war/pom.xml`"
+  include_role:
+    name: insert_template_after_another
+  with_items:
+    - path: "{{ mvn_project_basedir }}/front_end_war/pom.xml"
+      insert_after_template: "{{ role_path }}/templates/front_end_war/insert_after.j2"
+      insert_template: "{{ role_path }}/templates/front_end_war/insert_template.j2"

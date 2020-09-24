@@ -1,0 +1,24 @@
+
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-deploy-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>deploy-single-war</id>
+            <phase>deploy</phase>
+            <goals>
+              <goal>deploy-file</goal>
+            </goals>
+            <configuration>
+              <file>target/${project.build.finalName}.${project.packaging}</file>
+              <groupId>${project.groupId}</groupId>
+              <artifactId>${project.artifactId}</artifactId>
+              <version>${project.version}</version>
+              <!-- repositoryId is configured on the Jenkins server, on which deployment is triggered-->
+              <repositoryId>{{ release_repository_id }}</repositoryId>
+              <!-- keep in mind that for release and snapshot versions different urls are used!!!-->
+              <url>{{ release_repository_url }}</url>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
