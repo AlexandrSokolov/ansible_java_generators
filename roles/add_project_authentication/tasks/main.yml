@@ -1,0 +1,32 @@
+---
+- name: "Update jboss-web.xml with security module"
+  include_role:
+    name: insert_template_after_another
+  with_items:
+    - path: "{{ mvn_project_basedir }}/front_end_war/src/main/webapp/WEB-INF/jboss-web.xml"
+      insert_after_template: "{{ role_path }}/templates/wildfly_security_domain/insert_after_template.j2"
+      insert_template: "{{ role_path }}/templates/wildfly_security_domain/insert_template.j2"
+
+- name: "Check if web.xml file exists."
+  stat:
+    path: "{{ mvn_project_basedir }}/front_end_war/src/main/webapp/WEB-INF/web.xml"
+  register: web_xml_path
+
+- name: "Add web.xml if does not exist"
+  template:
+    src: "web.xml.j2"
+    dest: "{{ mvn_project_basedir }}/front_end_war/src/main/webapp/WEB-INF/web.xml"
+    mode: 0644
+    owner: "{{ lookup('env', 'USER') }}"
+    group: "{{ lookup('env', 'USER') }}"
+    force: yes
+  when: not web_xml_path.stat.exists
+
+- name: "Update web.xml if exists"
+  include_role:
+    name: insert_template_after_another
+  with_items:
+    - path: "{{ mvn_project_basedir }}/front_end_war/src/main/webapp/WEB-INF/web.xml"
+      insert_after_template: "{{ role_path }}/templates/update_web.xml/insert_after_template.j2"
+      insert_template: "{{ role_path }}/templates/update_web.xml/insert_template.j2"
+  when: web_xml_path.stat.exists

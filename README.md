@@ -39,3 +39,13 @@
 #### 5 JEE Async support for long running jobs
 
   Run: `javaAddJeeAsyncSupport.sh`
+  
+#### 6 Add authentication support
+
+  Run: `javaAddProjectAuthentication.sh`
+  In the output you'll find an actual information about expected parameters.
+  
+#### 7 Add deployment support
+  
+  Run: `javaMavenDeploymentSupport.sh`
+  In the output you'll find an actual information about expected parameters.
