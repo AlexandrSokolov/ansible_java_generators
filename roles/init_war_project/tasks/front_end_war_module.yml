@@ -23,8 +23,8 @@
   include_role:
     name: gen_java_class_from_template
   with_items:
-    - src: front_end_war/src/main/java/app/.keep
-      dst: "{{ mvn_project_basedir }}/front_end_war/src/main/java/{{ group_id_path }}/rest/app/.keep"
+    - src: front_end_war/src/main/java/app/JaxRsHandlerUtils.java.j2
+      dst: "{{ mvn_project_basedir }}/front_end_war/src/main/java/{{ group_id_path }}/rest/app/JaxRsHandlerUtils.java"
     - src: front_end_war/src/main/java/config/JAXRSConfiguration.java.j2
       dst: "{{ mvn_project_basedir }}/front_end_war/src/main/java/{{ group_id_path }}/rest/config/JAXRSConfiguration.java"
     - src: front_end_war/src/main/java/config/ServerSideJacksonProvider.java.j2

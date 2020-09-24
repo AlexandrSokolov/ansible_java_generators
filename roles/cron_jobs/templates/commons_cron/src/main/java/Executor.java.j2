@@ -1,0 +1,9 @@
+package {{ group_id }}.commons.cron;
+
+@FunctionalInterface
+public interface Executor {
+  /**
+   * Wraps an execution
+   */
+  void execute();
+}

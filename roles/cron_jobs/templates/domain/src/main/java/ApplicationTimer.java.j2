@@ -1,0 +1,32 @@
+package {{ group_id }}.cron;
+
+import {{ group_id }}.commons.cron.CronService;
+import {{ group_id }}.config.Configuration;
+
+import javax.annotation.PostConstruct;
+import javax.ejb.Singleton;
+import javax.ejb.Startup;
+import javax.inject.Inject;
+
+@Singleton
+@Startup
+public class ApplicationTimer {
+
+  static final String TIMER_NAME = "Template Project Timer";
+
+  @Inject
+  Configuration configuration;
+
+  @Inject
+  CronService cronService;
+
+  @PostConstruct
+  void createTimer() {
+    configuration.cronExpression().ifPresent(cronExpression ->
+      cronService.createTimer(
+        TIMER_NAME,
+        cronExpression,
+        () -> System.out.println(TIMER_NAME + " triggered")));
+  }
+
+}

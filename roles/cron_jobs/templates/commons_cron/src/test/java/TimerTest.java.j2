@@ -1,0 +1,64 @@
+package {{ group_id }}.commons.cron;
+
+import {{ group_id }}.commons.cron.Timer;
+import org.junit.Assert;
+import org.junit.Rule;
+import org.junit.Test;
+import org.junit.rules.ExpectedException;
+
+import javax.ejb.ScheduleExpression;
+
+import static {{ group_id }}.commons.cron.Timer.WRONG_FORMAT;
+
+public class TimerTest {
+
+  @Rule
+  public ExpectedException exceptionRule = ExpectedException.none();
+
+  @Test
+  public void testFromCronJobWithoutYear() {
+    //10:15 AM every Monday, Tuesday, Wednesday, Thursday and Friday.
+    ScheduleExpression scheduleExpression = new Timer().fromCronJob("0 15 10 ? * MON-FRI");
+    Assert.assertEquals("0", scheduleExpression.getSecond());
+    Assert.assertEquals("15", scheduleExpression.getMinute());
+    Assert.assertEquals("10", scheduleExpression.getHour());
+    //any day of month
+    Assert.assertEquals("?", scheduleExpression.getDayOfMonth());
+    //every month
+    Assert.assertEquals("*", scheduleExpression.getMonth());
+    Assert.assertEquals("MON-FRI", scheduleExpression.getDayOfWeek());
+    //also year is not set, automatically it means '*' - every year
+    Assert.assertEquals("*", scheduleExpression.getYear());
+  }
+
+  @Test
+  public void testFromCronJobWithYear() {
+    //10:15 AM every Monday, Tuesday, Wednesday, Thursday and Friday.
+    ScheduleExpression scheduleExpression = new Timer().fromCronJob("0 15 10 ? * MON-FRI 2018");
+    Assert.assertEquals("0", scheduleExpression.getSecond());
+    Assert.assertEquals("15", scheduleExpression.getMinute());
+    Assert.assertEquals("10", scheduleExpression.getHour());
+    //any day of month
+    Assert.assertEquals("?", scheduleExpression.getDayOfMonth());
+    //every month
+    Assert.assertEquals("*", scheduleExpression.getMonth());
+    Assert.assertEquals("MON-FRI", scheduleExpression.getDayOfWeek());
+    Assert.assertEquals("2018", scheduleExpression.getYear());
+  }
+
+  @Test
+  public void testFromCronJobFewElements() {
+    exceptionRule.expect(IllegalStateException.class);
+    String expression = "0 15 10";
+    exceptionRule.expectMessage(String.format(WRONG_FORMAT, expression));
+    new Timer().fromCronJob(expression);
+  }
+
+  @Test
+  public void testFromScheduleExpressionWithoutYear() {
+    String cron = "0 1 * ? * MON";
+    ScheduleExpression expression = new Timer().fromCronJob(cron);
+    //year will be added to the cron expression:
+    Assert.assertEquals(cron + " *", new Timer().toCronJob(expression));
+  }
+}

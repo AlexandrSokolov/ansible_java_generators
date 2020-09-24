@@ -1,0 +1,19 @@
+package {{ group_id }}.rest.app;
+
+import {{ group_id }}.commons.cron.CronService;
+import {{ group_id }}.commons.cron.Timer;
+import {{ group_id }}.rest.api.TimerRestApi;
+
+import javax.inject.Inject;
+import java.util.List;
+
+public class TimerRestService implements TimerRestApi {
+
+  @Inject
+  CronService cronService;
+
+  @Override
+  public List<Timer> timers() {
+    return JaxRsHandlerUtils.handle(cronService::currentTimers);
+  }
+}

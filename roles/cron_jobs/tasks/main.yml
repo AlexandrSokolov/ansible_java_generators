@@ -1,0 +1,28 @@
+---
+- name: "Ansible check for `commons_cron` module."
+  stat:
+    path: "{{ mvn_project_basedir }}/commons_cron"
+  register: commons_cron_path
+
+- block:
+
+    - name: Load shared variables
+      include_vars: "{{ mvn_project_basedir }}/.ansible/ansible_shared_variables.yml"
+
+    - import_tasks: tasks/commons_cron.yml
+
+    - import_tasks: tasks/parent_pom.yml
+
+    - import_tasks: tasks/domain.yml
+
+    - import_tasks: tasks/rest_api.yml
+
+    - import_tasks: tasks/front_end_war.yml
+
+  when: not commons_cron_path.stat.exists
+
+- debug:
+    msg:
+      - "ERROR: '{{ mvn_project_basedir }}/commons_cron' already exist"
+      - "       To generate a new 'commons_cron' module delete the previous one."
+  when: commons_cron_path.stat.exists

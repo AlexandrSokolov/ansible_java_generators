@@ -1,0 +1,38 @@
+Cron service example:
+
+```
+public class Configuration {
+  ...
+  @PropertyKey("cron.expression")
+  Optional<String> cronExpression();
+}
+...
+import {{ group_id }}.commons.cron.CronService;
+import {{ group_id }}.config.Configuration;
+
+@Singleton
+@Startup
+public class ApplicationTimer {
+
+  static final String TIMER_NAME = "Custom Timer";
+
+  @Inject
+  Configuration configuration;
+
+  @Inject
+  CronService cronService;
+
+  @Inject
+  AppService service;
+
+  @PostConstruct
+  void createTimer() {
+    configuration.cronExpression().ifPresent(cronExpression ->
+      cronService.createTimer(
+        TIMER_NAME,
+        cronExpression,
+        () -> service.trigger()));
+  }
+
+}
+```

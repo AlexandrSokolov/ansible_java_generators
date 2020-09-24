@@ -1,5 +1,3 @@
-- domain, configuration beans.xml
-
 - cron-job module with rest endpoint
 - cron-job client generation
 
@@ -68,6 +66,7 @@ front_end_war/pom.xml
       </plugin>
 
 ```
+- JaxRsHandlerUtils docs, examples and tests
 - add dependency on bm nexus
 - rest-api tests
 - other tests

@@ -1,0 +1,15 @@
+---
+- name: "Add dependencies on 'commons_cron' module"
+  include_role:
+    name: insert_template_after_another
+  with_items:
+    - path: "{{ mvn_project_basedir }}/domain/pom.xml"
+      insert_after_template: "{{ role_path }}/templates/domain/deps/insert_after_template.j2"
+      insert_template: "{{ role_path }}/templates/domain/deps/insert_template.j2"
+
+- name: "Add cron service example to `domain` module"
+  include_role:
+    name: gen_java_class_from_template
+  with_items:
+    - src: domain/src/main/java/ApplicationTimer.java.j2
+      dst: "{{ mvn_project_basedir }}/domain/src/main/java/{{ group_id_path }}/cron/ApplicationTimer.java"
