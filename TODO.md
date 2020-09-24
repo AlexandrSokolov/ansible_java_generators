@@ -1,6 +1,3 @@
-- cron-job module with rest endpoint
-- cron-job client generation
-
 - testing per a single node
 - testing async invocation nature, how it works, different usecases
     todo add thread name into log
@@ -75,6 +72,7 @@ front_end_war/pom.xml
 - add different examples, script with --help options with different combinations
 - add base-tests
 - add SecurityDomainName with web.xml security constants
-
+- cron job exprression, add support of `?` with logging how it is changed
+- cron job expression validation on startup
 - todo add serializer, decerializers
 - jax rs client, add more documentation
