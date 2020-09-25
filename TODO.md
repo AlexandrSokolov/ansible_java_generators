@@ -14,7 +14,36 @@
 - rest-api tests
 - other tests
 - dataaccess mudule
+```
+#[[
+#### Requirements: 
+]]#
+- datasource configuration with `${jndiDatasourceName}` jndi name
+```
 - add react support to the war module
+```
+To skip React code build, run: `mvn clean package -P skip-react-build`
+**To skip React code build it is required at least once build it with one of the previous commands**
+`mvn clean package -P skip-react-build -DskipTests=true`
+
+...
+#### Dev issues: 
+
+##### React application development:
+
+The app must be built at least once with `mvn clean package`. 
+The `front_end_war/react` folder will be created.
+Then you can build and start react application:
+\`\`\`
+$ cd front_end_war/react
+$ npm start
+\`\`\`
+
+For React developer, json server is configured to run on `http://localhost:3500`, see `react/web_server`
+
+```
+
+
 - add different examples, script with --help options with different combinations
 - add base-tests
 - add SecurityDomainName with web.xml security constants

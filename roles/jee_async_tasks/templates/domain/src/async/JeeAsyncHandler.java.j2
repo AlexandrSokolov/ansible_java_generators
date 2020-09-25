@@ -1,5 +1,6 @@
 package {{ group_id }}.async;
 
+import java.util.Map;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Consumer;
@@ -14,6 +15,8 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.jboss.ejb3.annotation.TransactionTimeout;
 
+import com.google.common.collect.Maps;
+
 @Singleton
 public class JeeAsyncHandler {
 
@@ -22,31 +25,49 @@ public class JeeAsyncHandler {
   @Inject
   JeeAsyncInternalHelper asyncInternalHelper;
 
-  Future<Void> longJobFuture;
+  Map<String, Future<Void>> currentTasks = Maps.newConcurrentMap();
 
+  /**
+   *  This task does not allow to triger more than a single task in parallel.
+   * @param taskName - allows to run several tasks but only a single task of the certain name is run at parallel
+   * @param longJob
+   * @param itemFilter
+   * @param singleItemHandler
+   * @param resultConsumer
+   * @param <T>
+   * @param <R>
+   */
   @TransactionTimeout(value = 3, unit = TimeUnit.HOURS)
   public <T, R> void trigger(
+    final String taskName,
     final TriFunction<Supplier<Boolean>, Predicate<T>, Consumer<T>, R> longJob,
     final Predicate<T> itemFilter,
     final Consumer<T> singleItemHandler,
     final Consumer<R> resultConsumer) {
-    if (longJobFuture == null || longJobFuture.isDone()) {
-      logger.info("No async jobs in progress. Run a new long running job.");
-      longJobFuture = asyncInternalHelper.asyncTrigger(
-        longJob,
-        itemFilter,
-        singleItemHandler,
-        resultConsumer);
+    if (!currentTasks.containsKey(taskName)
+      || currentTasks.containsKey(taskName)
+      && currentTasks.get(taskName).isDone()) {
+      logger.info(String.format("`%s` async task is not in progress. Run a new one.", taskName));
+      currentTasks.put(
+        taskName,
+        asyncInternalHelper.asyncTrigger(
+          longJob,
+          itemFilter,
+          singleItemHandler,
+          resultConsumer));
     } else {
-      logger.info("Nothing is triggered. Async job is still in progress.");
+      logger.info(String.format("`%s` async task is still in progress. Nothing is triggered.", taskName));
     }
   }
 
   @PreDestroy
   void cancelJob() {
-    if (longJobFuture != null && !longJobFuture.isCancelled()) {
-      longJobFuture.cancel(true);
-    }
+    logger.info("Application is being undeployed. (`cancelJob` is invoked).");
+    currentTasks.values().parallelStream()
+      .filter(f -> !f.isCancelled())
+      .forEach(f -> f.cancel(true));
+    logger.info("Canceled async tasks during undeploy: "
+      + String.join(", ", currentTasks.keySet()));
   }
 
 }

@@ -18,3 +18,12 @@
     owner: "{{ lookup('env', 'USER') }}"
     group: "{{ lookup('env', 'USER') }}"
     force: yes
+
+- name: "Add `README.md` file"
+  template:
+    src: "README.md"
+    dest: "{{ mvn_project_basedir }}/README.md.j2"
+    mode: 0644
+    owner: "{{ lookup('env', 'USER') }}"
+    group: "{{ lookup('env', 'USER') }}"
+    force: yes

@@ -24,6 +24,7 @@ public class MyLongRunningServiceAsyncTrigger {
   @TransactionTimeout(value = 24, unit = TimeUnit.HOURS)
   public void trigger() {
     asyncHandler.trigger(
+      "my task name",
       myLongRunningServiceHandlersProvider::runVeryLongJobWithStatistics,
       myLongRunningServiceHandlersProvider::itemFilter,
       myLongRunningServiceHandlersProvider::itemHandler,
