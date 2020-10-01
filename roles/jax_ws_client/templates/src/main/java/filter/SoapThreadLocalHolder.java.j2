@@ -1,0 +1,27 @@
+package {{ group_id }}.commons.soap.filter;
+
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+public class SoapThreadLocalHolder {
+
+  static final String SOAP_DETAILS = "SOAPDetails";
+
+  private static final ThreadLocal<Map<String, List<String>>> THREAD_CONTEXT =
+    ThreadLocal.withInitial(HashMap::new);
+
+  static void addSoapDetails(List<String> soapDetails) {
+    THREAD_CONTEXT.get().put(SOAP_DETAILS, soapDetails);
+  }
+
+  public static List<String> getSoapDetails() {
+    return THREAD_CONTEXT.get() != null && THREAD_CONTEXT.get().containsKey(SOAP_DETAILS)
+      ? THREAD_CONTEXT.get().get(SOAP_DETAILS) : Collections.emptyList();
+  }
+
+  public static void cleanup() {
+    THREAD_CONTEXT.remove();
+  }
+}

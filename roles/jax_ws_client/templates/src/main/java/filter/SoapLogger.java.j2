@@ -1,0 +1,103 @@
+package {{ group_id }}.commons.soap.filter;
+
+import {{ group_id }}.commons.soap.SoapUtils;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
+import javax.xml.namespace.QName;
+import javax.xml.soap.SOAPMessage;
+import javax.xml.ws.handler.MessageContext;
+import javax.xml.ws.handler.soap.SOAPHandler;
+import javax.xml.ws.handler.soap.SOAPMessageContext;
+import java.io.ByteArrayOutputStream;
+import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Set;
+import java.util.TreeMap;
+import java.util.stream.Collectors;
+
+public class SoapLogger implements SOAPHandler<SOAPMessageContext> {
+
+  private static final Log logger = LogFactory.getLog(SoapLogger.class);
+
+  static String SOAP_ELEMENTS = "{{ group_id }}.commons.soap.elements";
+
+  @Override
+  public boolean handleMessage(SOAPMessageContext context) {
+
+    Boolean beforeRequest = (Boolean) context.get(MessageContext.MESSAGE_OUTBOUND_PROPERTY);
+    List<String> elements = extractFrom(context);
+    if (!beforeRequest) {
+      logger.debug(String.join("\n", elements));
+    }
+
+    return true;
+  }
+
+  @Override
+  public boolean handleFault(SOAPMessageContext context) {
+    Boolean beforeRequest = (Boolean) context.get(MessageContext.MESSAGE_OUTBOUND_PROPERTY);
+    List<String> elements = extractFrom(context);
+    if (!beforeRequest) {
+      logger.error(String.join("\n", elements));
+    }
+
+    return true;
+  }
+
+  @Override
+  public Set<QName> getHeaders() {
+    return new HashSet<>();
+  }
+
+  @Override
+  public void close(MessageContext ignored) {}
+
+  List<String> extractFrom(SOAPMessageContext context) {
+    Boolean beforeRequest = (Boolean) context.get(MessageContext.MESSAGE_OUTBOUND_PROPERTY);
+    if (beforeRequest) {
+      List<String> elements = new LinkedList<>();
+      elements.add("SOAP Request URL:");
+      elements.add((String) context.get(org.apache.cxf.message.Message.ENDPOINT_ADDRESS));
+      elements.addAll(
+        elements(context, "Request headers:", "Request body:"));
+      context.put(SOAP_ELEMENTS, elements);
+      return elements;
+    } else {
+      List<String> elements = (List<String>) context.get(SOAP_ELEMENTS);
+      elements.add("SOAP Response Code:");
+      elements.add(Integer.toString((Integer) context.get(org.apache.cxf.message.Message.RESPONSE_CODE)));
+      elements.addAll(
+        elements(context, "Response headers:", "Response body:"));
+      SoapThreadLocalHolder.addSoapDetails(elements);
+      return elements;
+    }
+  }
+
+  List<String> elements(
+    final SOAPMessageContext context,
+    final String headersPrefix,
+    final String bodyPrefix){
+    List<String> requestElements = new LinkedList<>();
+    requestElements.add(headersPrefix);
+    requestElements.addAll(((TreeMap<String, List<String>>)context.get(org.apache.cxf.message.Message.PROTOCOL_HEADERS))
+      .entrySet().stream().map(entry -> entry.getKey() + "->" + String.join(";", entry.getValue()))
+      .collect(Collectors.toList()));
+    requestElements.add(bodyPrefix);
+    requestElements.add(soapBody(context.getMessage()));
+    return requestElements;
+  }
+
+  String soapBody(SOAPMessage soapMessage){
+    ByteArrayOutputStream baos = new ByteArrayOutputStream(32_000);
+    try {
+      soapMessage.writeTo(baos);
+      String msgBody = baos.toString("UTF-8");
+      return SoapUtils.prettyString(msgBody, 2);
+    } catch (Exception e) {
+      throw new IllegalStateException(e);
+    }
+  }
+
+}

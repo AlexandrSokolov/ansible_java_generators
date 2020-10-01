@@ -1,5 +1,4 @@
-- testing async invocation nature, how it works, different usecases
-    todo add thread name into log
+- ability to run with a changed version
 - config usage for test purpose
 - jax rs config for test purpose generation
 

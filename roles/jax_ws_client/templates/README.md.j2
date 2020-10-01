@@ -1,0 +1,182 @@
+#### Prerequisites:
+1. Soap Port (also known as Interface, `@WebService`):
+
+   ```
+   @WebService(name = "SoapServicePort", targetNamespace = "http://host.com/webservices/soap/")
+   @XmlSeeAlso({
+       ObjectFactory.class
+   })
+   public interface SoapServicePort { ...}
+   ```
+2. Soap Service (`@WebServiceClient`):
+
+   ```
+   import javax.xml.ws.Service;   
+   
+   @WebServiceClient(name = "MySoapService", targetNamespace = "http://host.com/webservices/soap/", wsdlLocation = "file:/.../src/main/resources/META-INF/wsdl/soap.v1.wsdl")
+   public class MySoapService
+       extends Service
+   {
+       @WebEndpoint(name = "SoapServicePort")
+       public SoapServicePort getServicePort() {
+           return super.getPort(new QName("http://host.com/webservices/soap/", "SoapServicePort"), SoapServicePort.class);
+       }
+   ```
+3. You have generated soap classes. 
+
+   You can generate them from url or from a local wsdl file.
+   Here is an example how to use a `soap.v1.wsdl` local file
+
+    ```
+      <build>
+    
+        <plugins>
+    
+          <plugin>
+            <groupId>org.jvnet.jax-ws-commons</groupId>
+            <artifactId>jaxws-maven-plugin</artifactId>
+            <version>2.3</version>
+    
+            <dependencies>
+              <dependency>
+                <groupId>org.jvnet.jaxb2_commons</groupId>
+                <artifactId>jaxb2-fluent-api</artifactId>
+                <version>3.0</version>
+              </dependency>
+              <dependency>
+                <groupId>com.sun.xml.ws</groupId>
+                <artifactId>jaxws-tools</artifactId>
+                <version>2.3.0</version>
+              </dependency>
+            </dependencies>
+    
+            <executions>
+              <execution>
+                <id>mediapool-wsdl-exec</id>
+                <goals>
+                  <goal>wsimport</goal>
+                </goals>
+                <configuration>
+                  <packageName>{{ group_id }}.soap.generated</packageName>
+                  <xjcArgs>
+                    <xjcArg>-Xfluent-api</xjcArg>
+                  </xjcArgs>
+                  <verbose>true</verbose>
+                  <keep>true</keep> <!--used by default-->
+                  <sourceDestDir>${project.build.sourceDirectory}</sourceDestDir>
+                  <wsdlDirectory>src/main/resources/META-INF/wsdl</wsdlDirectory>
+                  <wsdlFiles>
+                    <wsdlFile>soap.v1.wsdl</wsdlFile>
+                  </wsdlFiles>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+    
+    ```
+
+4. Add Maven dependency on it:
+
+    ```
+        <dependency>
+          <groupId>{{ group_id }}</groupId>
+          <artifactId>{{ artifact_id }}-commons-jax-ws-client</artifactId>
+          <version>${project.version}</version>
+        </dependency>
+    ```
+
+5. You can create an instance of `SoapServicePort` as:
+
+   ```
+   public static final String SOAP_WSDL_URL = "/mp/?wsdl";
+   
+   SoapServicePort servicePort = SoapServiceConfig
+       .instance(() -> {
+         try {
+           return new MySoapService(
+             new URL("localhost:18080" + SOAP_WSDL_URL))
+             .getMediaPoolPort();
+         } catch (MalformedURLException e) {
+           throw new RuntimeException(e);
+         }
+       }, "localhost:18080")
+       .proxy();
+   ...
+   servicePort.someMethod();
+   ```
+
+#### Authentication
+
+Only basic authentication is supported now. You can set it as:
+```
+  SoapServicePort mpServicePort = SoapServiceConfig
+    .instance(...)
+    .basicAuth("user", "pwd")
+    .proxy();
+```
+
+#### Timeout setting
+
+By default timeout is set to 5 min. You can change this value by `timeOutInSeconds`:
+```
+  SoapServicePort mpServicePort = SoapServiceConfig
+    .instance(...)
+    .timeOutInSeconds(500)
+    .proxy();
+```
+
+#### File uploading
+
+1. You can upload a file to the server from external URL
+
+    ```
+      SoapFileUploadServicePort soapFileUploadServicePort = SoapServiceConfig
+        .instance4FileUploading(...)
+        .proxy();
+    
+    import javax.activation.DataHandler;
+    import org.apache.cxf.attachment.AttachmentDataSource;
+    
+      public UploadResult uploadFileFromUrl(
+        final String fileName,
+        final String url) {
+        try {
+          final InputStream is = new URL(url).openStream();
+          //TODO validate link (without downloading it)
+          DataHandler dataHandler = new DataHandler(new AttachmentDataSource(fileName, is));
+          return soapFileUploadServicePort
+            .uploadAsStream(fileName, dataHandler);
+        } catch (IOException e) {
+          throw logErrorAndRethrow(
+            "Could not create data handler from url: " + url + ". Reason: " + e.getMessage());
+        }
+      }
+    ```
+
+2. From a local file:
+
+    ```
+    import javax.activation.DataHandler;
+    import javax.activation.FileDataSource;
+    
+      public UploadResult uploadFile(
+        final String fullFilePath) {
+          File file = new File(fullFilePath);
+          //todo validate file
+          DataHandler dataHandler = new DataHandler(new FileDataSource(file));
+          return soapFileUploadServicePort
+            .uploadAsStream(file.getName(), dataHandler);
+      }
+    ```
+
+#### Chunking
+
+By default `allowChunking` is enabled. You can disable it by creating config as:
+```
+  SoapServicePort mpServicePort = SoapServiceConfig
+    .instance(...)
+    .disableChunking()
+    .proxy();
+```

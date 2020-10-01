@@ -1,0 +1,43 @@
+package {{ group_id }}.commons.soap;
+
+import {{ group_id }}.commons.soap.filter.SoapThreadLocalHolder;
+
+import java.io.StringReader;
+import java.io.StringWriter;
+import java.util.List;
+
+import javax.xml.transform.OutputKeys;
+import javax.xml.transform.Source;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerException;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.stream.StreamResult;
+import javax.xml.transform.stream.StreamSource;
+
+public class SoapUtils {
+
+  public static List<String> getSoapDetails() {
+    return SoapThreadLocalHolder.getSoapDetails();
+  }
+
+  public static String prettyString(String xmlData, int indent) {
+    try {
+      TransformerFactory transformerFactory = TransformerFactory.newInstance();
+      transformerFactory.setAttribute("indent-number", indent);
+
+      Transformer transformer = transformerFactory.newTransformer();
+      transformer.setOutputProperty(OutputKeys.INDENT, "yes");
+
+      StringWriter stringWriter = new StringWriter();
+      StreamResult xmlOutput = new StreamResult(stringWriter);
+
+      Source xmlInput = new StreamSource(new StringReader(xmlData));
+      transformer.transform(xmlInput, xmlOutput);
+
+      return xmlOutput.getWriter().toString();
+    } catch (TransformerException e) {
+      throw new IllegalStateException(e);
+    }
+  }
+
+}

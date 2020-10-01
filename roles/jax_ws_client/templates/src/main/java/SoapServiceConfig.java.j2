@@ -1,0 +1,189 @@
+package {{ group_id }}.commons.soap;
+
+import {{ group_id }}.commons.soap.filter.SoapLogger;
+import {{ group_id }}.commons.soap.filter.SoapThreadLocalHolder;
+
+import org.apache.commons.lang3.StringUtils;
+import org.apache.cxf.frontend.ClientProxy;
+import org.apache.cxf.service.factory.ServiceConstructionException;
+import org.apache.cxf.transport.http.HTTPConduit;
+import org.apache.cxf.transports.http.configuration.HTTPClientPolicy;
+
+import javax.wsdl.WSDLException;
+import javax.xml.ws.BindingProvider;
+import javax.xml.ws.WebServiceException;
+import javax.xml.ws.handler.Handler;
+import javax.xml.ws.soap.SOAPBinding;
+import java.net.MalformedURLException;
+import java.net.UnknownHostException;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.TimeUnit;
+import java.util.function.Supplier;
+
+public class SoapServiceConfig<T>  {
+
+  //timeout until a connection is established
+  static final String CONNECTION_TIMEOUT_PROP = "javax.xml.ws.client.connectionTimeout";
+  //timeout until the response is received
+  static final String RECEIVE_TIMEOUT_PROP = "javax.xml.ws.client.receiveTimeout";
+
+  private static final long LONG_REQUEST_TIMEOUT = TimeUnit.MINUTES.toSeconds(10);
+
+  public static <T> SoapServiceConfig<T> instance(
+    final Supplier<T> soapProxySupplier,
+    final String host){
+    return new SoapServiceConfig<>(soapProxySupplier, host);
+  }
+
+  /**
+   * Used to create soap port, configured for uploading a file
+   *    via URL or via File object
+   *
+   * It enables `mtom` and increases a timeout value to 10 minutes
+   *
+   * @param soapProxySupplier
+   * @param host
+   * @param <T>
+   * @return
+   */
+  public static <T> SoapServiceConfig<T> instance4FileUploading(
+    final Supplier<T> soapProxySupplier,
+    final String host){
+    return new SoapServiceConfig<>(soapProxySupplier, host)
+      .mtomEnabled()
+      .timeOutInSeconds(LONG_REQUEST_TIMEOUT);
+  }
+
+  final private Supplier<T> soapProxySupplier;
+  final String host;
+
+  String login;
+  String password;
+
+  private boolean mtomEnabled;
+
+  private boolean allowChunking = true;
+  private long timeOutInSeconds = TimeUnit.MINUTES.toSeconds(5);
+
+  private SoapServiceConfig(
+    final Supplier<T> soapProxySupplier,
+    final String host) {
+    this.soapProxySupplier = soapProxySupplier;
+    this.host = host;
+  }
+
+  public T proxy(){
+    try {
+      T soapPort = soapProxySupplier.get();
+      if (soapPort instanceof BindingProvider) {
+        BindingProvider bindingProvider = (BindingProvider) soapPort;
+
+        List<Handler> handlerChain = bindingProvider.getBinding().getHandlerChain();
+        handlerChain.add(new SoapLogger());
+        //the next call must be invoked, othwerise SoapLogger is not triggered.
+        //it is not enough only add a handler to the handler chain list.
+        bindingProvider.getBinding().setHandlerChain(handlerChain);
+
+        final Map<String, Object> requestContext =
+          bindingProvider.getRequestContext();
+
+        if (!StringUtils.isEmpty(login)) {
+          requestContext.put(BindingProvider.USERNAME_PROPERTY, login);
+        }
+        if (!StringUtils.isEmpty(password)) {
+          requestContext.put(BindingProvider.PASSWORD_PROPERTY, password);
+        }
+
+        if (timeOutInSeconds != 0L){
+          requestContext.put(CONNECTION_TIMEOUT_PROP, TimeUnit.SECONDS.toMillis(timeOutInSeconds));
+          requestContext.put(RECEIVE_TIMEOUT_PROP, TimeUnit.SECONDS.toMillis(timeOutInSeconds));
+        }
+
+        if (mtomEnabled){
+          ((SOAPBinding) bindingProvider.getBinding()).setMTOMEnabled(true);
+          requestContext.put("mtom-enabled", Boolean.TRUE);
+        }
+        if (allowChunking) {
+          final HTTPClientPolicy httpClientPolicy = new HTTPClientPolicy();
+          httpClientPolicy.setAllowChunking(allowChunking);
+          final HTTPConduit httpConduit =
+            (HTTPConduit) ClientProxy.getClient(soapPort).getConduit();
+          httpConduit.setClient(httpClientPolicy);
+        }
+        return soapPort;
+      } else {
+        throw new IllegalStateException("Wrong API  usage. Cannot cast " + soapProxySupplier.get().getClass()
+          + " to " + BindingProvider.class.getName());
+      }
+    } catch (Exception e) {
+      throw soapExceptionHandler(this.host, e);
+    }
+
+  }
+
+  public SoapServiceConfig<T> basicAuth(
+    final String login,
+    final String password) {
+
+    this.login = login;
+    this.password = password;
+
+    return this;
+  }
+
+  public SoapServiceConfig<T> timeOutInSeconds(final long timeOutInSeconds){
+    this.timeOutInSeconds = timeOutInSeconds;
+    return this;
+  }
+
+  public SoapServiceConfig<T> disableChunking(){
+    this.allowChunking = false;
+    return this;
+  }
+
+  public SoapServiceConfig<T> mtomEnabled(){
+    this.mtomEnabled = true;
+    return this;
+  }
+
+  private IllegalStateException soapExceptionHandler(
+    final String wsdlUrl,
+    final Exception e){
+    if (e instanceof MalformedURLException) {
+      return new IllegalStateException("Wrong url: " + e.getMessage());
+    }
+    //to meet findbug we avoid exception cause check that looks like:
+    //if e.getCause != null && e.getCause instanceof SomeClass
+    //find bugs shows false positive BC_UNCONFIRMED_CAST_OF_RETURN_VALUE
+    if (e instanceof WebServiceException
+      && e.getCause() != null) {
+      Throwable cause = e.getCause();
+      if (cause instanceof ServiceConstructionException) {
+        ServiceConstructionException sce = (ServiceConstructionException) cause;
+        if (sce.getCause() != null) {
+          Throwable sceCause = sce.getCause();
+          if (sceCause instanceof WSDLException) {
+            WSDLException wsdlException = (WSDLException) sceCause;
+            if (wsdlException.getCause() == null) {
+              return new IllegalStateException("Make sure wsdl definition at: " + wsdlUrl + " is correct. " +
+                "Original error: " + wsdlException.getMessage());
+            }
+            if (wsdlException.getCause() != null) {
+              Throwable wsdlCause = wsdlException.getCause();
+              if (wsdlCause instanceof UnknownHostException) {
+                UnknownHostException unknownHostException = (UnknownHostException) wsdlCause;
+                return new IllegalStateException("Unknown host: " + unknownHostException.getMessage());
+              }
+            }
+          }
+        }
+      }
+    }
+    return new IllegalStateException("Could not create instance of SOAP Service", e);
+  }
+
+  public static List<String> soapDetails(){
+    return SoapThreadLocalHolder.getSoapDetails();
+  }
+}
