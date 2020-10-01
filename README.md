@@ -36,16 +36,20 @@
 
   Run: `javaAddCommonsJaxRsClient.sh` 
   
-#### 5 JEE Async support for long running jobs
+#### 5 Add Jax WS (soap) client support  
+
+  Run: `javaAddCommonsJaxWsSoapClient.sh`   
+  
+#### 6 JEE Async support for long running jobs
 
   Run: `javaAddJeeAsyncSupport.sh`
   
-#### 6 Add authentication support
+#### 7 Add authentication support
 
   Run: `javaAddProjectAuthentication.sh`
   In the output you'll find an actual information about expected parameters.
   
-#### 7 Add deployment support
+#### 8 Add deployment support
   
   Run: `javaMavenDeploymentSupport.sh`
   In the output you'll find an actual information about expected parameters.
