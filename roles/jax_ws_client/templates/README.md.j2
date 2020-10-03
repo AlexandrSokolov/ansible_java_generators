@@ -144,6 +144,16 @@
         .proxy();
      ```
 
+6. Exclude `{{ group_id }}.soap.generated` packge from FindBug analyses:
+
+    In `findbugs-exclude.xml` file add:
+
+    ```
+      <Match>
+        <Package name="{{ group_id }}.soap.generated"/>
+      </Match>
+    ```
+
 #### Logging:
 
 For debug purpose,
