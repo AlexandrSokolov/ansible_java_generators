@@ -13,7 +13,7 @@
    ```
    import javax.xml.ws.Service;   
    
-   @WebServiceClient(name = "MySoapService", targetNamespace = "http://host.com/webservices/soap/", wsdlLocation = "file:/.../src/main/resources/META-INF/wsdl/soap.v1.wsdl")
+   @WebServiceClient(name = "MySoapService", targetNamespace = "http://host.com/webservices/soap/", wsdlLocation = "META-INF/wsdl/soap.v1.wsdl")
    public class MySoapService
        extends Service
    {
@@ -33,9 +33,10 @@
         <plugins>
 
           <plugin>
-            <groupId>org.jvnet.jax-ws-commons</groupId>
+            <!-- https://mvnrepository.com/artifact/org.codehaus.mojo/jaxws-maven-plugin -->
+            <groupId>org.codehaus.mojo</groupId>
             <artifactId>jaxws-maven-plugin</artifactId>
-            <version>2.3</version>
+            <version>2.6</version>
 
             <dependencies>
               <dependency>
@@ -52,7 +53,7 @@
 
             <executions>
               <execution>
-                <id>mediapool-wsdl-exec</id>
+                <id>your-soap-wsdl-exec</id>
                 <goals>
                   <goal>wsimport</goal>
                 </goals>
@@ -68,6 +69,7 @@
                   <wsdlFiles>
                     <wsdlFile>soap.v1.wsdl</wsdlFile>
                   </wsdlFiles>
+                  <wsdlLocation>META-INF/wsdl/soap.v1.wsdl</wsdlLocation>
                 </configuration>
               </execution>
             </executions>
@@ -76,6 +78,12 @@
       </build>
 
     ```
+
+    **Note:**
+
+    Not all plugins allow to use wsdl from the class path resources
+    which is not flexible and has some issues.
+    The plugin in this configuration allows to do that.
 
 4. Add Maven dependency:
 
@@ -97,6 +105,45 @@
            .wsdlUrl("someRemoteHost:8080" + SOAP_WSDL_URL)
            .proxy();
     ```
+
+    **Notes**:
+
+    5.1. This works only if your wsdl is taken from inside classpath:
+
+      ```
+      @WebServiceClient(name = "MySoapService", ..., wsdlLocation = "META-INF/wsdl/soap.v1.wsdl")
+      ```
+      But not from a local file path:
+      ```
+      @WebServiceClient(name = "MySoapService", ..., wsdlLocation = "file:/.../src/main/resources/META-INF/wsdl/soap.v1.wsdl")
+      ```
+      Actually it depends on the way how you configure it. The following plugin allows to use file from resources:
+      ```
+      <plugin>
+        <!-- https://mvnrepository.com/artifact/org.codehaus.mojo/jaxws-maven-plugin -->
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>jaxws-maven-plugin</artifactId>
+        <version>2.6</version>
+      ```
+
+    5.2 If wsdl is generated from a local file, the only option to specify correctly remote system:
+
+      ```
+      public static final String SOAP_WSDL_URL = "/mp/?wsdl";
+
+      SoapServicePort servicePort = SoapServiceConfig
+        .instance(() -> {
+          try {
+            return new MySoapService(
+              new URL("someRemoteHost:8080" + SOAP_WSDL_URL))
+              .getMediaPoolPort();
+          } catch (MalformedURLException e) {
+            throw new RuntimeException(e);
+          }
+        })
+        .proxy();
+     ```
+
 #### Logging:
 
 For debug purpose,
@@ -135,7 +182,7 @@ import static {{ group_id }}.commons.soap.SoapUtils;
 
 #### Domain/host location
 
-By default, the service address is taken from wsdl file:
+By default, the service address is taken from wsdl file, see `some.server.com:18080`:
 ```
 <wsdl:service name="YourSoapService">
   <wsdl:port binding="tns:YourSoapServiceBinding" name="YourSoapPort">
@@ -144,7 +191,8 @@ By default, the service address is taken from wsdl file:
 </wsdl:service>
 ```
 If you:
- - generate SOAP classes from a local wsdl file and
+ - generate SOAP classes from a wsdl file available via class path resources:
+    `@WebServiceClient(... wsdlLocation = "META-INF/wsdl/soap.v1.wsdl")`
  - create Soap Port/Interface without setting of wsdl url, like:
     ```
        SoapServicePort servicePort = SoapServiceConfig
@@ -154,7 +202,15 @@ If you:
 The `soap:address location` value from this local wsdl will be used,
 which might be not correct. You have 2 solutions:
 
-1. Set a remote wsdl when service is created:
+1. Set a remote wsdl via `wsdlUrl`:
+    ```
+       SoapServicePort servicePort = SoapServiceConfig
+           .instance(() -> new MySoapService().getMediaPoolPort())
+           .wsdlUrl("someRemoteHost:8080" + SOAP_WSDL_URL)
+           .proxy();
+    ```
+
+2. Set a remote wsdl when service is created:
 
    ```
    public static final String SOAP_WSDL_URL = "/mp/?wsdl";
@@ -171,13 +227,27 @@ which might be not correct. You have 2 solutions:
        })
        .proxy();
    ```
-2. Set a remote wsdl via `wsdlUrl`:
-    ```
-       SoapServicePort servicePort = SoapServiceConfig
-           .instance(() -> new MySoapService().getMediaPoolPort())
-           .wsdlUrl("someRemoteHost:8080" + SOAP_WSDL_URL)
-           .proxy();
-    ```
+If a wsdl file is used from a local file path, but not from class path resources:
+
+`@WebServiceClient(... wsdlLocation = "file:/.../src/main/resources/META-INF/wsdl/soap.v1.wsdl")`
+
+The only option to set the correct address:
+   ```
+   public static final String SOAP_WSDL_URL = "/mp/?wsdl";
+
+   SoapServicePort servicePort = SoapServiceConfig
+       .instance(() -> {
+         try {
+           return new MySoapService(
+             new URL("someRemoteHost:8080" + SOAP_WSDL_URL))
+             .getMediaPoolPort();
+         } catch (MalformedURLException e) {
+           throw new RuntimeException(e);
+         }
+       })
+       .proxy();
+   ```
+
 
 #### Authentication
 
