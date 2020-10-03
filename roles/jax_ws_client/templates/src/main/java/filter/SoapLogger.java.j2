@@ -1,15 +1,8 @@
 package {{ group_id }}.commons.soap.filter;
 
-import {{ group_id }}.commons.soap.SoapUtils;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-
-import javax.xml.namespace.QName;
-import javax.xml.soap.SOAPMessage;
-import javax.xml.ws.handler.MessageContext;
-import javax.xml.ws.handler.soap.SOAPHandler;
-import javax.xml.ws.handler.soap.SOAPMessageContext;
 import java.io.ByteArrayOutputStream;
+import java.io.StringReader;
+import java.io.StringWriter;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
@@ -17,19 +10,34 @@ import java.util.Set;
 import java.util.TreeMap;
 import java.util.stream.Collectors;
 
+import javax.xml.namespace.QName;
+import javax.xml.soap.SOAPMessage;
+import javax.xml.transform.OutputKeys;
+import javax.xml.transform.Source;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerException;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.stream.StreamResult;
+import javax.xml.transform.stream.StreamSource;
+import javax.xml.ws.handler.MessageContext;
+import javax.xml.ws.handler.soap.SOAPHandler;
+import javax.xml.ws.handler.soap.SOAPMessageContext;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
 public class SoapLogger implements SOAPHandler<SOAPMessageContext> {
 
   private static final Log logger = LogFactory.getLog(SoapLogger.class);
 
-  static String SOAP_ELEMENTS = "{{ group_id }}.commons.soap.elements";
-
   @Override
   public boolean handleMessage(SOAPMessageContext context) {
 
-    Boolean beforeRequest = (Boolean) context.get(MessageContext.MESSAGE_OUTBOUND_PROPERTY);
-    List<String> elements = extractFrom(context);
-    if (!beforeRequest) {
-      logger.debug(String.join("\n", elements));
+    //run it anyway, even if debug mode is not enabled
+    List<String> details = handleMessageAndGetDetails(context);
+
+    if (logger.isDebugEnabled()) {
+      logger.debug(String.join("\n", details));
     }
 
     return true;
@@ -37,11 +45,11 @@ public class SoapLogger implements SOAPHandler<SOAPMessageContext> {
 
   @Override
   public boolean handleFault(SOAPMessageContext context) {
-    Boolean beforeRequest = (Boolean) context.get(MessageContext.MESSAGE_OUTBOUND_PROPERTY);
-    List<String> elements = extractFrom(context);
-    if (!beforeRequest) {
-      logger.error(String.join("\n", elements));
-    }
+
+    handleMessageAndGetDetails(context);
+
+    logger.error(String.join("\n",
+      SoapThreadLocalHolder.getSoapDetails()));
 
     return true;
   }
@@ -54,48 +62,89 @@ public class SoapLogger implements SOAPHandler<SOAPMessageContext> {
   @Override
   public void close(MessageContext ignored) {}
 
-  List<String> extractFrom(SOAPMessageContext context) {
-    Boolean beforeRequest = (Boolean) context.get(MessageContext.MESSAGE_OUTBOUND_PROPERTY);
-    if (beforeRequest) {
+  private List<String> handleMessageAndGetDetails(SOAPMessageContext context) {
+    boolean isRequest = (Boolean) context.get(MessageContext.MESSAGE_OUTBOUND_PROPERTY);
+    if (isRequest) {
+      List<String> details = extractRequestDetails(context);
+      SoapThreadLocalHolder.storeSoapRequestDetails(details);
+      return details;
+    } else {
+      List<String> details = extractResponseDetails(context);
+      SoapThreadLocalHolder.storeSoapResponseDetails(details);
+      return details;
+    }
+  }
+
+  private List<String> extractRequestDetails(SOAPMessageContext context) {
+    boolean isRequest = (Boolean) context.get(MessageContext.MESSAGE_OUTBOUND_PROPERTY);
+    if (isRequest) {
       List<String> elements = new LinkedList<>();
       elements.add("SOAP Request URL:");
       elements.add((String) context.get(org.apache.cxf.message.Message.ENDPOINT_ADDRESS));
       elements.addAll(
         elements(context, "Request headers:", "Request body:"));
-      context.put(SOAP_ELEMENTS, elements);
+      //context.put(SOAP_ELEMENTS, elements);
       return elements;
     } else {
-      List<String> elements = (List<String>) context.get(SOAP_ELEMENTS);
+      throw new IllegalStateException("Wrong API usage: The soap message is a response but not a request");
+    }
+  }
+
+  private List<String> extractResponseDetails(SOAPMessageContext context) {
+    boolean isResponse = ! (Boolean) context.get(MessageContext.MESSAGE_OUTBOUND_PROPERTY);
+    if (isResponse) {
+      List<String> elements = new LinkedList<>();
       elements.add("SOAP Response Code:");
       elements.add(Integer.toString((Integer) context.get(org.apache.cxf.message.Message.RESPONSE_CODE)));
       elements.addAll(
         elements(context, "Response headers:", "Response body:"));
-      SoapThreadLocalHolder.addSoapDetails(elements);
       return elements;
+    } else {
+      throw new IllegalStateException("Wrong API usage: The soap message is a request but not a response");
     }
   }
 
-  List<String> elements(
+  private List<String> elements(
     final SOAPMessageContext context,
     final String headersPrefix,
     final String bodyPrefix){
     List<String> requestElements = new LinkedList<>();
     requestElements.add(headersPrefix);
     requestElements.addAll(((TreeMap<String, List<String>>)context.get(org.apache.cxf.message.Message.PROTOCOL_HEADERS))
-      .entrySet().stream().map(entry -> entry.getKey() + "->" + String.join(";", entry.getValue()))
+      .entrySet().stream().map(entry -> entry.getKey() + " -> " + String.join(";", entry.getValue()))
       .collect(Collectors.toList()));
     requestElements.add(bodyPrefix);
     requestElements.add(soapBody(context.getMessage()));
     return requestElements;
   }
 
-  String soapBody(SOAPMessage soapMessage){
+  private String soapBody(SOAPMessage soapMessage){
     ByteArrayOutputStream baos = new ByteArrayOutputStream(32_000);
     try {
       soapMessage.writeTo(baos);
       String msgBody = baos.toString("UTF-8");
-      return SoapUtils.prettyString(msgBody, 2);
+      return prettyString(msgBody, 2);
     } catch (Exception e) {
+      throw new IllegalStateException(e);
+    }
+  }
+
+  private String prettyString(String xmlData, int indent) {
+    try {
+      TransformerFactory transformerFactory = TransformerFactory.newInstance();
+      transformerFactory.setAttribute("indent-number", indent);
+
+      Transformer transformer = transformerFactory.newTransformer();
+      transformer.setOutputProperty(OutputKeys.INDENT, "yes");
+
+      StringWriter stringWriter = new StringWriter();
+      StreamResult xmlOutput = new StreamResult(stringWriter);
+
+      Source xmlInput = new StreamSource(new StringReader(xmlData));
+      transformer.transform(xmlInput, xmlOutput);
+
+      return xmlOutput.getWriter().toString();
+    } catch (TransformerException e) {
       throw new IllegalStateException(e);
     }
   }

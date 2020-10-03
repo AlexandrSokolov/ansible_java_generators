@@ -1,0 +1,44 @@
+package {{ group_id }}.commons.soap.filter;
+
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
+
+import javax.xml.namespace.QName;
+import javax.xml.ws.handler.MessageContext;
+import javax.xml.ws.handler.soap.SOAPHandler;
+import javax.xml.ws.handler.soap.SOAPMessageContext;
+
+import org.apache.cxf.message.Message;
+
+public class SoapActionRemoval implements SOAPHandler<SOAPMessageContext> {
+
+  private static final String SOAP_ACTION_HEADER = "SOAPAction";
+
+  @Override
+  public boolean handleMessage(SOAPMessageContext soapMessageContext) {
+
+    boolean isRequest = (Boolean) soapMessageContext.get(MessageContext.MESSAGE_OUTBOUND_PROPERTY);
+
+    // remove empty `SOAPAction` header if present
+    if (isRequest
+      && soapMessageContext.get(Message.PROTOCOL_HEADERS) != null) {
+      ((Map)soapMessageContext.get(Message.PROTOCOL_HEADERS)).remove(SOAP_ACTION_HEADER);
+    }
+
+    return true;
+  }
+
+  @Override
+  public boolean handleFault(SOAPMessageContext soapMessageContext) {
+    return true;
+  }
+
+  @Override
+  public Set<QName> getHeaders() {
+    return new HashSet<>();
+  }
+
+  @Override
+  public void close(MessageContext ignored) {}
+}

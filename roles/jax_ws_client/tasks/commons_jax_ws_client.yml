@@ -40,6 +40,8 @@
   with_items:
     - src: src/main/java/filter/SoapLogger.java.j2
       dst: "{{ mvn_project_basedir }}/commons_jax_ws_client/src/main/java/{{ group_id_path }}/commons/soap/filter/SoapLogger.java"
+    - src: src/main/java/filter/SoapActionRemoval.java.j2
+      dst: "{{ mvn_project_basedir }}/commons_jax_ws_client/src/main/java/{{ group_id_path }}/commons/soap/filter/SoapActionRemoval.java"
     - src: src/main/java/filter/SoapThreadLocalHolder.java.j2
       dst: "{{ mvn_project_basedir }}/commons_jax_ws_client/src/main/java/{{ group_id_path }}/commons/soap/filter/SoapThreadLocalHolder.java"
     - src: src/main/java/SoapServiceConfig.java.j2

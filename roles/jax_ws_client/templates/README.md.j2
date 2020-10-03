@@ -25,18 +25,18 @@
 3. You have generated soap classes. 
 
    You can generate them from url or from a local wsdl file.
-   Here is an example how to use a `soap.v1.wsdl` local file
+   Here is an example how to use a `soap.v1.wsdl` local file.
 
     ```
       <build>
-    
+
         <plugins>
-    
+
           <plugin>
             <groupId>org.jvnet.jax-ws-commons</groupId>
             <artifactId>jaxws-maven-plugin</artifactId>
             <version>2.3</version>
-    
+
             <dependencies>
               <dependency>
                 <groupId>org.jvnet.jaxb2_commons</groupId>
@@ -49,7 +49,7 @@
                 <version>2.3.0</version>
               </dependency>
             </dependencies>
-    
+
             <executions>
               <execution>
                 <id>mediapool-wsdl-exec</id>
@@ -74,10 +74,10 @@
           </plugin>
         </plugins>
       </build>
-    
+
     ```
 
-4. Add Maven dependency on it:
+4. Add Maven dependency:
 
     ```
         <dependency>
@@ -87,25 +87,97 @@
         </dependency>
     ```
 
-5. You can create an instance of `SoapServicePort` as:
+5. Create an instance of `SoapServicePort`:
+
+    ```
+       public static final String SOAP_WSDL_URL = "/mp/?wsdl";
+
+       SoapServicePort servicePort = SoapServiceConfig
+           .instance(() -> new MySoapService().getMediaPoolPort())
+           .wsdlUrl("someRemoteHost:8080" + SOAP_WSDL_URL)
+           .proxy();
+    ```
+#### Logging:
+
+For debug purpose,
+enable debug level for `{{ group_id }}.commons.soap.filter` package.
+
+In tests you can enable it as:
+```
+  @BeforeClass
+  public static void init() {
+    System.setProperty("org.apache.commons.logging.Log", "org.apache.commons.logging.impl.SimpleLog");
+    System.setProperty("org.apache.commons.logging.simplelog.log.{{ group_id }}.commons.soap.filter", "DEBUG");
+  }
+```
+You can also use a default debug option:
+```
+  @BeforeClass
+  public static void init() {
+    //set logging to console, see https://stackoverflow.com/questions/1945618/tracing-xml-request-responses-with-jax-ws
+    System.setProperty("com.sun.xml.ws.transport.http.client.HttpTransportPipe.dump", "true");
+    System.setProperty("com.sun.xml.internal.ws.transport.http.client.HttpTransportPipe.dump", "true");
+    System.setProperty("com.sun.xml.ws.transport.http.HttpAdapter.dump", "true");
+    System.setProperty("com.sun.xml.internal.ws.transport.http.HttpAdapter.dump", "true");
+    System.setProperty("com.sun.xml.internal.ws.transport.http.HttpAdapter.dumpTreshold", "999999");
+  }
+```
+
+#### Handle SOAP exceptions
+
+```
+import static {{ group_id }}.commons.soap.SoapUtils;
+
+} catch (Exception e) {
+  log.error(String.join("\n", SoapUtils.getLastSoapCallDetails());
+}
+```
+
+#### Domain/host location
+
+By default, the service address is taken from wsdl file:
+```
+<wsdl:service name="YourSoapService">
+  <wsdl:port binding="tns:YourSoapServiceBinding" name="YourSoapPort">
+    <soap:address location="http://some.server.com:18080/webservices/dse/v2/"/>
+  </wsdl:port>
+</wsdl:service>
+```
+If you:
+ - generate SOAP classes from a local wsdl file and
+ - create Soap Port/Interface without setting of wsdl url, like:
+    ```
+       SoapServicePort servicePort = SoapServiceConfig
+           .instance(() -> new MySoapService().getMediaPoolPort())
+           .proxy();
+    ```
+The `soap:address location` value from this local wsdl will be used,
+which might be not correct. You have 2 solutions:
+
+1. Set a remote wsdl when service is created:
 
    ```
    public static final String SOAP_WSDL_URL = "/mp/?wsdl";
-   
+
    SoapServicePort servicePort = SoapServiceConfig
        .instance(() -> {
          try {
            return new MySoapService(
-             new URL("localhost:18080" + SOAP_WSDL_URL))
+             new URL("someRemoteHost:8080" + SOAP_WSDL_URL))
              .getMediaPoolPort();
          } catch (MalformedURLException e) {
            throw new RuntimeException(e);
          }
-       }, "localhost:18080")
+       })
        .proxy();
-   ...
-   servicePort.someMethod();
    ```
+2. Set a remote wsdl via `wsdlUrl`:
+    ```
+       SoapServicePort servicePort = SoapServiceConfig
+           .instance(() -> new MySoapService().getMediaPoolPort())
+           .wsdlUrl("someRemoteHost:8080" + SOAP_WSDL_URL)
+           .proxy();
+    ```
 
 #### Authentication
 

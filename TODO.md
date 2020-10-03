@@ -1,3 +1,4 @@
+- avoid using ansible file with variables, try to read them from pom.xml
 - ability to run with a changed version
 - config usage for test purpose
 - jax rs config for test purpose generation

@@ -2,23 +2,40 @@ package {{ group_id }}.commons.soap.filter;
 
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
 public class SoapThreadLocalHolder {
 
-  static final String SOAP_DETAILS = "SOAPDetails";
+  static final String SOAP_REQUEST_DETAILS = "SOAP_Request_Details";
+  static final String SOAP_RESPONSE_DETAILS = "SOAP_Response_Details";
 
   private static final ThreadLocal<Map<String, List<String>>> THREAD_CONTEXT =
     ThreadLocal.withInitial(HashMap::new);
 
-  static void addSoapDetails(List<String> soapDetails) {
-    THREAD_CONTEXT.get().put(SOAP_DETAILS, soapDetails);
+  static void storeSoapRequestDetails(List<String> soapDetails) {
+    THREAD_CONTEXT.get().put(SOAP_REQUEST_DETAILS, soapDetails);
+  }
+
+  static void storeSoapResponseDetails(List<String> soapDetails) {
+    THREAD_CONTEXT.get().put(SOAP_RESPONSE_DETAILS, soapDetails);
   }
 
   public static List<String> getSoapDetails() {
-    return THREAD_CONTEXT.get() != null && THREAD_CONTEXT.get().containsKey(SOAP_DETAILS)
-      ? THREAD_CONTEXT.get().get(SOAP_DETAILS) : Collections.emptyList();
+    if (THREAD_CONTEXT.get() != null) {
+      List<String> soapDetails = new LinkedList<>();
+
+      if (THREAD_CONTEXT.get().containsKey(SOAP_REQUEST_DETAILS)) {
+        soapDetails.addAll(THREAD_CONTEXT.get().get(SOAP_REQUEST_DETAILS));
+      }
+      if (THREAD_CONTEXT.get().containsKey(SOAP_RESPONSE_DETAILS)) {
+        soapDetails.addAll(THREAD_CONTEXT.get().get(SOAP_RESPONSE_DETAILS));
+      }
+      return soapDetails;
+    } else {
+      return Collections.emptyList();
+    }
   }
 
   public static void cleanup() {

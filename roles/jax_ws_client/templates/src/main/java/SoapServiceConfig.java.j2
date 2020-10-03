@@ -31,9 +31,8 @@ public class SoapServiceConfig<T>  {
   private static final long LONG_REQUEST_TIMEOUT = TimeUnit.MINUTES.toSeconds(10);
 
   public static <T> SoapServiceConfig<T> instance(
-    final Supplier<T> soapProxySupplier,
-    final String host){
-    return new SoapServiceConfig<>(soapProxySupplier, host);
+    final Supplier<T> soapProxySupplier){
+    return new SoapServiceConfig<>(soapProxySupplier);
   }
 
   /**
@@ -43,34 +42,33 @@ public class SoapServiceConfig<T>  {
    * It enables `mtom` and increases a timeout value to 10 minutes
    *
    * @param soapProxySupplier
-   * @param host
    * @param <T>
    * @return
    */
   public static <T> SoapServiceConfig<T> instance4FileUploading(
-    final Supplier<T> soapProxySupplier,
-    final String host){
-    return new SoapServiceConfig<>(soapProxySupplier, host)
+    final Supplier<T> soapProxySupplier){
+    return new SoapServiceConfig<>(soapProxySupplier)
       .mtomEnabled()
       .timeOutInSeconds(LONG_REQUEST_TIMEOUT);
   }
 
   final private Supplier<T> soapProxySupplier;
-  final String host;
 
-  String login;
-  String password;
+  private long timeOutInSeconds = TimeUnit.MINUTES.toSeconds(5);
+
+  private String wsdlUrl;
+
+  private String login;
+
+  private String password;
 
   private boolean mtomEnabled;
 
   private boolean allowChunking = true;
-  private long timeOutInSeconds = TimeUnit.MINUTES.toSeconds(5);
 
   private SoapServiceConfig(
-    final Supplier<T> soapProxySupplier,
-    final String host) {
+    final Supplier<T> soapProxySupplier) {
     this.soapProxySupplier = soapProxySupplier;
-    this.host = host;
   }
 
   public T proxy(){
@@ -80,6 +78,8 @@ public class SoapServiceConfig<T>  {
         BindingProvider bindingProvider = (BindingProvider) soapPort;
 
         List<Handler> handlerChain = bindingProvider.getBinding().getHandlerChain();
+        //Actually it is not required to delete SOAPAction header, left it here as an example:
+        //handlerChain.add(new SoapActionRemoval());
         handlerChain.add(new SoapLogger());
         //the next call must be invoked, othwerise SoapLogger is not triggered.
         //it is not enough only add a handler to the handler chain list.
@@ -87,6 +87,16 @@ public class SoapServiceConfig<T>  {
 
         final Map<String, Object> requestContext =
           bindingProvider.getRequestContext();
+
+        if (!StringUtils.isEmpty(wsdlUrl)) {
+          // to overwrite `some.server.com:18080` address, taken from wsdl:
+          //<wsdl:service name="YourSoapService">
+          //  <wsdl:port binding="tns:YourSoapServiceBinding" name="YourSoapPort">
+          //    <soap:address location="http://some.server.com:18080/webservices/dse/v2/"/>
+          //  </wsdl:port>
+          //</wsdl:service>
+          requestContext.put(BindingProvider.ENDPOINT_ADDRESS_PROPERTY, wsdlUrl);
+        }
 
         if (!StringUtils.isEmpty(login)) {
           requestContext.put(BindingProvider.USERNAME_PROPERTY, login);
@@ -117,7 +127,7 @@ public class SoapServiceConfig<T>  {
           + " to " + BindingProvider.class.getName());
       }
     } catch (Exception e) {
-      throw soapExceptionHandler(this.host, e);
+      throw soapExceptionHandler(this.wsdlUrl, e);
     }
 
   }
@@ -144,6 +154,11 @@ public class SoapServiceConfig<T>  {
 
   public SoapServiceConfig<T> mtomEnabled(){
     this.mtomEnabled = true;
+    return this;
+  }
+
+  public SoapServiceConfig<T> wsdlUrl(final String wsdlUrl){
+    this.wsdlUrl = wsdlUrl;
     return this;
   }
 
