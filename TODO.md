@@ -1,3 +1,5 @@
+- jax rs client, more example with authentication, README
+- jax rs client more clear logging, README
 - avoid using ansible file with variables, try to read them from pom.xml
 - ability to run with a changed version
 - config usage for test purpose

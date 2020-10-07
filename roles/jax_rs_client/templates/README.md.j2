@@ -1,5 +1,16 @@
 ## Usage:
 
+#### TODO:
+  @BeforeClass
+  public static void initLogging(){
+
+    System.setProperty("org.apache.commons.logging.Log", "org.apache.commons.logging.impl.SimpleLog");
+//    System.setProperty("org.apache.commons.logging.simplelog.log.org.apache.http", "DEBUG");
+    System.setProperty("org.apache.commons.logging.simplelog.log.{{ group_id }}.commons.rest.client.filter", "DEBUG");
+  }
+
+  see example in jax_ws_client/templates/README.md.j2
+
 #### Example with JWT through basic authentication:
 ```
 Configuration config = ...
