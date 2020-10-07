@@ -1,0 +1,19 @@
+Add Maven dependency:
+
+```
+    <dependency>
+      <groupId>{{ group_id }}</groupId>
+      <artifactId>{{ artifact_id }}-commons-cryptography</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+```
+
+Sign data:
+
+```
+String keyPath = ...
+String signedData = SigningService.instance()
+  .signData(
+    someData2Sign,
+    keyPath));
+```

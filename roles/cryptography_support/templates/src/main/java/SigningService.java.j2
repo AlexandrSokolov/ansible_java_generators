@@ -1,0 +1,120 @@
+package {{ group_id }}.commons.cryptography;
+
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.Reader;
+import java.io.UnsupportedEncodingException;
+import java.nio.charset.StandardCharsets;
+import java.security.InvalidKeyException;
+import java.security.KeyFactory;
+import java.security.NoSuchAlgorithmException;
+import java.security.PrivateKey;
+import java.security.Security;
+import java.security.Signature;
+import java.security.SignatureException;
+import java.security.spec.InvalidKeySpecException;
+import java.security.spec.PKCS8EncodedKeySpec;
+import java.util.Base64;
+
+import org.bouncycastle.jce.provider.BouncyCastleProvider;
+import org.bouncycastle.util.io.pem.PemObject;
+import org.bouncycastle.util.io.pem.PemReader;
+
+public class SigningService {
+
+  public static final String ENCRYPTION_ALGORITHM = "RSA";
+  public static final String KEY_FILE_PKCS = "PKCS1";
+  public static final String SIGNING_ALGORITHM = "SHA512WithRSA";
+
+
+  public static final String NO_SUCH_ALGORITHM_STR_FORMAT = "Could not find '%s' algorithm. " +
+    "Make sure that the JCE (Java Cryptography Extension) is installed " +
+    "and the algorithm is supported. Error: '%s'";
+  public static final String INVALID_KEY_STR_FORMAT =
+    "Could not generate private key from '%s' file." + System.lineSeparator() +
+      "     Expected algorithm: '%s'." + System.lineSeparator() +
+      "     Expected file format: '%s'." + System.lineSeparator() +
+      "     Error: '%s'";
+  public static final String SIGNING_ERROR_STR_FORMAT = "" +
+    "Could not sign with '%s' private key file." + System.lineSeparator() +
+    "     Signing algorithm: '%s'. Error: '%s'";
+
+  public static SigningService instance() {
+    return new SigningService();
+  }
+
+  public String signData(
+    final String data2Sign,
+    final String privateKeyPath) {
+
+    try {
+      if (Security.getProvider(BouncyCastleProvider.PROVIDER_NAME) == null) {
+        Security.addProvider(new BouncyCastleProvider());
+      }
+
+      PrivateKey privateKey = fromFile(privateKeyPath);
+      Signature signature = Signature.getInstance("SHA512WithRSA");
+      signature.initSign(privateKey);
+      signature.update(data2Sign.getBytes(StandardCharsets.UTF_8.name()));
+      byte[] signatureBytes = signature.sign();
+      return Base64.getEncoder().encodeToString(signatureBytes);
+    } catch (NoSuchAlgorithmException e) {
+      throw new RuntimeException(
+        String.format(NO_SUCH_ALGORITHM_STR_FORMAT,
+          ENCRYPTION_ALGORITHM,
+          e.getMessage()));
+    } catch (SignatureException e) {
+      throw new RuntimeException(
+        String.format(SIGNING_ERROR_STR_FORMAT,
+          privateKeyPath,
+          SIGNING_ALGORITHM,
+          e.getMessage()));
+    } catch (InvalidKeyException e) {
+      throw new RuntimeException(
+        String.format(INVALID_KEY_STR_FORMAT,
+          privateKeyPath,
+          ENCRYPTION_ALGORITHM,
+          e.getMessage()));
+    } catch (UnsupportedEncodingException e) {
+      throw new RuntimeException(e);
+    }
+  }
+
+  private PrivateKey fromFile(final String filePath) {
+    try {
+
+      //FileReader uses Java's platform default encoding
+      //Since Java 11 FileReader has constructors that accept an encoding
+      Reader reader = new InputStreamReader(
+        new FileInputStream(filePath),
+        StandardCharsets.UTF_8);
+      PemObject pem = new PemReader(reader).readPemObject();
+
+      byte[] keyBytes = pem.getContent();
+
+      PKCS8EncodedKeySpec spec =
+        new PKCS8EncodedKeySpec(keyBytes);
+      KeyFactory kf = KeyFactory.getInstance(ENCRYPTION_ALGORITHM);
+      return kf.generatePrivate(spec);
+    } catch (IOException e) {
+      throw new RuntimeException(
+        String.format("Could not read file: '%s', Error: '%s'",
+          filePath,
+          e.getMessage()));
+    } catch (NoSuchAlgorithmException e) {
+      throw new RuntimeException(
+        String.format(NO_SUCH_ALGORITHM_STR_FORMAT,
+          ENCRYPTION_ALGORITHM,
+          e.getMessage()));
+    } catch (InvalidKeySpecException e) {
+      System.err.println(e);
+      throw new RuntimeException(
+        String.format(INVALID_KEY_STR_FORMAT,
+          filePath,
+          ENCRYPTION_ALGORITHM,
+          KEY_FILE_PKCS,
+          e.getMessage()));
+    }
+  }
+}

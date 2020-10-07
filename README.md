@@ -53,3 +53,7 @@
   
   Run: `javaMavenDeploymentSupport.sh`
   In the output you'll find an actual information about expected parameters.
+  
+#### 9 Add Cryptography support
+  
+  Run: `javaCryptographySupport.sh`

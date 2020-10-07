@@ -1,0 +1,34 @@
+package {{ group_id }}.commons.cryptography;
+
+import java.io.File;
+import java.net.URISyntaxException;
+
+import org.junit.Assert;
+import org.junit.Test;
+
+public class SigningServiceTest {
+
+  static final String KEY_NAME = "private.pem";
+  static final String DATA_2_SIGN = "some test data";
+  static final String EXPECTED_SIGNED_DATA = "qvCqevb1B9JW80V/840fALeNI1LGUr5gDfbarjyRO5z6peWE+DAYpSZmHlyXhQzmfW21+wYFIpdfhJTqDSwTQppVREmKOaZFdbnHFhF52w890jJ4ro+Hf1mjm3P2Shk7J3WZ3Fa9y4WRnekWtXBJDwXs3W+e7QBbho8ls8T082VNZ8yOBG1td5DodMpzYKOoxxB7ldu3SheNfBO40jh+AHTdwOrJhXAfEznvv42mxEBY6ZXGZQHRZ7AJFN5q8BJJJ/QjSs5ACs3XLTwT5UyVNhuKtDA5vyMxnuUTltWvGT8z1aSgq35Qs/RhG0/wrRwzhSgQN5gVtfYAh2X/2DhgG8Tt0r6EogQ1xXpf8ONojoYn2yP4g1rvm21ef3Jqp9RwvqJfV9ta4iRzC1Y7Usgg12ETtmQo5/61IkWxGvn7CWTHuVpH2LUc4eiOdKgXdfTqHBlnnWC72EaIkIFOq+h/ZrGqYy9+7o0ZzlIIBAfY+xXj4XxZwwCqUdhxb0YQ+vbLWoAKQ/miR2NhqZH6wnNA6PEObyOGZFdrkMyjOKX1Uw2peVetAsbk8n9NLZGwlV3C6XlLTzxl6xtpCRy0ci68nbBmoPZbhHStsuxlDV8V9kt97hfHQil3WxzAYiu+E1MQclR052PdFRL44GxYOvXFaGrLR31LBGDlDiVvU9oh7jg=";
+
+  SigningService signingService = SigningService.instance();
+
+  @Test
+  public void testSignData() throws URISyntaxException {
+
+    String keFilePath = new File(
+      this.getClass()
+          .getClassLoader()
+          .getResource(KEY_NAME)
+          .toURI())
+      .getAbsolutePath();
+
+    Assert.assertEquals(
+      EXPECTED_SIGNED_DATA,
+      signingService.signData(
+        DATA_2_SIGN,
+        keFilePath)
+    );
+  }
+}
