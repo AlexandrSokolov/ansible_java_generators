@@ -56,4 +56,4 @@ ansible-playbook \
   -v \
   -i inventories/local \
   --extra-vars "${extra_vars} mvn_project_basedir=$mvn_project_basedir" \
-  playbooks/javaAddProjectAuth.yml
+  playbooks/javaAddWebAuth.yml

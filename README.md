@@ -46,7 +46,7 @@
   
 #### 7 Add authentication support
 
-  Run: `javaAddProjectAuthentication.sh`
+  Run: `javaAddWebAuthentication.sh`
   In the output you'll find an actual information about expected parameters.
   
 #### 8 Add deployment support
