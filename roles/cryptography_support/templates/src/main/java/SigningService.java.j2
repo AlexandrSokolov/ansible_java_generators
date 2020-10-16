@@ -82,14 +82,15 @@ public class SigningService {
   }
 
   private PrivateKey fromFile(final String filePath) {
-    try {
-
+    try (
       //FileReader uses Java's platform default encoding
       //Since Java 11 FileReader has constructors that accept an encoding
       Reader reader = new InputStreamReader(
         new FileInputStream(filePath),
         StandardCharsets.UTF_8);
-      PemObject pem = new PemReader(reader).readPemObject();
+      PemReader pemReader = new PemReader(reader)) {
+
+      PemObject pem = pemReader.readPemObject();
 
       byte[] keyBytes = pem.getContent();
 
