@@ -1,0 +1,49 @@
+package {{ group_id }}.commons.soap.auth;
+
+import java.util.Collections;
+import java.util.Optional;
+import java.util.Set;
+
+import javax.servlet.http.Cookie;
+import javax.xml.namespace.QName;
+import javax.xml.ws.handler.MessageContext;
+import javax.xml.ws.handler.soap.SOAPHandler;
+import javax.xml.ws.handler.soap.SOAPMessageContext;
+
+import {{ group_id }}.commons.soap.SoapUtils;
+
+public class WebContextAuthSoapFilter implements SOAPHandler<SOAPMessageContext>  {
+
+  public static final String JSESSIONIDSSO = "JSESSIONIDSSO";
+
+  @Override
+  public boolean handleMessage(SOAPMessageContext context) {
+    Optional<Cookie> maybeCookie = JSessionIdSsoThreadLocalHolder
+      .getHttpCookie(JSESSIONIDSSO);
+
+    if (!maybeCookie.isPresent()) {
+      throw new IllegalStateException(
+        "Wrong API usage. JSESSIONIDSSO web cookie does not exist.");
+    }
+
+    maybeCookie.ifPresent(cookie -> SoapUtils.addHttpCookie(
+      context,
+      cookie.getName(),
+      cookie.getValue()));
+
+    return true;
+  }
+
+  @Override
+  public Set<QName> getHeaders() {
+    return Collections.emptySet();
+  }
+
+  @Override
+  public boolean handleFault(SOAPMessageContext ignored) {
+    return false;
+  }
+
+  @Override
+  public void close(MessageContext ignored) {}
+}

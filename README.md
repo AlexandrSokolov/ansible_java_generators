@@ -1,9 +1,18 @@
-#### 1. Preperation
+### This project allows generating Java code for different layers
+
+### Requirements
 
   To be able to generate code from any folder run once:
     `./scripts/extendPathWithScripsFolder.sh`
 
-#### 2. Generate Maven Project
+### Features:
+
+1. [Generate Maven Multimodule Project](#1-generate-maven-project)
+2. [Project configuration](#2-add-file-configuration-support)
+3. [Jax Rs (Rest) Client Support](#3-add-jax-rs-rest-client-support)
+4. [Jax Ws (Soap) Client Support](#4-add-jax-ws-soap-client-support)
+
+#### 1. Generate Maven Project
 
   Run: `javaGenMultiModuleWarProject.sh`
   
@@ -21,7 +30,7 @@
   - `artifact-id` is used as a maven project base dir, 
     so a new project will be generated in `${projects}/${artifact-id}` folder
     
-#### 3 Add file configuration support
+#### 2. Add file configuration support
 
   Run: `javaAddFileConfiguration.sh` 
   
@@ -32,11 +41,11 @@
   **Note:** `config-folder-sys-variable` is a system variable that refers
   to the folder with a configuration file.
   
-#### 4 Add Jax RS (rest) client support  
+#### 3. Add Jax RS (rest) client support  
 
   Run: `javaAddCommonsJaxRsClient.sh` 
   
-#### 5 Add Jax WS (soap) client support  
+#### 4. Add Jax WS (soap) client support  
 
   Run: `javaAddCommonsJaxWsSoapClient.sh`   
   

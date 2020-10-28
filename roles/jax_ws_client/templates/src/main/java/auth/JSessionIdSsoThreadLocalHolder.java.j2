@@ -1,0 +1,21 @@
+package {{ group_id }}.commons.soap.auth;
+
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Optional;
+
+import javax.servlet.http.Cookie;
+
+public class JSessionIdSsoThreadLocalHolder {
+
+  private static final ThreadLocal<Map<String, Optional<Cookie>>> THREAD_CONTEXT =
+    ThreadLocal.withInitial(HashMap::new);
+
+  public static void addHttpCookie(final javax.servlet.http.Cookie httpCookie) {
+    THREAD_CONTEXT.get().put(httpCookie.getName(), Optional.of(httpCookie));
+  }
+
+  public static Optional<javax.servlet.http.Cookie> getHttpCookie(final String name) {
+    return THREAD_CONTEXT.get().get(name);
+  }
+}

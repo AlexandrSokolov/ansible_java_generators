@@ -261,11 +261,18 @@ The only option to set the correct address:
 
 #### Authentication
 
-Only basic authentication is supported now. You can set it as:
+Basic authentication is supported now. You can set it as:
 ```
   SoapServicePort mpServicePort = SoapServiceConfig
     .instance(...)
     .basicAuth("user", "pwd")
+    .proxy();
+```
+Web Context authentication:
+```
+  SoapServicePort mpServicePort = SoapServiceConfig
+    .instance(...)
+    .webContextAuth()
     .proxy();
 ```
 

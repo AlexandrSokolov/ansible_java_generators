@@ -38,6 +38,12 @@
   include_role:
     name: gen_java_class_from_template
   with_items:
+    - src: src/main/java/auth/JSessionIdSsoThreadLocalHolder.java.j2
+      dst: "{{ mvn_project_basedir }}/commons_jax_ws_client/src/main/java/{{ group_id_path }}/commons/soap/auth/JSessionIdSsoThreadLocalHolder.java"
+    - src: src/main/java/auth/JSessionIdSsoWebFilter.java.j2
+      dst: "{{ mvn_project_basedir }}/commons_jax_ws_client/src/main/java/{{ group_id_path }}/commons/soap/auth/JSessionIdSsoWebFilter.java"
+    - src: src/main/java/auth/WebContextAuthSoapFilter.java.j2
+      dst: "{{ mvn_project_basedir }}/commons_jax_ws_client/src/main/java/{{ group_id_path }}/commons/soap/auth/WebContextAuthSoapFilter.java"
     - src: src/main/java/filter/SoapLogger.java.j2
       dst: "{{ mvn_project_basedir }}/commons_jax_ws_client/src/main/java/{{ group_id_path }}/commons/soap/filter/SoapLogger.java"
     - src: src/main/java/filter/SoapActionRemoval.java.j2

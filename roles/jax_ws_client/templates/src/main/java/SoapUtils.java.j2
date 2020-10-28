@@ -1,8 +1,15 @@
 package {{ group_id }}.commons.soap;
 
-import {{ group_id }}.commons.soap.filter.SoapThreadLocalHolder;
-
+import java.util.Collections;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
+
+import javax.xml.ws.handler.MessageContext;
+import javax.xml.ws.handler.soap.SOAPMessageContext;
+
+import {{ group_id }}.commons.soap.filter.SoapThreadLocalHolder;
 
 public class SoapUtils {
 
@@ -10,4 +17,35 @@ public class SoapUtils {
     return SoapThreadLocalHolder.getSoapDetails();
   }
 
+  public static final String COOKIE_HEADER = "Cookie";
+
+  public static void addHttpHeader(
+    SOAPMessageContext context,
+    final String httpHeaderName,
+    final List<String> httpHeaderValues) {
+    boolean isRequest = (Boolean) context.get(MessageContext.MESSAGE_OUTBOUND_PROPERTY);
+    if (isRequest) {
+      @SuppressWarnings("unchecked")
+      Map<String, List<String>> headers = (Map<String, List<String>>) context.get(
+        MessageContext.HTTP_REQUEST_HEADERS);
+      if (headers == null) {
+        headers = new TreeMap<>();
+        context.put(MessageContext.HTTP_REQUEST_HEADERS, headers);
+      }
+      headers.computeIfAbsent(
+        httpHeaderName, ignored -> new LinkedList<>())
+             .addAll(httpHeaderValues);
+    }
+
+  }
+
+  public static void addHttpCookie(
+    final SOAPMessageContext context,
+    final String cookieName,
+    final String cookieValue) {
+    addHttpHeader(
+      context,
+      COOKIE_HEADER,
+      Collections.singletonList(cookieName + "=" + cookieValue));
+  }
 }

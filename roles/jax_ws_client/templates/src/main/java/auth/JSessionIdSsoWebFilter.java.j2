@@ -1,0 +1,50 @@
+package {{ group_id }}.commons.soap.auth;
+
+import java.io.IOException;
+import java.util.Optional;
+
+import javax.servlet.Filter;
+import javax.servlet.FilterChain;
+import javax.servlet.FilterConfig;
+import javax.servlet.ServletException;
+import javax.servlet.ServletRequest;
+import javax.servlet.ServletResponse;
+import javax.servlet.annotation.WebFilter;
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
+
+import static {{ group_id }}.commons.soap.auth.WebContextAuthSoapFilter.JSESSIONIDSSO;
+
+@WebFilter(urlPatterns = "/*")
+public class JSessionIdSsoWebFilter implements Filter  {
+
+  @Override
+  public void doFilter(
+    final ServletRequest request,
+    final ServletResponse response,
+    final FilterChain chain) throws IOException, ServletException {
+    httpCookieByName((HttpServletRequest) request)
+      .ifPresent(JSessionIdSsoThreadLocalHolder::addHttpCookie);
+    chain.doFilter(request, response);
+  }
+
+  @Override
+  public void init(FilterConfig filterConfig) {}
+
+  @Override
+  public void destroy() {}
+
+  private static Optional<Cookie> httpCookieByName(
+    final HttpServletRequest request)
+  {
+    Cookie[] cookies = request.getCookies();
+    if (cookies != null && cookies.length != 0) {
+      for (Cookie cookie : cookies) {
+        if (JSESSIONIDSSO.equals(cookie.getName())) {
+          return Optional.of(cookie);
+        }
+      }
+    }
+    return Optional.empty();
+  }
+}
