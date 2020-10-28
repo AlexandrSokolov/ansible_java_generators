@@ -1,0 +1,20 @@
+---
+- name: "Ansible check for `commons_excel` module."
+  stat:
+    path: "{{ mvn_project_basedir }}/commons_excel"
+  register: commons_excel_path
+
+- block:
+
+  - name: Load shared variables
+    include_vars: "{{ mvn_project_basedir }}/.ansible/ansible_shared_variables.yml"
+
+  - import_tasks: tasks/commons_excel.yml
+
+  when: not commons_excel_path.stat.exists
+
+- debug:
+    msg:
+      - "ERROR: '{{ mvn_project_basedir }}/commons_excel' already exist"
+      - "       To generate 'commons_excel' module first delete the previous one."
+  when: commons_excel_path.stat.exists

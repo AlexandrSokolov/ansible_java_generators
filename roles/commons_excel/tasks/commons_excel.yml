@@ -1,0 +1,21 @@
+---
+- name: "Create `commons_excel` folder if does not exist"
+  file:
+    state: directory
+    path: "{{ item }}"
+    owner: "{{ lookup('env', 'USER') }}"
+    group: "{{ lookup('env', 'USER') }}"
+  with_items:
+    - "{{ mvn_project_basedir }}/commons_excel"
+
+- name: "Generate files into `commons_excel` folder"
+  template:
+    src: "{{ item }}.j2"
+    dest: "{{ mvn_project_basedir }}/commons_excel/{{ item }}"
+    mode: 0644
+    owner: "{{ lookup('env', 'USER') }}"
+    group: "{{ lookup('env', 'USER') }}"
+    force: yes
+  with_items:
+    - pom.xml
+    - README.md

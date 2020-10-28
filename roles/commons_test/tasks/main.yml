@@ -1,0 +1,20 @@
+---
+- name: "Ansible check for `commons_test` module."
+  stat:
+    path: "{{ mvn_project_basedir }}/commons_test"
+  register: commons_test_path
+
+- block:
+
+  - name: Load shared variables
+    include_vars: "{{ mvn_project_basedir }}/.ansible/ansible_shared_variables.yml"
+
+  - import_tasks: tasks/commons_test.yml
+
+  when: not commons_test_path.stat.exists
+
+- debug:
+    msg:
+      - "ERROR: '{{ mvn_project_basedir }}/commons_test' already exist"
+      - "       To generate 'commons_test' module first delete the previous one."
+  when: commons_test_path.stat.exists

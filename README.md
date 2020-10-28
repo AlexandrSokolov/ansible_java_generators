@@ -7,20 +7,22 @@
 
 ### Features:
 
-1. [Generate Maven Multimodule Project](#1-generate-maven-project)
-2. [Project configuration](#2-add-file-configuration-support)
-3. [Jax Rs (Rest) Client Support](#3-add-jax-rs-rest-client-support)
-4. [Jax Ws (Soap) Client Support](#4-add-jax-ws-soap-client-support)
-5. [JEE Async support for long running jobs](#5-jee-async-support-for-long-running-jobs)
-6. [Cron Jee Support](#6-cron-jee-support)
-7. [Protect Web App with Auth](#7-add-authentication-support)
-8. [Add deployment support](#8-add-deployment-support)
+- [Generate Maven Multimodule Project](#generate-maven-project)
+- [Project configuration](#add-file-configuration-support)
+- [Commons Test Module](#add-commons-test-module)
+- [Jax Rs (Rest) Client Support](#add-jax-rs-rest-client-support)
+- [Jax Ws (Soap) Client Support](#add-jax-ws-soap-client-support)
+- [JEE Async support for long running jobs](#jee-async-support-for-long-running-jobs)
+- [Cron Jee Support](#cron-jee-support)
+- [Protect Web App with Auth](#add-authentication-support)
+- [Add deployment support](#add-deployment-support)
+- [Excel Support](#excel-module-support)
 
 TODO (priority not clear):
 
 - [Add Cryptography support](#99-todo-add-cryptography-support)
 
-#### 1. Generate Maven Project
+#### Generate Maven Project
 
   Run: `javaGenMultiModuleWarProject.sh`
   
@@ -38,7 +40,7 @@ TODO (priority not clear):
   - `artifact-id` is used as a maven project base dir, 
     so a new project will be generated in `${projects}/${artifact-id}` folder
     
-#### 2. Add file configuration support
+#### Add file configuration support
 
   Run: `javaAddFileConfiguration.sh` 
   
@@ -49,36 +51,42 @@ TODO (priority not clear):
   **Note:** `config-folder-sys-variable` is a system variable that refers
   to the folder with a configuration file.
   
-#### 3. Add Jax RS (rest) client support  
+#### Add commons test module
+
+  Run: `javaAddCommonsTest.sh`
+  
+#### Add Jax RS (rest) client support  
 
   Run: `javaAddCommonsJaxRsClient.sh` 
   
-#### 4. Add Jax WS (soap) client support  
+#### Add Jax WS (soap) client support  
 
   Run: `javaAddCommonsJaxWsSoapClient.sh`   
   
-#### 5. JEE Async support for long running jobs
+#### JEE Async support for long running jobs
 
   Run: `javaAddJeeAsyncSupport.sh`
   
-#### 6. Cron Jee Support
+#### Cron Jee Support
 
   Run: `javaAddCronJobsSupport.sh`
   
-#### 7. Add authentication support
+#### Add authentication support
 
   Run: `javaAddWebAuthentication.sh`
   In the output you'll find an actual information about expected parameters.
   
-#### 8. Add deployment support
+#### Add deployment support
   
   Run: `javaMavenDeploymentSupport.sh`
   In the output you'll find an actual information about expected parameters.
   
-  
+#### Excel Module support  
+
+  Run: `javaExcelSupport.sh`
 
 ## TODO (priority not clear):
 
-#### 99. TODO Add Cryptography support
+#### TODO Add Cryptography support
   
   Run: `javaCryptographySupport.sh`
