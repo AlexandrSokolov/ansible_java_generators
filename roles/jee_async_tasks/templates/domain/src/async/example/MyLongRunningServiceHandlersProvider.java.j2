@@ -75,7 +75,7 @@ public class MyLongRunningServiceHandlersProvider {
     //if it takes really long
     try {
       handleItem(item);
-      statistics.successfullyHandled(item);
+      statistics.successfullyHandled(item, "item changed");
     } catch( Exception e) {
       statistics.handlerError(item, e);
     }

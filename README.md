@@ -11,6 +11,14 @@
 2. [Project configuration](#2-add-file-configuration-support)
 3. [Jax Rs (Rest) Client Support](#3-add-jax-rs-rest-client-support)
 4. [Jax Ws (Soap) Client Support](#4-add-jax-ws-soap-client-support)
+5. [JEE Async support for long running jobs](#5-jee-async-support-for-long-running-jobs)
+6. [Cron Jee Support](#6-cron-jee-support)
+7. [Protect Web App with Auth](#7-add-authentication-support)
+8. [Add deployment support](#8-add-deployment-support)
+
+TODO (priority not clear):
+
+- [Add Cryptography support](#99-todo-add-cryptography-support)
 
 #### 1. Generate Maven Project
 
@@ -49,20 +57,28 @@
 
   Run: `javaAddCommonsJaxWsSoapClient.sh`   
   
-#### 6 JEE Async support for long running jobs
+#### 5. JEE Async support for long running jobs
 
   Run: `javaAddJeeAsyncSupport.sh`
   
-#### 7 Add authentication support
+#### 6. Cron Jee Support
+
+  Run: `javaAddCronJobsSupport.sh`
+  
+#### 7. Add authentication support
 
   Run: `javaAddWebAuthentication.sh`
   In the output you'll find an actual information about expected parameters.
   
-#### 8 Add deployment support
+#### 8. Add deployment support
   
   Run: `javaMavenDeploymentSupport.sh`
   In the output you'll find an actual information about expected parameters.
   
-#### 9 Add Cryptography support
+  
+
+## TODO (priority not clear):
+
+#### 99. TODO Add Cryptography support
   
   Run: `javaCryptographySupport.sh`

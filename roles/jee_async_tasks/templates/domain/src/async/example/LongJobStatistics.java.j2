@@ -5,6 +5,7 @@ import java.util.Map;
 import java.util.concurrent.atomic.AtomicLong;
 
 import com.google.common.collect.Maps;
+import {{ group_id }}.commons.jax.rs.client.JaxRsExceptionsUtils;
 
 public class LongJobStatistics {
 
@@ -14,11 +15,11 @@ public class LongJobStatistics {
 
   private AtomicLong itemsNumber = new AtomicLong(0);
 
-  private Map<Integer, String> processedItems = Maps.newConcurrentMap();
+  private Map<Long, String> processedItems = Maps.newConcurrentMap();
 
-  private Map<Integer, String> filterErrors = Maps.newConcurrentMap();
+  private Map<Long, String> filterErrors = Maps.newConcurrentMap();
 
-  private Map<Integer, String> handlingErrors = Maps.newConcurrentMap();
+  private Map<Long, String> handlingErrors = Maps.newConcurrentMap();
 
   public void finish() {
     this.endDateTime = LocalDateTime.now();
@@ -61,15 +62,15 @@ public class LongJobStatistics {
     return itemsNumber;
   }
 
-  public Map<Integer, String> getProcessedItems() {
+  public Map<Long, String> getProcessedItems() {
     return processedItems;
   }
 
-  public Map<Integer, String> getFilterErrors() {
+  public Map<Long, String> getFilterErrors() {
     return filterErrors;
   }
 
-  public Map<Integer, String> getHandlingErrors() {
+  public Map<Long, String> getHandlingErrors() {
     return handlingErrors;
   }
 }
