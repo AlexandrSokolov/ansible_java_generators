@@ -53,3 +53,4 @@ For React developer, json server is configured to run on `http://localhost:3500`
 - cron job expression validation on startup
 - todo add serializer, decerializers
 - jax rs client, add more documentation
+- excel module add tests for writing and reading

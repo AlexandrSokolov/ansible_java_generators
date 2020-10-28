@@ -19,3 +19,30 @@
   with_items:
     - pom.xml
     - README.md
+
+- name: "Add dependencies on 'commons_excel' module"
+  include_role:
+    name: insert_template_after_another
+  with_items:
+    - path: "{{ mvn_project_basedir }}/pom.xml"
+      insert_after_template: "{{ role_path }}/templates/deps/parent/insert_after_template.j2"
+      insert_template: "{{ role_path }}/templates/deps/parent/insert_template.j2"
+    - path: "{{ mvn_project_basedir }}/deps/pom.xml"
+      insert_after_template: "{{ role_path }}/templates/deps/deps/properties/insert_after_template.j2"
+      insert_template: "{{ role_path }}/templates/deps/deps/properties/insert_template.j2"
+    - path: "{{ mvn_project_basedir }}/deps/pom.xml"
+      insert_after_template: "{{ role_path }}/templates/deps/deps/apache_poi/insert_after_template.j2"
+      insert_template: "{{ role_path }}/templates/deps/deps/apache_poi/insert_template.j2"
+
+- name: "Generate java classes of `commons_excel` module"
+  include_role:
+    name: gen_java_class_from_template
+  with_items:
+    - src: src/main/java/dto/ExcelLine.java.j2
+      dst: "{{ mvn_project_basedir }}/commons_excel/src/main/java/{{ group_id_path }}/commons/excel/dto/ExcelLine.java"
+    - src: src/main/java/ExcelReaderService.java.j2
+      dst: "{{ mvn_project_basedir }}/commons_excel/src/main/java/{{ group_id_path }}/commons/excel/ExcelReaderService.java"
+    - src: src/main/java/ExcelWriterService.java.j2
+      dst: "{{ mvn_project_basedir }}/commons_excel/src/main/java/{{ group_id_path }}/commons/excel/ExcelWriterService.java"
+    - src: src/main/resources/META-INF/beans.xml
+      dst: "{{ mvn_project_basedir }}/commons_excel/src/main/resources/META-INF/beans.xml"

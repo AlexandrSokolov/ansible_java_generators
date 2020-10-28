@@ -1,0 +1,32 @@
+package {{ group_id }}.commons.excel.dto;
+
+import java.util.LinkedHashMap;
+import java.util.Map;
+
+public class ExcelLine {
+
+  private final int excelLineNumber;
+
+  private final Map<String, String> excelColName2Value = new LinkedHashMap<>();
+
+  private ExcelLine(int excelLineNumber) {
+    this.excelLineNumber = excelLineNumber;
+  }
+
+  public static ExcelLine instance(int excelLineNumber) {
+    return new ExcelLine(excelLineNumber);
+  }
+
+  public ExcelLine put(String excelColName, String value) {
+    this.excelColName2Value.put(excelColName, value);
+    return this;
+  }
+
+  public Map<String, String> getExcelColName2Value() {
+    return excelColName2Value;
+  }
+
+  public int getExcelLineNumber() {
+    return excelLineNumber;
+  }
+}

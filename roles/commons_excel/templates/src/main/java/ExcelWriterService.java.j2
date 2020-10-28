@@ -1,0 +1,96 @@
+package {{ group_id }}.commons.excel;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.util.List;
+import java.util.Map;
+
+import org.apache.poi.hssf.util.CellReference;
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.xssf.usermodel.XSSFSheet;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+
+import com.google.common.collect.Sets;
+
+public class ExcelWriterService {
+
+  public void writeExcelTemplate(
+    final InputStream excelTemplate,
+    final String sheetName,
+    final int firstLineNumber,
+    final List<Map<String,String>> rows,
+    final OutputStream outputStream
+    ) {
+    try {
+      XSSFWorkbook workbook = new XSSFWorkbook(excelTemplate);
+      //Sheet sheet = workbook.getSheetAt(0);
+      XSSFSheet sheet = workbook.getSheet(sheetName);
+
+      writeExcelSheet(
+        workbook,
+        sheet,
+        firstLineNumber,
+        rows,
+        outputStream);
+
+    } catch (IOException e) {
+      throw new RuntimeException(
+        "Could not write using excel template. Error: " + e.getMessage(), e);
+    }
+  }
+
+  public void writeExcel(
+    final String sheetName,
+    final int firstLineNumber,
+    final List<Map<String,String>> rows,
+    final OutputStream outputStream) {
+
+    XSSFWorkbook workbook = new XSSFWorkbook();
+    XSSFSheet sheet = workbook.createSheet(sheetName);
+
+    writeExcelSheet(
+      workbook,
+      sheet,
+      firstLineNumber,
+      rows,
+      outputStream);
+
+  }
+
+  private void writeExcelSheet(
+    final Workbook workbook,
+    final Sheet sheet,
+    final int firstLineNumber,
+    final List<Map<String,String>> rows,
+    final OutputStream outputStream) {
+    final int [] lineNumber = { firstLineNumber != 0 ? firstLineNumber-1 : firstLineNumber };
+
+    rows.forEach(rowMap -> {
+      Row row = sheet.createRow(++lineNumber[0]);
+      rowMap.forEach((excelColumn, excelColValue) -> {
+        Cell cell = row.createCell(
+          CellReference.convertColStringToIndex(excelColumn));
+        cell.setCellValue(excelColValue);
+      });
+    });
+
+    rows.stream()
+        .map(Map::keySet)
+        .reduce(Sets::union)
+        .ifPresent(columns -> {
+          columns.forEach(excelColumn ->
+            sheet.autoSizeColumn(
+              CellReference.convertColStringToIndex(excelColumn)));
+        });
+
+    try {
+      workbook.write(outputStream);
+    } catch (IOException e) {
+      throw new RuntimeException("Could not write, error: " + e.getMessage(), e);
+    }
+  }
+}

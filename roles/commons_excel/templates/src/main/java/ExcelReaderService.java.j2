@@ -1,0 +1,107 @@
+package {{ group_id }}.commons.excel;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.text.DecimalFormat;
+import java.util.List;
+import java.util.function.Predicate;
+
+import org.apache.poi.UnsupportedFileFormatException;
+import org.apache.poi.hssf.usermodel.HSSFDateUtil;
+import org.apache.poi.hssf.util.CellReference;
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+
+import {{ group_id }}.commons.excel.dto.ExcelLine;
+import com.google.common.collect.Lists;
+
+import static org.apache.poi.ss.usermodel.CellType.NUMERIC;
+
+public class ExcelReaderService {
+
+  static final String NOT_XLSX_FILE = "File is not valid XLSX format. Error: '%s'";
+  static final String NOT_VALID_FILE = "Could not handle XLSX file. Error: '%s'";
+
+  public static ExcelReaderService instance() {
+    return new ExcelReaderService();
+  }
+
+  public List<ExcelLine> readExcel(
+    final String excelSheetName,
+    final InputStream inputStream,
+    final Predicate<ExcelLine> predicate) {
+    try (Workbook workbook = new XSSFWorkbook(inputStream)) {
+      //Sheet sheet = workbook.getSheetAt(0);
+      Sheet sheet = workbook.getSheet(excelSheetName);
+      List<ExcelLine> lines = Lists.newLinkedList();
+      for (Row row : sheet) {
+        ExcelLine line = fromRow(row);
+        if (predicate.test(fromRow(row))) {
+          lines.add(line);
+        }
+      }
+      return lines;
+    } catch (UnsupportedFileFormatException e){
+      throw new IllegalStateException(
+        String.format(NOT_XLSX_FILE, e.getMessage()));
+    } catch (IOException e) {
+      throw new IllegalStateException(
+        String.format(NOT_VALID_FILE, e.getMessage()));
+    }
+  }
+
+  private ExcelLine fromRow(Row row) {
+    ExcelLine line = ExcelLine.instance(row.getRowNum() + 1);
+    row.forEach(cell -> {
+      if (isCellWithValue(cell)) {
+        line.put(
+          CellReference.convertNumToColString(
+            cell.getColumnIndex()),
+          extractValueAsString(cell));
+      }
+    });
+    return line;
+  }
+
+  private boolean isCellWithValue(Cell cell) {
+    switch (cell.getCellTypeEnum()) {
+      case BLANK: return true;
+      case STRING: return true;
+      case NUMERIC: return true;
+      case BOOLEAN: return true;
+      default: return false;
+    }
+  }
+
+  private String extractValueAsString(Cell cell){
+    if (cell == null) {
+      return null;
+    }
+
+    switch (cell.getCellTypeEnum()) {
+      case BLANK: return null;
+      case STRING: return cell.getStringCellValue();
+      case NUMERIC: return extractFromNumericCell(cell);
+      case BOOLEAN: return Boolean.toString(cell.getBooleanCellValue());
+      default: throw new IllegalStateException("Unsupported cell type");
+    }
+  }
+
+  private String extractFromNumericCell(Cell cell){
+    if (NUMERIC != cell.getCellTypeEnum()) {
+      throw new IllegalStateException("Wrong API usage. Only for numeric cells could be used.");
+    }
+    if (cell.getCellStyle().getDataFormatString().contains("%")) {
+      Double value = cell.getNumericCellValue() * 100;
+      return new DecimalFormat("0.#").format(value) + "%";
+    } else if (HSSFDateUtil.isCellDateFormatted(cell)) {
+      return cell.getDateCellValue().toString();
+    } else {
+      return new DecimalFormat("0.#").format(
+        cell.getNumericCellValue());
+    }
+  }
+}
