@@ -3,11 +3,13 @@ package {{ group_id }}.commons.excel;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
 
 import org.apache.poi.hssf.util.CellReference;
 import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.CellType;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
@@ -22,7 +24,7 @@ public class ExcelWriterService {
     final InputStream excelTemplate,
     final String sheetName,
     final int firstLineNumber,
-    final List<Map<String,String>> rows,
+    final List<Map<String,Object>> rows,
     final OutputStream outputStream
     ) {
     try {
@@ -46,7 +48,7 @@ public class ExcelWriterService {
   public void writeExcel(
     final String sheetName,
     final int firstLineNumber,
-    final List<Map<String,String>> rows,
+    final List<Map<String,Object>> rows,
     final OutputStream outputStream) {
 
     XSSFWorkbook workbook = new XSSFWorkbook();
@@ -65,17 +67,14 @@ public class ExcelWriterService {
     final Workbook workbook,
     final Sheet sheet,
     final int firstLineNumber,
-    final List<Map<String,String>> rows,
+    final List<Map<String,Object>> rows,
     final OutputStream outputStream) {
     final int [] lineNumber = { firstLineNumber != 0 ? firstLineNumber-1 : firstLineNumber };
 
     rows.forEach(rowMap -> {
       Row row = sheet.createRow(++lineNumber[0]);
-      rowMap.forEach((excelColumn, excelColValue) -> {
-        Cell cell = row.createCell(
-          CellReference.convertColStringToIndex(excelColumn));
-        cell.setCellValue(excelColValue);
-      });
+      rowMap.forEach((excelColumn, excelColValue) ->
+        createCell(row, excelColumn, excelColValue));
     });
 
     rows.stream()
@@ -93,4 +92,27 @@ public class ExcelWriterService {
       throw new RuntimeException("Could not write, error: " + e.getMessage(), e);
     }
   }
+
+  private void createCell(
+    final Row row,
+    final String excelColumn,
+    Object cellValue) {
+    final int index = CellReference.convertColStringToIndex(excelColumn);
+    if (cellValue != null) {
+      if (cellValue instanceof Double
+        || cellValue instanceof Integer) {
+        Cell cell = row.createCell(index, CellType.NUMERIC);
+        cell.setCellValue((double) cellValue);
+      } else if (cellValue instanceof BigDecimal) {
+        Cell cell = row.createCell(index, CellType.NUMERIC);
+        cell.setCellValue(((BigDecimal)cellValue).doubleValue());
+      } else {
+        Cell cell = row.createCell(index);
+        cell.setCellValue(cellValue.toString());
+      }
+    } else {
+      row.createCell(index);
+    }
+  }
+
 }
