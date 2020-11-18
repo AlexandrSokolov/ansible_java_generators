@@ -9,7 +9,6 @@
 
 - [Generate Maven Multimodule Project](#generate-maven-project)
 - [Project configuration](#add-file-configuration-support)
-- [Commons Test Module](#add-commons-test-module)
 - [Jax Rs (Rest) Client Support](#add-jax-rs-rest-client-support)
 - [Jax Ws (Soap) Client Support](#add-jax-ws-soap-client-support)
 - [JEE Async support for long running jobs](#jee-async-support-for-long-running-jobs)
@@ -50,10 +49,6 @@ TODO (priority not clear):
   
   **Note:** `config-folder-sys-variable` is a system variable that refers
   to the folder with a configuration file.
-  
-#### Add commons test module
-
-  Run: `javaAddCommonsTest.sh`
   
 #### Add Jax RS (rest) client support  
 

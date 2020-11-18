@@ -9,13 +9,23 @@
     <relativePath>..</relativePath>
   </parent>
 
-  <artifactId>{{ artifact_id }}-commons-test</artifactId>
+  <artifactId>{{ artifact_id }}-test-app</artifactId>
   <packaging>jar</packaging>
 
-  <name>Commons Test Module for sharing between other modules</name>
+  <name>Application Test Module</name>
 
   <dependencies>
-    <!-- TEST SCOPE:-->
+    <dependency>
+      <groupId>{{ group_id }}</groupId>
+      <artifactId>{{ artifact_id }}-config</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+    <!-- scope compile, not test here!!-->
+    <dependency>
+      <groupId>{{ group_id }}</groupId>
+      <artifactId>{{ artifact_id }}-commons-test</artifactId>
+      <version>${project.version}</version>
+    </dependency>
     <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>

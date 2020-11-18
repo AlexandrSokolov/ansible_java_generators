@@ -40,3 +40,15 @@
       dst: "{{ mvn_project_basedir }}/commons_config/src/main/java/{{ group_id_path }}/commons/config/FileConfig.java"
     - src: commons_config/src/main/java/PropertyKey.java.j2
       dst: "{{ mvn_project_basedir }}/commons_config/src/main/java/{{ group_id_path }}/commons/config/PropertyKey.java"
+    - src: commons_config/src/test/java/ConfigFactoryTest.java.j2
+      dst: "{{ mvn_project_basedir }}/commons_config/src/test/java/{{ group_id_path }}/commons/config/ConfigFactoryTest.java"
+    - src: commons_config/src/test/java/DefaultMethodConfig.java.j2
+      dst: "{{ mvn_project_basedir }}/commons_config/src/test/java/{{ group_id_path }}/commons/config/DefaultMethodConfig.java"
+    - src: commons_config/src/test/java/NotExistingStringConfig.java.j2
+      dst: "{{ mvn_project_basedir }}/commons_config/src/test/java/{{ group_id_path }}/commons/config/NotExistingStringConfig.java"
+    - src: commons_config/src/test/java/TestPropertiesConfig.java.j2
+      dst: "{{ mvn_project_basedir }}/commons_config/src/test/java/{{ group_id_path }}/commons/config/TestPropertiesConfig.java"
+    - src: commons_config/src/test/java/UnsupportedReturnTypeConfig.java.j2
+      dst: "{{ mvn_project_basedir }}/commons_config/src/test/java/{{ group_id_path }}/commons/config/UnsupportedReturnTypeConfig.java"
+    - src: "commons_config/src/test/resources/test.config.properties.j2"
+      dst: "{{ mvn_project_basedir }}/commons_config/src/test/resources/test.config.properties"
