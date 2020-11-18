@@ -12,13 +12,7 @@ import org.junit.BeforeClass;
 import org.junit.Rule;
 import org.junit.rules.TemporaryFolder;
 
-import {{ group_id }}.commons.config.Configs;
-
 public abstract class BaseTest {
-
-  private static final String CONF_PROP = "test.properties";
-
-  public static final String BASIC_AUTH_PASSWORD = "admin123";
 
   @Rule
   public TemporaryFolder folder = new TemporaryFolder();
