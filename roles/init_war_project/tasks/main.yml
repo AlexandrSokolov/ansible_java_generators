@@ -30,6 +30,8 @@
 
     - import_tasks: tasks/deps_module.yml
 
+    - import_tasks: tasks/commons_test.yml
+
     - import_tasks: tasks/domain_api_module.yml
 
     - import_tasks: tasks/domain_module.yml

@@ -1,0 +1,28 @@
+---
+- name: "Create `commons_test` folder if does not exist"
+  file:
+    state: directory
+    path: "{{ item }}"
+    owner: "{{ lookup('env', 'USER') }}"
+    group: "{{ lookup('env', 'USER') }}"
+  with_items:
+    - "{{ mvn_project_basedir }}/commons_test"
+
+- name: "Generate files into `commons_test` folder"
+  template:
+    src: "{{ item }}.j2"
+    dest: "{{ mvn_project_basedir }}/{{ item }}"
+    mode: 0644
+    owner: "{{ lookup('env', 'USER') }}"
+    group: "{{ lookup('env', 'USER') }}"
+    force: yes
+  with_items:
+    - commons_test/pom.xml
+    - commons_test/README.md
+
+- name: "Generate java classes of `commons_test` module"
+  include_role:
+    name: gen_java_class_from_template
+  with_items:
+    - src: commons_test/src/main/java/BaseTest.java.j2
+      dst: "{{ mvn_project_basedir }}/commons_test/src/main/java/{{ group_id_path }}/commons/test/BaseTest.java"
