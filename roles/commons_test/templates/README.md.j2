@@ -4,15 +4,7 @@
 
     `InputStream sharedFile = testInputStream("shared.test.xlsx");`
 
-2. Share the test configuration:
-
-    ```
-    Configuration testConfiguration = Configs.fileConfig(
-        testInputStream("shared.test.properties"))
-        .proxy(Configuration.class);
-    ```
-
-3. Write into test files via `OutputStream`:
+2. Write into test files via `OutputStream`:
 
     ```
     File tempFile = tempTestFile(TEST_EXCEL_FILE_NAME);
@@ -21,10 +13,11 @@
       System.out.println(tempFile.getAbsolutePath());
     }
     ```
+3. It enables logging for REST and SOAP via the method, annotated by `@BeforeClass`
 
 #### Requirements to use the `commons_test` module:
- 
-1. adopt your module `pom.xml` with:
+
+1. add `test` scope dependency on `commons_test` module in your module `pom.xml`:
 
     ```
     <dependency>
@@ -42,20 +35,3 @@ import {{ group_id }}.commons.test.BaseTest;
 
 public class MyTest extends BaseTest { ...
 ```
-
-3. The parent module includes the following configuration:
-
-```
-  <build>
-
-    <testResources>
-      <testResource>
-        <directory>${project.basedir}/src/test/resources</directory>
-      </testResource>
-      <testResource>
-        <directory>${project.basedir}/../commons_test/src/main/resources</directory>
-      </testResource>
-    </testResources>
-```
-
-**Note**: ~~build-helper-maven-plugin~~ is **NOT USED** for test sources.
