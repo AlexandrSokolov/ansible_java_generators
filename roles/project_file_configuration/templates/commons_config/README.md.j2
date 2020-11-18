@@ -110,7 +110,7 @@ String value = config.someProperty1();
     public interface Configuration {
 
       String CONFIG_FOLDER_VARIABLE = "config.dir";
-      String CONFIG_FILE = "template.project.properties";
+      String CONFIG_FILE = "{{ config_file_name }}";
       ...
     ```
 2. Create a producer:
@@ -123,7 +123,7 @@ String value = config.someProperty1();
 
       ```
       $ ls -1 config/
-      template.project.properties
+      {{ config_file_name }}
       pom.xml
       src
       ```
@@ -137,9 +137,9 @@ String value = config.someProperty1();
               <directory>src/main/resources</directory>
             </resource>
             <resource>
-              <directory>${project.basedir}</directory>
+              <directory>${basedir}</directory>
               <includes>
-                <include>template.project.properties</include>
+                <include>{{ config_file_name }}</include>
               </includes>
             </resource>
           </resources>
