@@ -47,8 +47,15 @@ TODO (priority not clear):
   Prepare the full command and run from within you 
   `${projects}/${artifact-id}` folder
   
-  **Note:** `config-folder-sys-variable` is a system variable that refers
-  to the folder with a configuration file.
+  **Notes:** 
+  1. `config-folder-sys-variable` is a system variable that refers
+     to the folder with a configuration file.
+  2. The configuration of `testResources` is commented out in the parent `pom.xml`
+     Open the project in IntelliJ IDEA first, 
+     update Maven configuration, 
+     and only then uncomment the configuration.
+     
+     See [Idea module generations with shared resource](https://youtrack.jetbrains.com/issue/IDEA-256774)
   
 #### Add Jax RS (rest) client support  
 

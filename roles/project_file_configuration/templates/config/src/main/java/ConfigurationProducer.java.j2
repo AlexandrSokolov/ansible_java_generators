@@ -5,13 +5,14 @@ import {{ group_id }}.commons.config.Configs;
 import javax.enterprise.inject.Produces;
 
 import static {{ group_id }}.config.Configuration.CONFIG_FILE;
-import static {{ group_id }}.config.Configuration.CONFIG_FOLDER_VARIABLE;
 
 public class ConfigurationProducer {
 
   @Produces
   public Configuration produce(){
-    return Configs.fileConfig(CONFIG_FOLDER_VARIABLE, CONFIG_FILE)
+    //return Configs.fileConfig(CONFIG_FOLDER_VARIABLE, CONFIG_FILE)
+    return Configs.fileConfig(
+      ConfigurationProducer.class.getResourceAsStream("/"+ CONFIG_FILE))
       .proxy(Configuration.class);
   }
 }
