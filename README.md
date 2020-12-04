@@ -77,6 +77,16 @@ TODO (priority not clear):
 
   Run: `javaAddWebAuthentication.sh`
   In the output you'll find an actual information about expected parameters.
+
+  **Note**: keep in mind, it is a good practice to protect rest services as well. 
+  To do it correctly, both annotations must be applied to the service:
+  ```
+  import javax.annotation.security.RolesAllowed;
+  import javax.ejb.Stateless;
+  ..
+  @Stateless //required to trigger @RolesAllowed
+  @RolesAllowed(RestApp.ROLE)
+  ```
   
 #### Add deployment support
   
