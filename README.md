@@ -25,7 +25,7 @@ TODO (priority not clear):
 
   Run: `javaGenMultiModuleWarProject.sh`
   
-  In the output you'll find an actual information about expected parameters.
+  In the output you'll find actual information about expected parameters.
   Prepare the full command and run from within you `${projects}` folder
 
   **Notes**:
@@ -43,7 +43,7 @@ TODO (priority not clear):
 
   Run: `javaAddFileConfiguration.sh` 
   
-  In the output you'll find an actual information about expected parameters.
+  In the output you'll find actual information about expected parameters.
   Prepare the full command and run from within you 
   `${projects}/${artifact-id}` folder
   
@@ -76,7 +76,7 @@ TODO (priority not clear):
 #### Add authentication support
 
   Run: `javaAddWebAuthentication.sh`
-  In the output you'll find an actual information about expected parameters.
+  In the output you'll find actual information about expected parameters.
 
   **Note**: keep in mind, it is a good practice to protect rest services as well. 
   To do it correctly, both annotations must be applied to the service:
@@ -91,7 +91,7 @@ TODO (priority not clear):
 #### Add deployment support
   
   Run: `javaMavenDeploymentSupport.sh`
-  In the output you'll find an actual information about expected parameters.
+  In the output you'll find actual information about expected parameters.
   
 #### Excel Module support  
 
