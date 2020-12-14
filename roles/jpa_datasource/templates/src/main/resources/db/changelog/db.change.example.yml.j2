@@ -1,0 +1,17 @@
+databaseChangeLog:
+
+  - changeSet:
+      id: 3
+      author: asokolov
+      changes:
+        - addColumn:
+            tableName: example
+            columns:
+              - column:
+                  name:  another_name
+                  type:  varchar(20)
+        - renameColumn:
+            newColumnName:  name
+            oldColumnName:  old_name
+            columnDataType: varchar(1024)
+            tableName:  example

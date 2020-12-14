@@ -1,5 +1,15 @@
 ### This project allows generating Java code for different layers
 
+  Note: to undo the code generation, run: 
+
+  `git reset --hard && git clean -fd`
+
+  Description:
+
+  `git reset --hard` will undo both staged and unstaged changes.
+      
+  `git clean -fd` removes all untracked files and directories, '-f' is force, '-d' is remove directories.
+
 ### Requirements
 
   To be able to generate code from any folder run once:
@@ -16,6 +26,7 @@
 - [Protect Web App with Auth](#add-authentication-support)
 - [Add deployment support](#add-deployment-support)
 - [Excel Support](#excel-module-support)
+- [Jpa Datasource Support](#jpa-datasource)
 
 TODO (priority not clear):
 
@@ -72,6 +83,9 @@ TODO (priority not clear):
 #### Cron Jee Support
 
   Run: `javaAddCronJobsSupport.sh`
+
+  Note: make you task interruptible, if you want to run it via cron. 
+  Add async support for this.
   
 #### Add authentication support
 
@@ -96,6 +110,11 @@ TODO (priority not clear):
 #### Excel Module support  
 
   Run: `javaExcelSupport.sh`
+
+#### Jpa Datasource 
+
+  Run: `javaAddJpaDatasource.sh`
+  In the output you'll find actual information about expected parameters.
 
 ## TODO (priority not clear):
 

@@ -1,0 +1,119 @@
+databaseChangeLog:
+
+  - changeSet:
+      id: 1
+      author: asokolov
+      changes:
+        - createTable:
+            tableName: hibernate_sequence
+            columns:
+              - column:
+                  name: next_val
+                  type: bigint
+        - insert:
+            tableName: hibernate_sequence
+            columns:
+              - column:
+                  name: next_val
+                  value: 1
+
+  - changeSet:
+      id: 2
+      author: asokolov
+      changes:
+        - createTable:
+            tableName: example
+            columns:
+              - column:
+                  name: id
+                  type: bigint
+                  constraints:
+                    primaryKey: true
+              # is renamed in the next changelog
+              - column:
+                  name: old_name
+                  type: varchar(255)
+                  constraints:
+                    nullable: false
+                    unique: false
+
+              - column:
+                  name: status
+                  type: enum('CREATED', 'PROCESSED', 'FINISHED')
+                  constraints:
+                    nullable: false
+
+              ####### number types START ###########
+              - column:
+                  name: smallest_int
+                  type: tinyint
+              - column:
+                  name: small_int
+                  type: smallint
+              - column:
+                  name: number1
+                  type: number
+              - column:
+                  name: number2
+                  type: int
+              - column:
+                  name: big_number
+                  type: bigint
+              ####### number types END ###########
+
+
+
+              ####### decimal number types START ###########
+              - column:
+                  name: money
+                  # see https://github.com/liquibase/liquibase/issues/1190
+                  # type: currency
+                  type: decimal(15,4)
+              - column:
+                  name: float_field
+                  type: float
+              - column:
+                  name: double_field
+                  type: double
+              - column:
+                  name: decimal_field
+                  # default decimal have no values after comma
+                  type: decimal(15,4)
+              ####### decimal number types END   ###########
+
+
+
+              ####### date time types START ###########
+              - column:
+                  name: instant_field
+                  type: datetime
+              - column:
+                  name: offset_date_time
+                  type: datetime
+              - column:
+                  name: zoned_date_time
+                  type: datetime
+              - column:
+                  name: local_date_time
+                  type: datetime
+              - column:
+                  name: local_date
+                  type: date
+              - column:
+                  name: local_time
+                  type: time
+
+              - column:
+                  name: java_date
+                  type: datetime
+              - column:
+                  name: java_only_date
+                  type: date
+              - column:
+                  name: sql_date
+                  type: date
+              - column:
+                  name: sql_timestamp
+                  type: timestamp
+
+              ####### date time types END   ###########
