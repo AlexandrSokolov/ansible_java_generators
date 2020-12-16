@@ -57,6 +57,8 @@ TODO (priority not clear):
   In the output you'll find actual information about expected parameters.
   Prepare the full command and run from within you 
   `${projects}/${artifact-id}` folder
+
+  Read `commons_config/README.md` for the description.
   
   **Notes:** 
   1. `config-folder-sys-variable` is a system variable that refers
