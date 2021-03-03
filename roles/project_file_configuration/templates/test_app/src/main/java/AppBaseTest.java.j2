@@ -7,7 +7,7 @@ import {{ group_id }}.commons.test.BaseTest;
 public class AppBaseTest extends BaseTest {
 
   //you custom property file for tests is needed:
-  //private static final String CONF_PROP = "test.app.properties";
+  //private static final String CONF_PROP = "test.{{ config_file_name }}";
   private static final String CONF_PROP = Configuration.CONFIG_FILE;
 
   public static final String BASIC_AUTH_PASSWORD = "admin123";

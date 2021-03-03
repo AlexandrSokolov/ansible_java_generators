@@ -26,7 +26,7 @@
     </dependency>
     ```
 
-2. Extend your test with `BaseTest`:
+2. Extend your test with `AppBaseTest`:
 
 ```
 import {{ group_id }}.test.AppBaseTest;
@@ -56,14 +56,16 @@ public class MyTest extends AppBaseTest { ...
         </testResource>
       </testResources>
    ```
+   Remove the `test_app/src/test/resources/test.{{ config_file_name }}` generated file
+
   3.2 If you use different property files for test and live environments:
    
-   The `test_app/src/test/resources/test.app.properties` property file is used for tests.
+   The `test_app/src/test/resources/test.{{ config_file_name }}` property file is used for tests.
 
    Uncomment in `AppBaseTest.java`:
 
   ```
-  //private static final String CONF_PROP = "test.app.properties";
+  //private static final String CONF_PROP = "test.{{ config_file_name }}";
   ```
 
    Maven parent module configuration changes:

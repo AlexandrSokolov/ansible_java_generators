@@ -38,4 +38,4 @@
     - src: test_app/src/main/java/AppBaseTest.java.j2
       dst: "{{ mvn_project_basedir }}/test_app/src/main/java/{{ group_id_path }}/test/AppBaseTest.java"
     - src: "test_app/src/test/resources/test.app.properties.j2"
-      dst: "{{ mvn_project_basedir }}/test_app/src/test/resources/test.app.properties"
+      dst: "{{ mvn_project_basedir }}/test_app/src/test/resources/test.{{ config_file_name }}"
