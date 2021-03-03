@@ -66,7 +66,15 @@ TODO (priority not clear):
     The certain command you can find on the github/gitlab.
     
     Note: do not config `user.name` and `user.email` globally if you use more than a single git host.
-  - write unit test via extending BaseTest
+
+  Now you can implement REST service:
+  - write a REST interface in `rest_api` module (REST API), without implementation
+  - write DTO REST objects 
+  - write unit tests to serialize/deserialize DTO into/from the json text. Extend `BaseTest` from `commons_test`
+  - write an implementation of the REST service in the `front_end_war` module
+  
+  Note: you still cannot write integration tests and use your rest service in the code, 
+  without Jax RS (rest) client support. See below.
     
 #### Add file configuration support
 
@@ -76,7 +84,7 @@ TODO (priority not clear):
   Prepare the full command and run from within you 
   `${projects}/${artifact-id}` folder
 
-  Read `commons_config/README.md` and `test_app/README.md` for the description.
+  Read `test_app/README.md` for the description to use configuration file in your tests.
 
   You can also remove if you do not need:
   - `commons_config/README.md`
@@ -109,6 +117,84 @@ TODO (priority not clear):
 #### Add Jax RS (rest) client support  
 
   Run: `javaAddCommonsJaxRsClient.sh` 
+
+  Now you can:
+  - for external REST API (provided by Jax Rs interfaces) write a `JaxRsProxyConfig` to be able to use it.
+    
+    Note:
+    Prefer passwordless authentication, instead of the `JaxRsProxyConfigProducer` example, given below.
+    You need to add this support additionally. 
+    See `javaBmAuth.sh` in `ansible-java-bm-generators` project.
+    
+    ```java
+    public class JaxRsProxyConfigProducer {
+
+      static final String SOME_REST_URL = "/rest/url";
+      
+      @Inject
+      Configuration configuration;
+      
+      @Produces
+      public JaxRsProxyConfig configurationRestApiConfig() {
+        return JaxRsProxyConfig.builder()
+          .withBasicAuth(configuration.login(), "some password")
+          .withDomain(configuration.domain() + SOME_REST_URL)
+          .withClazz4Logging(SomeRestService.class)
+          .build();
+      }
+    ```
+  - provide the service, which consumes REST API with a helper method for tests:
+    ```java
+    public class RestServiceConsumer {
+
+      public static RestServiceConsumer viaBasicAuthInstance(
+        final Configuration config, final String password) { 
+        RestServiceConsumer service = new RestServiceConsumer();
+        JaxRsProxyConfig jaxRsProxyConfig = JaxRsProxyConfig.builder()
+          .withBasicAuth(configuration.login(), "some password")
+          .withDomain(configuration.domain() + SOME_REST_URL)
+          .withClazz4Logging(RestServiceConsumer.class)
+          .build();
+        service.someDeps = SomeDeps.viaBasicAuthInstance(config, password);
+        service.jaxRsProxyConfig = jaxRsProxyConfig; 
+        applicationService.init(); // if needed
+        return applicationService; 
+      }
+    
+      @Inject
+      JaxRsProxyConfig jaxRsProxyConfig;
+
+      @Inject
+      SomeDeps someDeps;
+    ```
+  - for external REST API write an integration test:
+    ```java
+    public class RestServiceConsumerIT extends AppBaseTest {
+
+      RestServiceConsumer restServiceConsumer = RestServiceConsumer
+        .viaBasicAuthInstance(testConfig(), BASIC_AUTH_PASSWORD);
+    ```
+  - for REST service you provide, but do not use in the application, write an integration test:
+    ```java
+    public class YourRestServiceIT extends AppBaseTest {
+    
+      Configuration config = testConfig();
+    
+      JaxRsProxyConfig proxyConfig = JaxRsProxyConfig.builder()
+        .withDomain(config.domain())
+        .withClazz4Logging(YourRestService.class)
+        .withBasicAuth(
+          config.login(),
+          AppBaseTest.BASIC_AUTH_PASSWORD)
+        .build();
+    
+      @Test
+      public void testMethod() {
+        String result = proxyConfig.proxy(MpPublicationConsumerRestApi.class)
+          .restApiMethod();
+      }
+    }
+    ```
   
 #### Add Jax WS (soap) client support  
 
