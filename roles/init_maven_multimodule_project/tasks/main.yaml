@@ -33,6 +33,8 @@
 
     - import_tasks: tasks/commons_test.yaml
 
+    - import_tasks: tasks/domain_module.yaml
+
   when: not app_basedir_path.stat.exists
 
 - debug:

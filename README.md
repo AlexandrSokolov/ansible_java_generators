@@ -40,18 +40,19 @@ TODO (priority not clear):
   Run: `javaGenMultiModuleMavenProject.sh`
   
   In the output you'll find actual information about expected parameters.
-  Prepare the full command and run from within you `${projects}` folder
+  Prepare the full command and run from within you `${projects}` folder.
 
   **Notes**:
   
   - Split names in `artifact-id` with `-` symbol, 
     it should look like: `my-smart-project`. 
+    
     Based on this name some other names are generated, like:
     `my-smart-project-rest-api`
     `my-smart-project-config`
     
-  - `artifact-id` is used as a maven project base dir, 
-    so a new project will be generated in `${projects}/${artifact-id}` folder
+  - `artifact-id` is used as a project base directory. 
+    So a new project will be generated in `${projects}/${artifact-id}` folder
     
   TODO remove me after restructering `javaGenMultiModuleWarProject.sh` is divided and not used anymore!
 

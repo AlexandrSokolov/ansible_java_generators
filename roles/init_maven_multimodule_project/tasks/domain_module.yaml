@@ -1,0 +1,29 @@
+---
+- name: "Create `domain` folder if does not exist"
+  file:
+    state: directory
+    path: "{{ item }}"
+    owner: "{{ lookup('env', 'USER') }}"
+    group: "{{ lookup('env', 'USER') }}"
+  with_items:
+    - "{{ app_basedir }}/domain"
+
+- name: "Generate domain/pom.xml file"
+  template:
+    src: "{{ item }}.j2"
+    dest: "{{ app_basedir }}/{{ item }}"
+    mode: 0644
+    owner: "{{ lookup('env', 'USER') }}"
+    group: "{{ lookup('env', 'USER') }}"
+    force: yes
+  with_items:
+    - domain/pom.xml
+
+- name: "Generate java classes of `domain` module"
+  include_role:
+    name: gen_java_class_from_template
+  with_items:
+    - src: domain/src/main/java/ApplicationService.java.j2
+      dst: "{{ app_basedir }}/domain/src/main/java/{{ group_id_path }}/app/ApplicationService.java"
+    - src: domain/src/main/resources/META-INF/beans.xml
+      dst: "{{ app_basedir }}/domain/src/main/resources/META-INF/beans.xml"
