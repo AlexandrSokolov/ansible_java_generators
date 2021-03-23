@@ -53,15 +53,17 @@ TODO (priority not clear):
     
   - `artifact-id` is used as a project base directory. 
     So a new project will be generated in `${projects}/${artifact-id}` folder
+
+  After the project generation via Ansible, build it, make sure it is built successfully.
     
   TODO remove me after restructering `javaGenMultiModuleWarProject.sh` is divided and not used anymore!
 
 #### Git support
 
-TODO, finish it:
+  Run: `gitSupport.sh`
 
-After the project generation:
-- build the project, make sure it is built successfully
+  In the output you'll find actual information about expected parameters.
+
 - push project into an existing Git repo:
   ```shell
   cd existing_folder
