@@ -3,6 +3,7 @@ package {{ group_id }}.commons.jax.rs.client;
 import {{ group_id }}.commons.jax.rs.client.filter.RequestResponseInfo;
 
 import javax.ws.rs.WebApplicationException;
+import javax.ws.rs.core.Response;
 
 public class JaxRsExceptionsUtils {
 
@@ -18,5 +19,10 @@ public class JaxRsExceptionsUtils {
     } else {
       return e.getMessage();
     }
+  }
+
+  public static String extractErrorFromResponse(final Response response) {
+    return RequestResponseInfo.errorRequestResponseInfo(response)
+      .orElseThrow(() -> new IllegalStateException("Not nullable instance of RequestResponseInfo is expected."));
   }
 }

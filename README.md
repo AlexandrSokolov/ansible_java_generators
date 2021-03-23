@@ -210,7 +210,31 @@ TODO (priority not clear):
       }
     }
     ```
-  
+  - By default errors (any response code, which are not 2xx HTTP status code) are logged. 
+    To extract request and response as a String, you can:
+    
+    In case a REST interface returns DTO object:
+    ```
+    try {
+      SomeDto someObject = jaxRsProxyConfig.proxy(SomeRestService.class)
+      .get(someId);
+    } catch (Exception e) {
+      throw new IllegalStateException("Could not download file"
+        + JaxRsExceptionsUtils.extractErrorFromResponse(e));
+    }
+    ```
+    
+    In case a REST interface returns `Response`, but not DTO object: 
+    ```
+    Response response = jaxRsProxyConfig.proxy(DownloadRestService.class)
+      .downloadById(someId);
+
+    if (Response.Status.Family.SUCCESSFUL != response.getStatusInfo().getFamily() ) {
+      throw new IllegalStateException("Could not download file"
+        + JaxRsExceptionsUtils.extractErrorFromResponse(response));
+    }
+    ```
+
 #### Add Jax WS (soap) client support  
 
   Run: `javaAddCommonsJaxWsSoapClient.sh`   
