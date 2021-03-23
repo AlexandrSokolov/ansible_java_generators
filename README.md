@@ -53,6 +53,8 @@ TODO (priority not clear):
     
   - `artifact-id` is used as a project base directory. 
     So a new project will be generated in `${projects}/${artifact-id}` folder
+    
+  - All other Ansible scripts run from within the project base folder.
 
   After the project generation via Ansible, build it, make sure it is built successfully.
     
@@ -60,7 +62,7 @@ TODO (priority not clear):
 
 #### Git support
 
-  Run: `gitSupport.sh`
+  Run from within the project base folder: `gitSupport.sh`
 
   In the output you'll find actual information about expected parameters.
 
