@@ -1,0 +1,42 @@
+---
+- debug:
+    msg: "Current project folder for project generation: `{{ app_basedir }}`"
+    verbosity: 1
+
+- name: "Ansible check for {{ app_basedir }} project folder."
+  stat:
+    path: "{{ app_basedir }}"
+  register: app_basedir_path
+
+- block:
+
+    - name: "Create `{{ app_basedir }}` project folder if it does not exist"
+      file:
+        state: directory
+        path: "{{ item }}"
+        owner: "{{ lookup('env', 'USER') }}"
+        group: "{{ lookup('env', 'USER') }}"
+      with_items:
+        - "{{ app_basedir }}"
+
+    - name: "Set `group_id_path` variable from `group_id`"
+      set_fact:
+        group_id_path: "{{ group_id | replace('.', '/') }}"
+
+    - import_tasks: tasks/store_ansible_variables.yaml
+
+    - import_tasks: tasks/code_quality.yaml
+
+    - import_tasks: tasks/parent_module.yaml
+
+    - import_tasks: tasks/deps_module.yaml
+
+    - import_tasks: tasks/commons_test.yaml
+
+  when: not app_basedir_path.stat.exists
+
+- debug:
+    msg:
+      - "ERROR: {{ app_basedir }} already exist, new project will not be generated"
+      - "       To generate a new project delete first the previous one."
+  when: app_basedir_path.stat.exists

@@ -12,12 +12,15 @@
 
 ### Requirements
 
+  Make sure you installed commons roles, see [Ansible Commons Roles README](https://github.com/AlexandrSokolov/ansible-commons-roles)
+
   To be able to generate code from any folder run once:
     `./scripts/extendPathWithScripsFolder.sh`
 
 ### Features:
 
 - [Generate Maven Multimodule Project](#generate-maven-project)
+- [Add Git Support](#git-support)
 - [Project configuration](#add-file-configuration-support)
 - [Jax Rs (Rest) Client Support](#add-jax-rs-rest-client-support)
 - [Jax Ws (Soap) Client Support](#add-jax-ws-soap-client-support)
@@ -34,7 +37,7 @@ TODO (priority not clear):
 
 #### Generate Maven Project
 
-  Run: `javaGenMultiModuleWarProject.sh`
+  Run: `javaGenMultiModuleMavenProject.sh`
   
   In the output you'll find actual information about expected parameters.
   Prepare the full command and run from within you `${projects}` folder
@@ -50,32 +53,42 @@ TODO (priority not clear):
   - `artifact-id` is used as a maven project base dir, 
     so a new project will be generated in `${projects}/${artifact-id}` folder
     
-  After the project generation:
-  - build the project, make sure it is built successfully
-  - push project into an existing Git repo:
-    ```shell
-    cd existing_folder
-    git init
-    git config user.name "Your Name"
-    git config user.email "YouEmail@domain.com"
-    git remote add origin git@full.path.git
-    git add .
-    git commit -m "Initial commit"
-    git push -u origin master
-    ```
-    The certain command you can find on the github/gitlab.
-    
-    Note: do not config `user.name` and `user.email` globally if you use more than a single git host.
+  TODO remove me after restructering `javaGenMultiModuleWarProject.sh` is divided and not used anymore!
 
-  Now you can implement REST service:
-  - write a REST interface in `rest_api` module (REST API), without implementation
-  - write DTO REST objects 
-  - write unit tests to serialize/deserialize DTO into/from the json text. Extend `BaseTest` from `commons_test`
-  - write an implementation of the REST service in the `front_end_war` module
-  
-  Note: you still cannot write integration tests and use your rest service in the code, 
-  without Jax RS (rest) client support. See below.
-    
+#### Git support
+
+TODO, finish it:
+
+After the project generation:
+- build the project, make sure it is built successfully
+- push project into an existing Git repo:
+  ```shell
+  cd existing_folder
+  git init
+  git config user.name "Your Name"
+  git config user.email "YouEmail@domain.com"
+  git remote add origin git@full.path.git
+  git add .
+  git commit -m "Initial commit"
+  git push -u origin master
+  ```
+  The certain command you can find on the github/gitlab.
+
+  Note: do not config `user.name` and `user.email` globally if you use more than a single git host.
+
+
+#### Generate REST Services with API TODO, correct dependency!!!
+
+Now you can implement REST service:
+- write a REST interface in `rest_api` module (REST API), without implementation
+- write DTO REST objects
+- write unit tests to serialize/deserialize DTO into/from the json text. Extend `BaseTest` from `commons_test`
+- write an implementation of the REST service in the `front_end_war` module
+
+Note: you still cannot write integration tests and use your rest service in the code,
+without Jax RS (rest) client support. See below.
+
+
 #### Add file configuration support
 
   Run: `javaAddFileConfiguration.sh` 

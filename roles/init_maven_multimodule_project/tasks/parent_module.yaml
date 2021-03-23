@@ -1,0 +1,13 @@
+---
+- name: "Adding required files to the root of the project"
+  template:
+    src: "{{ item }}.j2"
+    dest: "{{ app_basedir }}/{{ item }}"
+    mode: 0644
+    owner: "{{ lookup('env', 'USER') }}"
+    group: "{{ lookup('env', 'USER') }}"
+    force: yes
+  with_items:
+    - pom.xml
+    - .gitignore
+    - README.md

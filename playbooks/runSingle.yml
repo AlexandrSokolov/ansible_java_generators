@@ -4,4 +4,4 @@
   tasks:
 
     - include_role:
-        name: jax_rs_client
+        name: init_maven_multimodule_project
