@@ -1,0 +1,39 @@
+---
+- name: "Create `rest_web` folder if does not exist"
+  file:
+    state: directory
+    path: "{{ item }}"
+    owner: "{{ lookup('env', 'USER') }}"
+    group: "{{ lookup('env', 'USER') }}"
+  with_items:
+    - "{{ app_basedir }}/rest_web"
+
+- name: "Generate rest_web/pom.xml file"
+  template:
+    src: "{{ item }}.j2"
+    dest: "{{ app_basedir }}/{{ item }}"
+    mode: 0644
+    owner: "{{ lookup('env', 'USER') }}"
+    group: "{{ lookup('env', 'USER') }}"
+    force: yes
+  with_items:
+    - rest_web/pom.xml
+
+- name: "Generate sources of `rest_web` module"
+  include_role:
+    name: gen_java_class_from_template
+  with_items:
+    - src: rest_web/src/main/java/app/JaxRsHandlerUtils.java.j2
+      dst: "{{ app_basedir }}/rest_web/src/main/java/{{ group_id_path }}/rest/app/JaxRsHandlerUtils.java"
+    - src: rest_web/src/main/java/config/JAXRSConfiguration.java.j2
+      dst: "{{ app_basedir }}/rest_web/src/main/java/{{ group_id_path }}/rest/config/JAXRSConfiguration.java"
+    - src: rest_web/src/main/java/config/ServerSideJacksonProvider.java.j2
+      dst: "{{ app_basedir }}/rest_web/src/main/java/{{ group_id_path }}/rest/config/ServerSideJacksonProvider.java"
+    - src: rest_web/src/main/java/mappers/WebApplicationExceptionMapper.java.j2
+      dst: "{{ app_basedir }}/rest_web/src/main/java/{{ group_id_path }}/rest/mappers/WebApplicationExceptionMapper.java"
+    - src: rest_web/src/main/resources/build.properties
+      dst: "{{ app_basedir }}/rest_web/src/main/resources/build.properties"
+    - src: rest_web/src/main/webapp/WEB-INF/beans.xml
+      dst: "{{ app_basedir }}/rest_web/src/main/webapp/WEB-INF/beans.xml"
+    - src: rest_web/src/main/webapp/WEB-INF/jboss-web.xml.j2
+      dst: "{{ app_basedir }}/rest_web/src/main/webapp/WEB-INF/jboss-web.xml"
