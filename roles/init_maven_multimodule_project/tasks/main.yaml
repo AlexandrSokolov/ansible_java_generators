@@ -23,8 +23,6 @@
       set_fact:
         group_id_path: "{{ group_id | replace('.', '/') }}"
 
-    - import_tasks: tasks/store_ansible_variables.yaml
-
     - import_tasks: tasks/code_quality.yaml
 
     - import_tasks: tasks/parent_module.yaml

@@ -1,24 +1,6 @@
 ---
-- name: "Make sure we run it from within the project base folder."
-  stat:
-    path: "{{ app_basedir }}/.ansible/ansible_shared_variables.yaml"
-  register: ansible_shared_variables_path
+- name: "Loading projects properties"
+  include_role:
+    name: load_maven_properties
 
-- debug:
-    msg: "{{ ansible_shared_variables_path }}"
-
-- block:
-
-    - name: "Loading projects properties"
-      include_role:
-        name: load_maven_properties
-
-    - import_tasks: tasks/rest_api_module.yaml
-
-  when: ansible_shared_variables_path.stat.exists
-
-- debug:
-    msg:
-      - "ERROR: '{{ app_basedir }}/.ansible/ansible_shared_variables.yaml does not exist."
-      - "       Run the script from within the project base folder!"
-  when: not ansible_shared_variables_path.stat.exists
+- import_tasks: tasks/rest_api_module.yaml

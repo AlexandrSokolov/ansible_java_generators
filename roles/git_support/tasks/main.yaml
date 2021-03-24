@@ -1,23 +1,12 @@
 ---
-- name: "Make sure we run it from within the project base folder."
-  stat:
-    path: "{{ app_basedir }}/.ansible/ansible_shared_variables.yaml"
-  register: ansible_shared_variables_path
+- name: "Loading projects properties"
+  include_role:
+    name: load_maven_properties
 
-- block:
-
-  - name: "Update the root `pom.xml` file with git url"
-    include_role:
-      name: insert_template_after_another
-    with_items:
-      - path: "{{ app_basedir }}/pom.xml"
-        insert_after_template: "{{ role_path }}/templates/insert_after_template.j2"
-        insert_template: "{{ role_path }}/templates/insert_template.j2"
-
-  when: ansible_shared_variables_path.stat.exists
-
-- debug:
-    msg:
-      - "ERROR: '{{ app_basedir }}/.ansible/ansible_shared_variables.yaml does not exist."
-      - "       Run the script from within the project base folder!"
-  when: not ansible_shared_variables_path.stat.exists
+- name: "Update the root `pom.xml` file with git url"
+  include_role:
+    name: insert_template_after_another
+  with_items:
+    - path: "{{ app_basedir }}/pom.xml"
+      insert_after_template: "{{ role_path }}/templates/insert_after_template.j2"
+      insert_template: "{{ role_path }}/templates/insert_template.j2"
