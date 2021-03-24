@@ -88,7 +88,7 @@ TODO (priority not clear):
   
   In the output you'll find actual information about expected parameters.
   
-  The script generates new `rest_api` and `front_end_war` maven modules.
+  The script generates new `rest_api` and `rest_web` maven modules.
   
   Steps to implement your own REST service:
   - write a REST interface in `rest_api` module (REST API), without implementation

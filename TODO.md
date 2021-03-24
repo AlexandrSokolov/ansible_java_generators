@@ -1,3 +1,8 @@
+- continue adoption with `Add file configuration support`
+  correct sharing resources. Now it is not acceptable cause of the bug in IDEA
+- rest_service, add real service that implements rest interface, 
+  it must use JaxRsHandlerUtils.java
+  add unit tests for it
 - jax rs client, more example with authentication, README
 - jax rs client more clear logging, README
 - avoid using ansible file with variables, try to read them from pom.xml
