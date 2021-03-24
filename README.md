@@ -94,7 +94,7 @@ TODO (priority not clear):
   - write a REST interface in `rest_api` module (REST API), without implementation
   - write DTO REST objects
   - write unit tests to serialize/deserialize DTO into/from the json text. Extend `BaseTest` from `commons_test`
-  - write an implementation of the REST service in the `front_end_war` module
+  - write an implementation of the REST service in the `rest_web` module
   
   Note: you still cannot write integration tests and use your rest service in the code,
   without Jax RS (rest) client support. See below.

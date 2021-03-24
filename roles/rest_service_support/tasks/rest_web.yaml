@@ -30,7 +30,7 @@
     - src: rest_web/src/main/java/config/ServerSideJacksonProvider.java.j2
       dst: "{{ app_basedir }}/rest_web/src/main/java/{{ group_id_path }}/rest/config/ServerSideJacksonProvider.java"
     - src: rest_web/src/main/java/mappers/WebApplicationExceptionMapper.java.j2
-      dst: "{{ app_basedir }}/rest_web/src/main/java/{{ group_id_path }}/rest/mappers/WebApplicationExceptionMapper.java"
+      dst: "{{ app_basedir }}/rest_web/src/main/java/{{ group_id_path }}/rest/exception/mappers/WebApplicationExceptionMapper.java"
     - src: rest_web/src/main/resources/build.properties
       dst: "{{ app_basedir }}/rest_web/src/main/resources/build.properties"
     - src: rest_web/src/main/webapp/WEB-INF/beans.xml
