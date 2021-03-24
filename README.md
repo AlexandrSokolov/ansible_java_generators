@@ -84,16 +84,20 @@ TODO (priority not clear):
 
 #### Generate REST API and REST Services
 
-The script generates new `rest_api` and `front_end_war` maven modules.
-
-Steps to implement your own REST service:
-- write a REST interface in `rest_api` module (REST API), without implementation
-- write DTO REST objects
-- write unit tests to serialize/deserialize DTO into/from the json text. Extend `BaseTest` from `commons_test`
-- write an implementation of the REST service in the `front_end_war` module
-
-Note: you still cannot write integration tests and use your rest service in the code,
-without Jax RS (rest) client support. See below.
+  Run from within the project base folder: `restSupport.sh`
+  
+  In the output you'll find actual information about expected parameters.
+  
+  The script generates new `rest_api` and `front_end_war` maven modules.
+  
+  Steps to implement your own REST service:
+  - write a REST interface in `rest_api` module (REST API), without implementation
+  - write DTO REST objects
+  - write unit tests to serialize/deserialize DTO into/from the json text. Extend `BaseTest` from `commons_test`
+  - write an implementation of the REST service in the `front_end_war` module
+  
+  Note: you still cannot write integration tests and use your rest service in the code,
+  without Jax RS (rest) client support. See below.
 
 
 #### Add file configuration support

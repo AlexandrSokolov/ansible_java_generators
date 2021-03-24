@@ -86,11 +86,8 @@ done
 
 changePwd2AnsibleScriptsFolder $artifact_id
 
-#  --ask-become-pass \
-#ANSIBLE_KEEP_REMOTE_FILES=1 ansible-playbook \
-#   --extra-vars "some-variable=${someValue}" \
-ansible-playbook \
-  -v \
-  -i inventories/local \
-  --extra-vars "${extra_vars} app_basedir=$app_basedir" \
-  playbooks/runSingle.yml
+#running role directly without playbook
+ansible localhost -v \
+  --module-name include_role \
+  --args name=init_maven_multimodule_project \
+  --extra-vars "${extra_vars} app_basedir=$app_basedir"

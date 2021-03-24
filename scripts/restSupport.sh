@@ -50,7 +50,7 @@ while [[ $# -gt 0 ]]; do
 done
 
 #running role directly without playbook
-ansible localhost -vvv \
+ansible localhost -v \
   --module-name include_role \
   --args name=rest_service_support \
   --extra-vars "${extra_vars} app_basedir=$app_basedir"

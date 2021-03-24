@@ -42,8 +42,8 @@ while [[ $# -gt 0 ]]; do
   esac
 done
 
-ansible-playbook \
-  -v \
-  -i inventories/local \
-  --extra-vars "${extra_vars} app_basedir=$app_basedir" \
-  playbooks/gitSupport.yaml
+#running role directly without playbook
+ansible localhost -v \
+  --module-name include_role \
+  --args name=git_support \
+  --extra-vars "${extra_vars} app_basedir=$app_basedir"
