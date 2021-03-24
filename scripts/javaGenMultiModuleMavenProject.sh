@@ -24,7 +24,6 @@ if [[ $# -eq 0 ]]; then
     echo "        --project-description \"Some Project Description\" \\" && \
     echo "        --organization-name \"You Company Name\" \\" && \
     echo "        --organization-url www.company.com \\" && \
-    echo "        --contact-email a@test.com" && \
     exit 1
 fi
 
@@ -76,11 +75,6 @@ while [[ $# -gt 0 ]]; do
 
   --organization-url)
     extra_vars="$extra_vars organization_url=$2"
-    shift 2
-    ;;
-
-  --contact-email)
-    extra_vars="$extra_vars contact_email=$2"
     shift 2
     ;;
 

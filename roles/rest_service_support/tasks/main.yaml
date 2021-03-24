@@ -4,15 +4,16 @@
     path: "{{ app_basedir }}/.ansible/ansible_shared_variables.yaml"
   register: ansible_shared_variables_path
 
+- debug:
+    msg: "{{ ansible_shared_variables_path }}"
+
 - block:
 
-  - name: "Update the root `pom.xml` file with git url"
-    include_role:
-      name: insert_template_after_another
-    with_items:
-      - path: "{{ app_basedir }}/pom.xml"
-        insert_after_template: "{{ role_path }}/templates/insert_after_template.j2"
-        insert_template: "{{ role_path }}/templates/insert_template.j2"
+    - name: "Loading projects properties"
+      include_role:
+        name: load_maven_properties
+
+    - import_tasks: tasks/rest_api_module.yaml
 
   when: ansible_shared_variables_path.stat.exists
 

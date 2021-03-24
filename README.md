@@ -66,7 +66,7 @@ TODO (priority not clear):
 
   In the output you'll find actual information about expected parameters.
 
-- push project into an existing Git repo:
+  Push project into an existing Git repo:
   ```shell
   cd existing_folder
   git init
@@ -77,14 +77,16 @@ TODO (priority not clear):
   git commit -m "Initial commit"
   git push -u origin master
   ```
-  The certain command you can find on the github/gitlab.
+  The certain commands you can find on the github/gitlab.
 
   Note: do not config `user.name` and `user.email` globally if you use more than a single git host.
 
 
-#### Generate REST Services with API TODO, correct dependency!!!
+#### Generate REST API and REST Services
 
-Now you can implement REST service:
+The script generates new `rest_api` and `front_end_war` maven modules.
+
+Steps to implement your own REST service:
 - write a REST interface in `rest_api` module (REST API), without implementation
 - write DTO REST objects
 - write unit tests to serialize/deserialize DTO into/from the json text. Extend `BaseTest` from `commons_test`

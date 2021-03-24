@@ -1,0 +1,106 @@
+<enunciate xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+           xsi:noNamespaceSchemaLocation="http://enunciate.webcohesion.com/schemas/enunciate-{{ enunciate_plugin_version }}.xsd">
+
+  <title>{{ project_name }} Rest API</title>
+  <description>
+    <![CDATA[
+      <h2>Rest API Documentation</h2>
+      <p>Root context: <b>{{ project_url }}</b></p>
+    ]]>
+  </description>
+  <copyright>{{ organization_url }}</copyright>
+  <contact email="{{ contact_email }}" name="{{ project_name }} Rest API" />
+
+  <api-classes>
+    <include pattern="{{ group_id }}.rest.**" />
+    <include pattern="{{ group_id }}.api.**" />
+    <include pattern="java.**" />
+    <exclude pattern="**" />
+  </api-classes>
+
+  <modules>
+    <!--    see also the attibute: freemarkerTemplate="template.fmt"-->
+    <docs
+      docsSubdir="enunciate/docs"
+      disableResourceLinks="true"
+      includeApplicationPath="true"
+      disabled="false"
+    />
+    <swagger
+      basePath="{{ project_url }}/rest"
+      disabled="false">
+    </swagger>
+    <jackson
+      dateFormat="string"
+      disabled="false">
+      <accessor-visibility type="field" visibility="any" />
+      <examples>
+        <example type="java.time.Instant" example="2021-12-24T10:15:30+03:00"/>
+        <example type="java.time.OffsetDateTime" example="2021-12-25T10:15:30+05:00"/>
+        <example type="java.time.ZonedDateTime" example="2021-12-26T10:15:30+02:00"/>
+        <example type="java.time.LocalDateTime" example="2021-12-27T10:15:30-02:00"/>
+        <example type="java.time.LocalDate" example="2016-12-27"/>
+        <example type="java.time.LocalTime" example="10:15:30+05:00"/>
+        <example type="java.util.Date" example="2022-10-21T22:10:30-06:00"/>
+        <example type="java.sql.Date" example="2025-10-21T21:08:24+01:00"/>
+        <example type="java.sql.Timestamp" example="2027-10-21T21:07:24+00:00"/>
+        <example type="java.math.BigDecimal" example="5670.75"/>
+      </examples>
+    </jackson>
+    <jaxrs
+      groupBy="class"
+      disabled="false"
+      path-sort-strategy="depth_first"
+      datatype-detection="aggressive">
+      <application path="{{ project_url }}/rest"/>
+    </jaxrs>
+
+    <java-json-client
+      jarName="template-project-java-json-client.jar"
+      groupId="{{ group_id }}.rest.client"
+      artifactId="rest-client">
+      <package-conversions>
+        <convert from="{{ group_id }}.rest.api" to="{{ group_id }}.rest.api.client"/>
+        <application path="{{ project_url }}/rest"/>
+      </package-conversions>
+    </java-json-client>
+
+    <javascript-client>
+      <package-conversions>
+        <convert from="{{ group_id }}.rest.api" to="{{ group_id }}.rest.api.client"/>
+        <application path="{{ project_url }}/rest"/>
+      </package-conversions>
+    </javascript-client>
+
+    <spring-web
+      groupBy="class"
+      datatype-detection="aggressive">
+      <application path="{{ project_url }}/rest"/>
+    </spring-web>
+
+    <!--    disabled modules: -->
+    <jackson1 disabled="true" />
+
+    <jaxb disabled="true" />
+    <jaxws disabled="true" />
+    <java-xml-client disabled="true" />
+
+    <gwt-json-overlay disabled="true" />
+    <idl disabled="true" />
+
+    <c-xml-client disabled="true" />
+    <csharp-xml-client disabled="true" />
+    <obj-c-xml-client disabled="true" />
+
+    <php-json-client disabled="true" />
+    <php-xml-client disabled="true" />
+
+    <ruby-json-client disabled="true" />
+
+  </modules>
+
+  <warnings>
+    <disable name="source-files-not-found"/>
+  </warnings>
+
+</enunciate>

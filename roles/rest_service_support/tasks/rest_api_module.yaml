@@ -1,0 +1,41 @@
+---
+- name: "Create `rest_api` folder if does not exist"
+  file:
+    state: directory
+    path: "{{ item }}"
+    owner: "{{ lookup('env', 'USER') }}"
+    group: "{{ lookup('env', 'USER') }}"
+  with_items:
+    - "{{ app_basedir }}/rest_api"
+
+- name: "Generate the xml files"
+  template:
+    src: "{{ item }}.j2"
+    dest: "{{ app_basedir }}/{{ item }}"
+    mode: 0644
+    owner: "{{ lookup('env', 'USER') }}"
+    group: "{{ lookup('env', 'USER') }}"
+    force: yes
+  with_items:
+    - rest_api/pom.xml
+
+- name: "Generate sources of `rest_api` module"
+  include_role:
+    name: gen_java_class_from_template
+  with_items:
+    - src: rest_api/src/main/java/api/MockRestApi.java.j2
+      dst: "{{ app_basedir }}/rest_api/src/main/java/{{ group_id_path }}/rest/api/MockRestApi.java"
+    - src: rest_api/src/main/java/dto/MockDto.java.j2
+      dst: "{{ app_basedir }}/rest_api/src/main/java/{{ group_id_path }}/rest/dto/MockDto.java"
+    - src: rest_api/src/main/java/jackson/deserializer/LocalDateTimeDeserializer.java.j2
+      dst: "{{ app_basedir }}/rest_api/src/main/java/{{ group_id_path }}/rest/jackson/deserializer/LocalDateTimeDeserializer.java"
+    - src: rest_api/src/main/java/jackson/serializer/LocalDateTimeSerializer.java.j2
+      dst: "{{ app_basedir }}/rest_api/src/main/java/{{ group_id_path }}/rest/jackson/serializer/LocalDateTimeSerializer.java"
+    - src: rest_api/src/main/java/jackson/serializer/MoneySerializer.java.j2
+      dst: "{{ app_basedir }}/rest_api/src/main/java/{{ group_id_path }}/rest/jackson/serializer/MoneySerializer.java"
+    - src: rest_api/src/main/java/jackson/DateTimeUtils.java.j2
+      dst: "{{ app_basedir }}/rest_api/src/main/java/{{ group_id_path }}/rest/jackson/DateTimeUtils.java"
+    - src: rest_api/src/main/java/jackson/JacksonProvider.java.j2
+      dst: "{{ app_basedir }}/rest_api/src/main/java/{{ group_id_path }}/rest/jackson/JacksonProvider.java"
+    - src: rest_api/src/main/resources/doc/enunciate/enunciate.xml.j2
+      dst: "{{ app_basedir }}/rest_api/src/main/resources/doc/enunciate/enunciate.xml"
