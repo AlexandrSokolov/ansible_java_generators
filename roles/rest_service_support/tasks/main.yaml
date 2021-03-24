@@ -3,4 +3,6 @@
   include_role:
     name: load_maven_properties
 
+- import_tasks: tasks/deps.yaml
+
 - import_tasks: tasks/rest_api_module.yaml
