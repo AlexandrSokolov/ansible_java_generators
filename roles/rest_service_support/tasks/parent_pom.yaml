@@ -1,0 +1,50 @@
+---
+- name: "Add version properties to the parent pom.xml"
+  include_role:
+    name: insert_text_after_another
+  with_items:
+    - path: "{{ app_basedir }}/pom.xml"
+      insert_after: |
+        </maven-deploy-plugin.version>
+      insert_text: |4
+              <!-- if you change enunciate version, update also version in enunciate.xml:-->
+              <!-- ... http://enunciate.webcohesion.com/schemas/enunciate-{{ enunciate_plugin_version }}.xsd-->
+              <enunciate-plugin.version>{{ enunciate_plugin_version }}</enunciate-plugin.version>
+
+- name: "Add version properties to the parent pom.xml"
+  include_role:
+    name: insert_text_after_another
+  with_items:
+    - path: "{{ app_basedir }}/pom.xml"
+      insert_after: |
+        </maven-deploy-plugin.version>
+      insert_text: |4
+              <maven-war-plugin.version>{{ maven_war_plugin_version }}</maven-war-plugin.version>
+
+- name: "Add `rest_api` module to the parent pom.xml"
+  include_role:
+    name: insert_text_after_another
+  with_items:
+    - path: "{{ app_basedir }}/pom.xml"
+      insert_after: |
+        <module>commons_test</module>
+      insert_text: |4
+              <module>rest_api</module>
+
+- name: "Add `rest_web` module to the parent pom.xml"
+  include_role:
+    name: insert_text_after_another
+  with_items:
+    - path: "{{ app_basedir }}/pom.xml"
+      insert_after: |
+        <module>domain</module>
+      insert_text: |4
+              <module>rest_web</module>
+
+- name: "Update the root `pom.xml` with web plugins"
+  include_role:
+    name: insert_template_after_another
+  with_items:
+    - path: "{{ app_basedir }}/pom.xml"
+      insert_after_template: "{{ role_path }}/templates/parent_pom/insert_after_template.j2"
+      insert_template: "{{ role_path }}/templates/parent_pom/insert_maven_plugins.j2"

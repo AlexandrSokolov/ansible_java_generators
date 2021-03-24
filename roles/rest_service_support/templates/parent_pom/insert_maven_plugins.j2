@@ -1,0 +1,48 @@
+        <plugin>
+          <groupId>com.webcohesion.enunciate</groupId>
+          <artifactId>enunciate-maven-plugin</artifactId>
+          <version>${enunciate-plugin.version}</version>
+          <configuration>
+            <skipEnunciate>false</skipEnunciate>
+            <configFile>${project.resources[0].directory}/doc/enunciate/enunciate.xml</configFile>
+            <!-- default value for docsDir: site-->
+            <docsDir>${project.build.directory}</docsDir>
+          </configuration>
+          <executions>
+            <execution>
+              <!-- <phase>site</phase>-->
+              <goals>
+                <goal>docs</goal>
+              </goals>
+            </execution>
+          </executions>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-source-plugin</artifactId>
+          <executions>
+            <execution>
+              <id>attach-sources</id>
+              <phase>package</phase>
+              <goals>
+                <goal>jar</goal>
+              </goals>
+            </execution>
+          </executions>
+        </plugin>
+
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-war-plugin</artifactId>
+          <version>${maven-war-plugin.version}</version>
+          <configuration>
+            <webResources>
+              <resource>
+                <!-- this is relative to the pom.xml directory -->
+                <directory>${basedir}/../rest_api/target/enunciate/docs</directory>
+                <targetPath>docs</targetPath>
+              </resource>
+            </webResources>
+
+          </configuration>
+        </plugin>
