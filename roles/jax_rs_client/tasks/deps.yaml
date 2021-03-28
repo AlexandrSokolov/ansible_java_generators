@@ -5,9 +5,19 @@
   with_items:
     - path: "{{ app_basedir }}/deps/pom.xml"
       insert_after: |
-        </jackson.version>
+        </apache-commons-logging.version>
       insert_text: |4
-              <commons-validator.version>1.6</commons-validator.version>
+              <commons-validator.version>{{ commons_validator_version }}</commons-validator.version>
+
+- name: "Update the deps `pom.xml` with jackson version"
+  include_role:
+    name: insert_text_after_another
+  with_items:
+    - path: "{{ app_basedir }}/deps/pom.xml"
+      insert_after: |
+        </apache-commons-logging.version>
+      insert_text: |4
+              <jackson.version>{{ jackson_version }}</jackson.version>
 
 - name: "Update the deps `pom.xml` with resteasy.version version"
   include_role:
@@ -15,14 +25,23 @@
   with_items:
     - path: "{{ app_basedir }}/deps/pom.xml"
       insert_after: |
-        </jackson.version>
+        </commons-validator.version>
       insert_text: |4
-              <resteasy.version>3.0.19.Final</resteasy.version>
+              <resteasy.version>{{ resteasy_version }}</resteasy.version>
 
 - name: "Update the deps `pom.xml` file dependencies"
   include_role:
     name: insert_template_after_another
   with_items:
+    - path: "{{ app_basedir }}/deps/pom.xml"
+      insert_after_template: "{{ role_path }}/templates/deps/jackson/insert_after_template.j2"
+      insert_template: "{{ role_path }}/templates/deps/jackson/insert_template_jackson-annotations.j2"
+    - path: "{{ app_basedir }}/deps/pom.xml"
+      insert_after_template: "{{ role_path }}/templates/deps/jackson/insert_after_template.j2"
+      insert_template: "{{ role_path }}/templates/deps/jackson/insert_template_jackson-jaxrs-json-provider.j2"
+    - path: "{{ app_basedir }}/deps/pom.xml"
+      insert_after_template: "{{ role_path }}/templates/deps/jackson/insert_after_template.j2"
+      insert_template: "{{ role_path }}/templates/deps/jackson/insert_template_jackson-databind.j2"
     - path: "{{ app_basedir }}/deps/pom.xml"
       insert_after_template: "{{ role_path }}/templates/deps/commons-validator/insert_after_template.j2"
       insert_template: "{{ role_path }}/templates/deps/commons-validator/insert_template.j2"

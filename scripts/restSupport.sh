@@ -49,13 +49,14 @@ while [[ $# -gt 0 ]]; do
   esac
 done
 
+ansible localhost -v \
+  --module-name include_role \
+  --args name=jax_rs_client \
+  --extra-vars "app_basedir=$app_basedir"
+
 #running role directly without playbook
 ansible localhost -v \
   --module-name include_role \
   --args name=rest_service_support \
   --extra-vars "${extra_vars} app_basedir=$app_basedir"
 
-ansible localhost -v \
-  --module-name include_role \
-  --args name=jax_rs_client \
-  --extra-vars "app_basedir=$app_basedir"

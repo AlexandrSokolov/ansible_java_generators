@@ -1,35 +1,23 @@
 ---
-- name: "Update the deps `pom.xml` with jackson version"
+- name: "Update the deps `pom.xml` with enunciate version"
   include_role:
     name: insert_text_after_another
   with_items:
     - path: "{{ app_basedir }}/deps/pom.xml"
       insert_after: |
-        </apache-commons-logging.version>
+        </resteasy.version>
       insert_text: |4
-              <jackson.version>{{ jackson_version }}</jackson.version>
 
-- name: "Update the deps `pom.xml` file with jackson-annotations"
+              <!-- Must be the same as `enunciate-plugin.version` in the parent pom-->
+              <!-- and as in enunciate.xml:-->
+              <!-- ... http://enunciate.webcohesion.com/schemas/enunciate-{{ enunciate_version }}.xsd-->
+              <enunciate.version>{{ enunciate_version }}</enunciate.version>
+
+- name: "Update the deps `pom.xml` file with dependencies"
   include_role:
     name: insert_template_after_another
   with_items:
     - path: "{{ app_basedir }}/deps/pom.xml"
-      insert_after_template: "{{ role_path }}/templates/deps/insert_after_template.j2"
-      insert_template: "{{ role_path }}/templates/deps/insert_template_jackson-annotations.j2"
-
-- name: "Update the deps `pom.xml` file with jackson-jaxrs-json-provider"
-  include_role:
-    name: insert_template_after_another
-  with_items:
-    - path: "{{ app_basedir }}/deps/pom.xml"
-      insert_after_template: "{{ role_path }}/templates/deps/insert_after_template.j2"
-      insert_template: "{{ role_path }}/templates/deps/insert_template_jackson-jaxrs-json-provider.j2"
-
-- name: "Update the deps `pom.xml` file with jackson-databind"
-  include_role:
-    name: insert_template_after_another
-  with_items:
-    - path: "{{ app_basedir }}/deps/pom.xml"
-      insert_after_template: "{{ role_path }}/templates/deps/insert_after_template.j2"
-      insert_template: "{{ role_path }}/templates/deps/insert_template_jackson-databind.j2"
+      insert_after_template: "{{ role_path }}/templates/deps/enunciate/insert_after_template.j2"
+      insert_template: "{{ role_path }}/templates/deps/enunciate/insert_template.j2"
 

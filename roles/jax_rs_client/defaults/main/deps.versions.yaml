@@ -1,0 +1,4 @@
+---
+commons_validator_version: 1.6
+resteasy_version: 3.0.19.Final
+jackson_version: 2.11.0

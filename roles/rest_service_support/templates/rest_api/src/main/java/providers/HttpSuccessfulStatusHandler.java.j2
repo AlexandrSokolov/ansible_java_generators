@@ -1,0 +1,41 @@
+package {{ group_id }}.rest.providers;
+
+import com.webcohesion.enunciate.metadata.rs.ResponseCode;
+import com.webcohesion.enunciate.metadata.rs.StatusCodes;
+
+import javax.ws.rs.container.ContainerRequestContext;
+import javax.ws.rs.container.ContainerResponseContext;
+import javax.ws.rs.container.ContainerResponseFilter;
+import javax.ws.rs.core.Response;
+import javax.ws.rs.ext.Provider;
+import java.util.Arrays;
+import java.util.List;
+
+import static java.util.stream.Collectors.toList;
+
+@Provider
+public class HttpSuccessfulStatusHandler implements ContainerResponseFilter {
+
+  @Override
+  public void filter(
+    final ContainerRequestContext requestContext,
+    final ContainerResponseContext responseContext) {
+    if (Response.Status.Family.SUCCESSFUL ==
+      Response.Status.Family.familyOf(responseContext.getStatus())) {
+
+      Arrays.stream(responseContext.getEntityAnnotations())
+        .filter(annotation -> annotation instanceof StatusCodes)
+        .map(annotation -> (StatusCodes) annotation)
+        .findFirst() //only a single annotation is expected
+        .ifPresent(statusCodes -> {
+          List<ResponseCode> successfulResponseCodes = Arrays.stream(statusCodes.value())
+          .filter(responseCode -> Response.Status.Family.SUCCESSFUL ==
+            Response.Status.Family.familyOf(responseCode.code()))
+          .collect(toList());
+          if (successfulResponseCodes.size() == 1) {
+            responseContext.setStatus(successfulResponseCodes.get(0).code());
+          }
+        });
+    }
+  }
+}

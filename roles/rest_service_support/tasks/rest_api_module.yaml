@@ -25,8 +25,6 @@
   with_items:
     - src: rest_api/src/main/java/api/MockRestApi.java.j2
       dst: "{{ app_basedir }}/rest_api/src/main/java/{{ group_id_path }}/rest/api/MockRestApi.java"
-    - src: rest_api/src/main/java/api/HttpStatus.java.j2
-      dst: "{{ app_basedir }}/rest_api/src/main/java/{{ group_id_path }}/rest/api/HttpStatus.java"
     - src: rest_api/src/main/java/dto/MockDto.java.j2
       dst: "{{ app_basedir }}/rest_api/src/main/java/{{ group_id_path }}/rest/dto/MockDto.java"
     - src: rest_api/src/main/java/jackson/deserializer/LocalDateTimeDeserializer.java.j2
@@ -39,5 +37,7 @@
       dst: "{{ app_basedir }}/rest_api/src/main/java/{{ group_id_path }}/rest/jackson/DateTimeUtils.java"
     - src: rest_api/src/main/java/jackson/JacksonProvider.java.j2
       dst: "{{ app_basedir }}/rest_api/src/main/java/{{ group_id_path }}/rest/jackson/JacksonProvider.java"
+    - src: rest_api/src/main/java/providers/HttpSuccessfulStatusHandler.java.j2
+      dst: "{{ app_basedir }}/rest_api/src/main/java/{{ group_id_path }}/rest/providers/HttpSuccessfulStatusHandler.java"
     - src: rest_api/src/main/resources/doc/enunciate/enunciate.xml.j2
       dst: "{{ app_basedir }}/rest_api/src/main/resources/doc/enunciate/enunciate.xml"

@@ -1,6 +1,7 @@
 package {{ group_id }}.rest.config;
 
 import {{ group_id }}.rest.app.MockRestService;
+import {{ group_id }}.rest.providers.HttpSuccessfulStatusHandler;
 
 import com.google.common.collect.Sets;
 import {{ group_id }}.rest.exception.mappers.WebApplicationExceptionMapper;
@@ -21,6 +22,7 @@ public class JAXRSConfiguration extends Application {
     return Sets.newHashSet(
       MockRestService.class,
       ServerSideJacksonProvider.class,
+      HttpSuccessfulStatusHandler.class,
       WebApplicationExceptionMapper.class
     );
   }

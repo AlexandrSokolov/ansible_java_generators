@@ -9,6 +9,7 @@
       insert_text: |4
               <!-- if you change enunciate version, update also version in enunciate.xml:-->
               <!-- ... http://enunciate.webcohesion.com/schemas/enunciate-{{ enunciate_plugin_version }}.xsd-->
+              <!-- and `enunciate.version` in deps:-->
               <enunciate-plugin.version>{{ enunciate_plugin_version }}</enunciate-plugin.version>
 
 - name: "Add version properties to the parent pom.xml"
