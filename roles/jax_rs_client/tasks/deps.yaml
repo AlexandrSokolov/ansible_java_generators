@@ -1,0 +1,40 @@
+---
+- name: "Update the deps `pom.xml` with commons-validator version"
+  include_role:
+    name: insert_text_after_another
+  with_items:
+    - path: "{{ app_basedir }}/deps/pom.xml"
+      insert_after: |
+        </jackson.version>
+      insert_text: |4
+              <commons-validator.version>1.6</commons-validator.version>
+
+- name: "Update the deps `pom.xml` with resteasy.version version"
+  include_role:
+    name: insert_text_after_another
+  with_items:
+    - path: "{{ app_basedir }}/deps/pom.xml"
+      insert_after: |
+        </jackson.version>
+      insert_text: |4
+              <resteasy.version>3.0.19.Final</resteasy.version>
+
+- name: "Update the deps `pom.xml` file dependencies"
+  include_role:
+    name: insert_template_after_another
+  with_items:
+    - path: "{{ app_basedir }}/deps/pom.xml"
+      insert_after_template: "{{ role_path }}/templates/deps/commons-validator/insert_after_template.j2"
+      insert_template: "{{ role_path }}/templates/deps/commons-validator/insert_template.j2"
+    - path: "{{ app_basedir }}/deps/pom.xml"
+      insert_after_template: "{{ role_path }}/templates/deps/resteasy/insert_after_template.j2"
+      insert_template: "{{ role_path }}/templates/deps/resteasy/insert_template_resteasy-client.j2"
+    - path: "{{ app_basedir }}/deps/pom.xml"
+      insert_after_template: "{{ role_path }}/templates/deps/resteasy/insert_after_template.j2"
+      insert_template: "{{ role_path }}/templates/deps/resteasy/insert_template_resteasy-jackson2-provider.j2"
+    - path: "{{ app_basedir }}/deps/pom.xml"
+      insert_after_template: "{{ role_path }}/templates/deps/resteasy/insert_after_template.j2"
+      insert_template: "{{ role_path }}/templates/deps/resteasy/insert_template_resteasy-jaxrs.j2"
+    - path: "{{ app_basedir }}/deps/pom.xml"
+      insert_after_template: "{{ role_path }}/templates/deps/tests/insert_after_template.j2"
+      insert_template: "{{ role_path }}/templates/deps/tests/insert_template.j2"

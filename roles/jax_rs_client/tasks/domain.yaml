@@ -1,0 +1,8 @@
+---
+- name: "Add dependencies on 'commons_jax_rs_client' module"
+  include_role:
+    name: insert_template_after_another
+  with_items:
+    - path: "{{ app_basedir }}/domain/pom.xml"
+      insert_after_template: "{{ role_path }}/templates/domain/insert_after_template.j2"
+      insert_template: "{{ role_path }}/templates/domain/insert_template.j2"

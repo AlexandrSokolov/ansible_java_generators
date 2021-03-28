@@ -12,7 +12,7 @@
 
 ### Requirements
 
-  Make sure you installed commons roles, see [Ansible Commons Roles README](https://github.com/AlexandrSokolov/ansible-commons-roles)
+  Make sure you installed common Ansible roles and scripts, see [Ansible Commons Roles README](https://github.com/AlexandrSokolov/ansible-commons-roles)
 
   To be able to generate code from any folder run once:
     `./scripts/extendPathWithScripsFolder.sh`
@@ -84,11 +84,17 @@ TODO (priority not clear):
 
 #### Generate REST API and REST Services
 
+  **Requirements**:
+  - You generated structure with: `javaGenMultiModuleMavenProject.sh`
+  - You added git support with: `gitSupport.sh`
+
+
   Run from within the project base folder: `restSupport.sh`
   
   In the output you'll find actual information about expected parameters.
   
   The script generates new `rest_api` and `rest_web` maven modules.
+  Additionally, it triggers `javaAddCommonsJaxRsClient.sh` to install `commons_jax_rs_client` module.
   
   Steps to implement your own REST service:
   - write a REST interface in `rest_api` module (REST API), without implementation

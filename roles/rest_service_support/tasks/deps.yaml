@@ -9,7 +9,7 @@
       insert_text: |4
               <jackson.version>{{ jackson_version }}</jackson.version>
 
-- name: "Update the root `pom.xml` file with jackson-annotations"
+- name: "Update the deps `pom.xml` file with jackson-annotations"
   include_role:
     name: insert_template_after_another
   with_items:
@@ -17,7 +17,7 @@
       insert_after_template: "{{ role_path }}/templates/deps/insert_after_template.j2"
       insert_template: "{{ role_path }}/templates/deps/insert_template_jackson-annotations.j2"
 
-- name: "Update the root `pom.xml` file with jackson-jaxrs-json-provider"
+- name: "Update the deps `pom.xml` file with jackson-jaxrs-json-provider"
   include_role:
     name: insert_template_after_another
   with_items:
@@ -25,7 +25,7 @@
       insert_after_template: "{{ role_path }}/templates/deps/insert_after_template.j2"
       insert_template: "{{ role_path }}/templates/deps/insert_template_jackson-jaxrs-json-provider.j2"
 
-- name: "Update the root `pom.xml` file with jackson-databind"
+- name: "Update the deps `pom.xml` file with jackson-databind"
   include_role:
     name: insert_template_after_another
   with_items:

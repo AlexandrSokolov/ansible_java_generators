@@ -4,10 +4,11 @@ package {{ group_id }}.rest.api;
 import {{ group_id }}.rest.dto.MockDto;
 
 import javax.ws.rs.GET;
+import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
-
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 
 /**
  * Mock rest service for correct rest documentation generation,
@@ -21,4 +22,8 @@ public interface MockRestApi {
 
   @GET
   MockDto get();
+
+  @POST
+  @HttpStatus(Response.Status.ACCEPTED)
+  void post(String inputData);
 }

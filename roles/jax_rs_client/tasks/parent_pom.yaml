@@ -1,0 +1,10 @@
+---
+- name: "Add `commons_jax_rs_client` module to the parent pom.xml"
+  include_role:
+    name: insert_text_after_another
+  with_items:
+    - path: "{{ app_basedir }}/pom.xml"
+      insert_after: |
+        <module>commons_test</module>
+      insert_text: |4
+              <module>commons_jax_rs_client</module>

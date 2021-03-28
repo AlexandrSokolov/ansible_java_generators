@@ -1,7 +1,0 @@
----
-- hosts: all
-
-  tasks:
-
-    - include_role:
-        name: jax_rs_client

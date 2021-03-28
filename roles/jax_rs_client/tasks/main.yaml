@@ -1,0 +1,14 @@
+---
+- name: "Loading projects properties"
+  include_role:
+    name: load_maven_properties
+
+- import_tasks: tasks/deps.yaml
+
+- import_tasks: tasks/parent_pom.yaml
+
+- import_tasks: tasks/commons_jax_rs_client.yaml
+
+- import_tasks: tasks/domain.yaml
+
+- import_tasks: tasks/findbugs.yaml

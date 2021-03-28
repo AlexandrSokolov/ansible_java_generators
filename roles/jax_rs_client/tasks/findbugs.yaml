@@ -1,0 +1,8 @@
+---
+- name: "Add findbugs configurations"
+  include_role:
+    name: insert_template_after_another
+  with_items:
+    - path: "{{ app_basedir }}/code_quality/findbugs-exclude.xml"
+      insert_after_template: "{{ role_path }}/templates/code_quality/findbug_filter_insert_after.j2"
+      insert_template: "{{ role_path }}/templates/code_quality/findbug_filter_insert.j2"
