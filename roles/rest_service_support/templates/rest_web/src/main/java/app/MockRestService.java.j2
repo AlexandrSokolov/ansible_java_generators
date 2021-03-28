@@ -7,13 +7,23 @@ public class MockRestService implements MockRestApi {
 
   @Override
   public MockDto get() {
-    MockDto mock = new MockDto();
-    mock.setName("mock");
-    return mock;
+    return JaxRsHandlerUtils.handle(() -> {
+      MockDto mock = new MockDto();
+      mock.setName("mock");
+      return mock;
+    });
   }
 
   @Override
   public void post(String inputData) {
-    System.out.println(inputData);
+    JaxRsHandlerUtils.validateAndHandle(
+      inputData,
+      someData -> someData,
+      validData -> {
+        System.out.println(validData);
+        return validData;
+      }
+    );
   }
+
 }

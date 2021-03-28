@@ -10,3 +10,12 @@
 - import_tasks: tasks/rest_api_module.yaml
 
 - import_tasks: tasks/rest_web.yaml
+
+# special hack, just to append file with the content
+- name: "Update `README.md`"
+  include_role:
+    name: insert_template_after_another
+  with_items:
+    - path: "{{ app_basedir }}/README.md"
+      insert_after_template: "{{ role_path }}/templates/readme/insert_template.j2"
+      insert_template: "{{ role_path }}/templates/readme/insert_template.j2"
