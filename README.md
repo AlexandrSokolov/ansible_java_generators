@@ -82,29 +82,89 @@ TODO (priority not clear):
   Note: do not config `user.name` and `user.email` globally if you use more than a single git host.
 
 
-#### Generate REST API and REST Services
+#### Generate REST API and REST Servicesz
+
+  Use it if you want to have REST API with REST Services, which implements API.
 
   **Requirements**:
   - You generated structure with: `javaGenMultiModuleMavenProject.sh`
   - You added git support with: `gitSupport.sh`
-
-
-  Run from within the project base folder: `restSupport.sh`
+  
+  **Generation:** Run from within the project base folder: `restSupport.sh`
   
   In the output you'll find actual information about expected parameters.
-  
-  The script generates new `rest_api` and `rest_web` maven modules.
-  Additionally, it triggers `javaAddCommonsJaxRsClient.sh` to install `commons_jax_rs_client` module.
-  
+
+  The script triggers `jax_rs_client` Ansible role and installs `commons_jax_rs_client` Maven module.
+  Then the script generates new `rest_api` and `rest_web` Maven modules.
+
+  Features:
+  - Generated Enunciate documentation available with the deployed application.
+    You can use regular Java comments on the methods, to describe what it does for the documentation.
+  - Swagger interface - GUI which available at runtime and allow you manually to test the REST services
+  - Custom datetime serializer and deserializer, provided as examples. 
+    See `LocalDateTimeSerializer`, `LocalDateTimeDeserializer` and `MoneySerializer` for `BigDecimal` 
+  - Customisation of Jackson ObjectMapper via `JacksonProvider`
+  - Ability to set successful response status (if only single successful status is expected) 
+    via Enunciate annotation:
+  ```java
+      import com.webcohesion.enunciate.metadata.rs.ResponseCode;
+      import com.webcohesion.enunciate.metadata.rs.StatusCodes;
+      
+      import javax.ws.rs.POST;
+      import javax.ws.rs.Path;
+
+      @Path(MockRestApi.SERVICE_REST_URL)
+      public interface MockRestApi {
+
+        @POST
+        @StatusCodes({@ResponseCode(code = 201, condition = "Successfully created")})
+        void post(String inputData);
+      }
+  ```
+  `HttpSuccessfulStatusHandler` is a handler for this logic.
+  - Validation and error handling utils, see `JaxRsHandlerUtils` and `WebApplicationExceptionMapper`.
+  - Server side logging (TODO)
+  - Features available for `jax_rs_client`.
+   
   Steps to implement your own REST service:
-  - write a REST interface in `rest_api` module (REST API), without implementation
+  - write a REST interface in `rest_api` module (REST API).
+  - define if needed custom http response status.
   - write DTO REST objects
+  - write custom serializers/deserializers, register them in `JacksonProvider` in `rest_api` module.
   - write unit tests to serialize/deserialize DTO into/from the json text. Extend `BaseTest` from `commons_test`
   - write an implementation of the REST service in the `rest_web` module
+  - write unit test to check web layer (response statuses, http headers), without business logic
+  - write integrations test to check the functionality against the real systems.
+  - control dependencies for `WildFly` via `jboss-deployment-structure.xml`
   
-  Note: you still cannot write integration tests and use your rest service in the code,
-  without Jax RS (rest) client support. See below.
+  Note, rest services (`MockRestService`), 
+  custom object mapper (`ServerSideJacksonProvider`, `JacksonProvider`),
+  custom providers (`HttpSuccessfulStatusHandler`)
+  are registered explicitely via `JAXRSConfiguration`:
 
+  ```java
+  ...
+  import javax.ws.rs.ApplicationPath;
+  import javax.ws.rs.core.Application;
+  
+  @ApplicationPath(JAXRSConfiguration.APPLICATION_PATH)
+  public class JAXRSConfiguration extends Application {
+  
+    //see src/main/webapp/WEB-INF/jboss-web.xml
+    public static final String CONTEXT_ROOT = "/some/custom/url";
+    public static final String APPLICATION_PATH = "/rest";
+  
+    @Override
+    public Set<Class<?>> getClasses() {
+      return Sets.newHashSet(
+        MockRestService.class,
+        ServerSideJacksonProvider.class,
+        HttpSuccessfulStatusHandler.class,
+        WebApplicationExceptionMapper.class
+      );
+    }
+  }
+  ```
 
 #### Add file configuration support
 
