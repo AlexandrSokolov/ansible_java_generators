@@ -136,7 +136,12 @@ You can also remove if you do not need:
 
 #### Add Jax RS (rest) client support
 
-Run: `javaAddCommonsJaxRsClient.sh`
+  Use it only if you use some external rest api, but do not provide your own rest api and rest services.
+  
+  If you plan to provide your own rest services, skip this file and generate rest services with rest api. 
+  See the next section below.
+
+  **Run:** `javaAddCommonsJaxRsClient.sh`
 
 Now you can:
 - for external REST API (provided by Jax Rs interfaces) write a `JaxRsProxyConfig` to be able to use it.
@@ -296,9 +301,9 @@ Now you can:
   - control dependencies for `WildFly` via `jboss-deployment-structure.xml`
   
   Note, rest services (`MockRestService`), 
-  custom object mapper (`ServerSideJacksonProvider`, `JacksonProvider`),
-  custom providers (`HttpSuccessfulStatusHandler`)
-  are registered explicitely via `JAXRSConfiguration`:
+  jackson provider (`JacksonProvider`),
+  and other custom providers (`HttpSuccessfulStatusHandler`)
+  are registered explicitly via `JAXRSConfiguration`:
 
   ```java
   ...
@@ -316,7 +321,7 @@ Now you can:
     public Set<Class<?>> getClasses() {
       return Sets.newHashSet(
         MockRestService.class,
-        ServerSideJacksonProvider.class,
+        JacksonProvider.class,
         HttpSuccessfulStatusHandler.class,
         WebApplicationExceptionMapper.class
       );

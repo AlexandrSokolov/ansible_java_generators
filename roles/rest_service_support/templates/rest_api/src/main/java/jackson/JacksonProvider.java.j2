@@ -22,6 +22,19 @@ import java.time.LocalDateTime;
  *  Client client = ClientBuilder.newClient();
  *  client.register(JacksonProvider.instance());
  *
+ *  On the server side, register it as:
+ * @ApplicationPath(JAXRSConfiguration.APPLICATION_PATH)
+ * public class JAXRSConfiguration extends Application {
+ *
+ *   @Override
+ *   public Set<Class<?>> getClasses() {
+ *     return Sets.newHashSet(
+ *       ...
+ *       JacksonProvider.class
+ *     );
+ *   }
+ * }
+ *
  */
 @Provider
 @Consumes(MediaType.APPLICATION_JSON)
@@ -38,7 +51,7 @@ public class JacksonProvider extends JacksonJaxbJsonProvider  {
     return this.mapper;
   }
 
-  private JacksonProvider() {
+  public JacksonProvider() {
     super();
     this.mapper = _mapperConfig.getConfiguredMapper() != null
       ? _mapperConfig.getConfiguredMapper() : _mapperConfig.getDefaultMapper();

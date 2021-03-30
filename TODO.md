@@ -1,7 +1,6 @@
-- check if we can get rid of 
 - continue adoption with `Add file configuration support`
   correct sharing resources. Now it is not acceptable cause of the bug in IDEA
-- server side raw request logging, update readme
+- server side raw request logging, update readme, adding ability to log the last request response
 - add unit tests for serialisation, deser-n with custom serialiers/deserialiers
 - add unit to start server and check headers, response codes.
 - rest_service, add real service that implements rest interface, 
