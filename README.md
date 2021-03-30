@@ -58,6 +58,22 @@ TODO (priority not clear):
 
   After the project generation via Ansible, build it, make sure it is built successfully.
     
+  The script generates `commons_test` module for sharing test resources. 
+  To be able to extend the `BaseTest` class in your modules, add the following into the dependencies:
+  ```xml
+      <!-- TEST -->
+      <dependency>
+        <groupId>your.project.group.id</groupId>
+        <artifactId>your-project-artifact-id-commons-test</artifactId>
+        <version>${project.version}</version>
+        <classifier>tests</classifier>
+        <type>test-jar</type>
+        <scope>test</scope>
+      </dependency>
+  ```
+  
+  Read [Guide to using attached tests](http://maven.apache.org/guides/mini/guide-attached-tests.html) for more details.
+
   TODO remove me after restructering `javaGenMultiModuleWarProject.sh` is divided and not used anymore!
 
 #### Git support

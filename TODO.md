@@ -1,5 +1,5 @@
 - continue adoption with `Add file configuration support`
-  
+
     1. combine test_app with commons_test
     2. update 3.1 From InputStream object, useful in tests: to refer to the test
     3. update There is an issue in IntelliJ IDEA with `testResources`. in the readme
