@@ -1,8 +1,8 @@
 - continue adoption with `Add file configuration support`
   
-    1. move     - app_config/README.md to ansible roles readme
-    2. combine test_app with commons_test
-    3. store configuration file in `config` folder
+    1. combine test_app with commons_test
+    2. update 3.1 From InputStream object, useful in tests: to refer to the test
+    3. update There is an issue in IntelliJ IDEA with `testResources`. in the readme
     
   correct sharing resources. Now it is not acceptable cause of the bug in IDEA
 - server side raw request logging, update readme, adding ability to log the last request response

@@ -89,18 +89,201 @@ In the output you'll find actual information about expected parameters.
 Prepare the full command and run from within you
 `${projects}/${artifact-id}` folder
 
-Read `test_app/README.md` for the description to use configuration file in your tests.
+Note: `config-folder-sys-variable` is a system variable that refers
+to the folder that contains the configuration file.
 
-You can also remove if you do not need:
-- `commons_config/test`
-- `test_app/src/test/resources/test.{{ config_file_name }}`
-  if you do not use the same configuration for tests and prod environments
-- `commons_config/README.md`
+After the code generation, remove `app_config/src/test` folder if you do not need it.
+
+By default a propery file is stored in the resources of the jar file. See 5.2.1.
+If you plan to use it externally, see 5.2.2.
+
+Usage:
+
+###### 1 Create a properties file:
+```
+test.key1=test.value1
+test.key2=test.value2
+test.key4=23
+test.key.list=item1|item2|item3
+test.key.list.custom=item1,item2,item3
+test.key.map=key1->value1|key2->value2|key3->value3
+test.key.custom.map=key1&value1|key2&value2
+
+
+# constructs Map<String, List<String>>
+test.key.map.of.lists=key1->\
+    value1&value2&value3|\
+  key2->\
+    value2|key3->value4&value5
+
+# constructs Map<String, Map<String, String>>
+test.key.map.of.maps=key1->\
+      subkey1>value1&\
+      subkey2>value2|\
+  key2->\
+    subkey3>value2|\
+  key3->\
+    subkey4>value4&\
+    subkey5>value5
+
+# constructs Map<String, Map<String, List<String>>>
+test.key.map.of.maps.of.lists=key1->\
+      subkey1>\
+        value1:value2:value3&\
+      subkey2>\
+        value2_1:value2_2|\
+  key2->\
+    subkey3>value2|\
+  key3->\
+    subkey4>\
+        value4_1:value4_2&\
+    subkey5>value5
+```
+
+###### 2 Define config interface
+```
+public interface Config {
+
+  @PropertyKey("test.key1")
+  String someProperty1();
+
+  @PropertyKey("test.key2")
+  Optional<String> someProperty2ViaOptional();
+
+  @PropertyKey("test.key4"")
+  int intProperty();
+
+  @PropertyKey(value = "test.key4", optionalClass = Integer.class)
+  Optional<Integer> intProperty2ViaOptional();
+
+  @PropertyKey("test.key.list")
+  List<String> listDefaultSeparator();
+
+  @PropertyKey(value = "test.key.list.custom", itemsSeparator = ",")
+  List<String> listCustomSeparator();
+
+  @PropertyKey("test.key.map")
+  Map<String, String> configMap();
+
+  @PropertyKey(value = "test.key.custom.map", keyValueSeparator = "&")
+  Map<String, String> customMap();
+
+
+  @PropertyKey("test.key.map.of.lists")
+  Map<String, List<String>> defaultMapOfLists();
+
+  @PropertyKey("test.key.map.of.maps")
+  Map<String, Map<String, String>> defaultMapOfMaps();
+
+  @PropertyKey("test.key.map.of.maps.of.lists")
+  Map<String, Map<String, List<String>>> defaultMapOfMapsOfLists();
+}
+```
+
+###### 3 Get a config proxy:
+
+3.1 From `InputStream` object, useful in tests:
+```
+Config config = Configs.fileConfig(getInputStreamFromPropertyFile(""))
+      .proxy(TestPropertiesConfig.class);
+
+InputStream getInputStreamFromPropertyFile(String fileName) { ... }
+```
+3.2 From a file, located on the path, managed by a combination of
+a system property/variable, that refers to the folder location and a file name:
+```
+Config config = Configs.fileConfig(SYSTEM_VARIABLE_NAME, PROP_FILE_NAME)
+      .proxy(TestPropertiesConfig.class);
+```
+
+###### 4 Use a config proxy:
+```
+// returns 'test.value1'
+String value = config.someProperty1();
+```
+
+###### 5 Produce configuration in the managed (JEE) environment:
+
+5.1. Define interface:
+
+    ```
+    public interface Configuration {
+
+      String CONFIG_FOLDER_VARIABLE = "config.dir";
+      String CONFIG_FILE = "$CONFIG_FILE";
+      ...
+    ```
+5.2. Create a producer:
+
+   The configuration file is named `your.config.properties` in the following examples.
+
+   5.2.1    A `$CONFIG_FILE` property file is located in the resources of the jar file. 
+
+   `$CONFIG_FILE` file is located in the `config` folder of the application:
+
+      ```
+      $ ls -1 config/
+      your.config.properties
+      pom.xml
+      src
+      ```
+
+   Extend your `app_config/pom.xml` to include the property file into the resources:
+
+      ```
+        <build>
+          <resources>
+            <resource>
+              <directory>src/main/resources</directory>
+            </resource>
+            <resource>
+              <directory>${basedir}</directory>
+              <includes>
+                <include>{{ your.config.properties }}</include>
+              </includes>
+            </resource>
+          </resources>
+      ```
+
+   Add a config producer:
+
+      ```
+      public class ConfigurationProducer {
+
+        @Produces
+        public Configuration produce(){
+          return Configs.fileConfig(
+             ConfigurationProducer.class.getResourceAsStream("/"+ CONFIG_FILE)))
+            .proxy(Configuration.class);
+        }
+      }
+      ```
+
+   5.2.2    In case an external property file is used.
+
+   In this example file is located under a folder, referred by `CONFIG_FOLDER_VARIABLE` system variable.
+
+   ```
+    public class ConfigurationProducer {
+
+      @Produces
+      public Configuration produce(){
+        return Configs.fileConfig(CONFIG_FOLDER_VARIABLE, CONFIG_FILE)
+          .proxy(Configuration.class);
+      }
+    }
+   ```
+
+   Remove the `<resources>` block from `app_config/pom.xml`. See 5.2.1.
+
+5.3. Now you can inject it:
+    ```
+    @Inject
+    Configuration config;
+    ```
 
 **Notes:**
-1. `config-folder-sys-variable` is a system variable that refers
-   to the folder with a configuration file.
-2. There is an issue in IntelliJ IDEA with `testResources`.
+There is an issue in IntelliJ IDEA with `testResources`.
 
    It might be, that the `config` module is read incorrectly.
    In the `.idea/misc.xml` file appears the line: `<file type="web" url="file://$PROJECT_DIR$/config" />`,
