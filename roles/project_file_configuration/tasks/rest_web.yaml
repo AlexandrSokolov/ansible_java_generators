@@ -15,8 +15,7 @@
       insert_after: |
         import com.google.common.collect.Sets;
       insert_text: |4
-
-              import {{ group_id }}.rest.app.ConfigRestService;
+          import {{ group_id }}.rest.app.ConfigRestService;
 
 
 - name: "Register new rest service in `JAXRSConfiguration`"
@@ -27,16 +26,5 @@
       insert_after: |
         return Sets.newHashSet(
       insert_text: |4
+                ConfigRestService.class,
 
-              ConfigRestService.class,
-
-#- name: "Update jax rs configuration with new config service"
-#  include_role:
-#    name: insert_template_after_another
-#  with_items:
-#    - path: "{{ app_basedir }}/rest_web/src/main/java/{{ group_id_path }}/rest/config/JAXRSConfiguration.java"
-#      insert_after_template: "{{ role_path }}/templates/rest_web/merge/import_insert_after.j2"
-#      insert_template: "{{ role_path }}/templates/rest_web/merge/import_insert.j2"
-#    - path: "{{ app_basedir }}/rest_web/src/main/java/{{ group_id_path }}/rest/config/JAXRSConfiguration.java"
-#      insert_after_template: "{{ role_path }}/templates/rest_web/merge/jax_rs_config_insert_after.j2"
-#      insert_template: "{{ role_path }}/templates/rest_web/merge/jax_rs_config_insert.j2"
