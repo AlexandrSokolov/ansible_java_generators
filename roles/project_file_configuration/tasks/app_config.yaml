@@ -37,6 +37,8 @@
       dst: "{{ app_basedir }}/app_config/src/main/java/{{ group_id_path }}/config/ConfigurationProducer.java"
     - src: app_config/src/main/resources/META-INF/beans.xml
       dst: "{{ app_basedir }}/app_config/src/main/resources/META-INF/beans.xml"
+    - src: app_config/src/test/java/AppBaseTest.java.j2
+      dst: "{{ app_basedir }}/app_config/src/test/java/{{ group_id_path }}/config/AppBaseTest.java"
     - src: app_config/src/test/java/ConfigFactoryTest.java.j2
       dst: "{{ app_basedir }}/app_config/src/test/java/{{ group_id_path }}/config/commons/ConfigFactoryTest.java"
     - src: app_config/src/test/java/DefaultMethodConfig.java.j2
