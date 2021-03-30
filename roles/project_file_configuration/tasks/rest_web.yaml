@@ -1,0 +1,42 @@
+---
+- name: "Generate rest service to download config file for `rest_web` module"
+  include_role:
+    name: gen_java_class_from_template
+  with_items:
+    - src: rest_web/src/main/java/ConfigRestService.java.j2
+      dst: "{{ app_basedir }}/rest_web/src/main/java/{{ group_id_path }}/rest/app/ConfigRestService.java"
+
+
+- name: "Add import to `JAXRSConfiguration`"
+  include_role:
+    name: insert_text_after_another
+  with_items:
+    - path: "{{ app_basedir }}/rest_web/src/main/java/{{ group_id_path }}/rest/config/JAXRSConfiguration.java"
+      insert_after: |
+        import com.google.common.collect.Sets;
+      insert_text: |4
+
+              import {{ group_id }}.rest.app.ConfigRestService;
+
+
+- name: "Register new rest service in `JAXRSConfiguration`"
+  include_role:
+    name: insert_text_after_another
+  with_items:
+    - path: "{{ app_basedir }}/rest_web/src/main/java/{{ group_id_path }}/rest/config/JAXRSConfiguration.java"
+      insert_after: |
+        return Sets.newHashSet(
+      insert_text: |4
+
+              ConfigRestService.class,
+
+#- name: "Update jax rs configuration with new config service"
+#  include_role:
+#    name: insert_template_after_another
+#  with_items:
+#    - path: "{{ app_basedir }}/rest_web/src/main/java/{{ group_id_path }}/rest/config/JAXRSConfiguration.java"
+#      insert_after_template: "{{ role_path }}/templates/rest_web/merge/import_insert_after.j2"
+#      insert_template: "{{ role_path }}/templates/rest_web/merge/import_insert.j2"
+#    - path: "{{ app_basedir }}/rest_web/src/main/java/{{ group_id_path }}/rest/config/JAXRSConfiguration.java"
+#      insert_after_template: "{{ role_path }}/templates/rest_web/merge/jax_rs_config_insert_after.j2"
+#      insert_template: "{{ role_path }}/templates/rest_web/merge/jax_rs_config_insert.j2"

@@ -7,10 +7,8 @@
 
 - import_tasks: tasks/parent_pom.yaml
 
-- import_tasks: tasks/config.yml
+- import_tasks: tasks/config.yaml
 
-#- import_tasks: tasks/test_app.yml
-#
-#- import_tasks: tasks/rest_api.yml
-#
-#- import_tasks: tasks/front_end_war.yml
+- import_tasks: tasks/rest_api.yaml
+
+- import_tasks: tasks/rest_web.yaml
