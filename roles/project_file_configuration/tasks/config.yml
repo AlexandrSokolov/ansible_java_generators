@@ -6,46 +6,13 @@
     owner: "{{ lookup('env', 'USER') }}"
     group: "{{ lookup('env', 'USER') }}"
   with_items:
-    - "{{ mvn_project_basedir }}/config"
-
-- name: "Generate files into config folder"
-  template:
-    src: "{{ item }}.j2"
-    dest: "{{ mvn_project_basedir }}/{{ item }}"
-    mode: 0644
-    owner: "{{ lookup('env', 'USER') }}"
-    group: "{{ lookup('env', 'USER') }}"
-    force: yes
-  with_items:
-    - config/pom.xml
+    - "{{ app_basedir }}/config"
 
 - name: "Copy properties file"
   template:
     src: "config/config.properties.j2"
-    dest: "{{ mvn_project_basedir }}/config/{{ config_file_name }}"
+    dest: "{{ app_basedir }}/config/{{ config_file_name }}"
     mode: 0644
     owner: "{{ lookup('env', 'USER') }}"
     group: "{{ lookup('env', 'USER') }}"
     force: yes
-
-- name: "Add dependencies on 'config' module"
-  include_role:
-    name: insert_template_after_another
-  with_items:
-    - path: "{{ mvn_project_basedir }}/pom.xml"
-      insert_after_template: "{{ role_path }}/templates/config/deps/parent/insert_after_template.j2"
-      insert_template: "{{ role_path }}/templates/config/deps/parent/insert_template.j2"
-    - path: "{{ mvn_project_basedir }}/domain/pom.xml"
-      insert_after_template: "{{ role_path }}/templates/config/deps/domain/insert_after_template.j2"
-      insert_template: "{{ role_path }}/templates/config/deps/domain/insert_template.j2"
-
-- name: "Generate java classes of `config` module"
-  include_role:
-    name: gen_java_class_from_template
-  with_items:
-    - src: config/src/main/java/Configuration.java.j2
-      dst: "{{ mvn_project_basedir }}/config/src/main/java/{{ group_id_path }}/config/Configuration.java"
-    - src: config/src/main/java/ConfigurationProducer.java.j2
-      dst: "{{ mvn_project_basedir }}/config/src/main/java/{{ group_id_path }}/config/ConfigurationProducer.java"
-    - src: config/src/main/resources/META-INF/beans.xml
-      dst: "{{ mvn_project_basedir }}/config/src/main/resources/META-INF/beans.xml"

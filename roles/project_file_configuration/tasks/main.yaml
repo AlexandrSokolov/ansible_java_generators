@@ -1,0 +1,16 @@
+---
+- name: "Loading projects properties"
+  include_role:
+    name: load_maven_properties
+
+- import_tasks: tasks/app_config.yaml
+
+- import_tasks: tasks/parent_pom.yaml
+
+- import_tasks: tasks/config.yml
+
+#- import_tasks: tasks/test_app.yml
+#
+#- import_tasks: tasks/rest_api.yml
+#
+#- import_tasks: tasks/front_end_war.yml

@@ -92,7 +92,6 @@ Prepare the full command and run from within you
 Read `test_app/README.md` for the description to use configuration file in your tests.
 
 You can also remove if you do not need:
-- `commons_config/README.md`
 - `commons_config/test`
 - `test_app/src/test/resources/test.{{ config_file_name }}`
   if you do not use the same configuration for tests and prod environments

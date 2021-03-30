@@ -1,6 +1,8 @@
 #!/usr/bin/env bash
 
-source `dirname "$0"`/commons.sh
+source ansible.commons.sh
+
+changePwd2AnsibleScriptsFolder
 
 ARGUMENT_LIST=(
   "config-folder-sys-variable"
@@ -11,7 +13,7 @@ if [[ $# -eq 0 ]]; then
     echo "Usage: " && \
     echo && \
     echo "`basename "$0"` \\" && \
-    echo "        --config-folder-sys-variable condig.dir \\" && \
+    echo "        --config-folder-sys-variable condig.dir.var \\" && \
     echo "        --config-file-name my.properties" && \
     exit 1
 fi
@@ -47,13 +49,7 @@ while [[ $# -gt 0 ]]; do
   esac
 done
 
-changePwd2AnsibleJava $artifact_id
-
-#  --ask-become-pass \
-#ANSIBLE_KEEP_REMOTE_FILES=1 ansible-playbook \
-#   --extra-vars "some-variable=${someValue}" \
-ansible-playbook \
-  -v \
-  -i inventories/local \
-  --extra-vars "${extra_vars} mvn_project_basedir=$mvn_project_basedir" \
-  playbooks/javaAddFileConfiguration.yml
+ansible localhost -v \
+  --module-name include_role \
+  --args name=project_file_configuration \
+  --extra-vars "${extra_vars} app_basedir=$app_basedir"

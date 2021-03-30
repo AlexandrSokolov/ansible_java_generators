@@ -6,12 +6,12 @@
     owner: "{{ lookup('env', 'USER') }}"
     group: "{{ lookup('env', 'USER') }}"
   with_items:
-    - "{{ mvn_project_basedir }}/test_app"
+    - "{{ app_basedir }}/test_app"
 
 - name: "Generate files into test_app folder"
   template:
     src: "{{ item }}.j2"
-    dest: "{{ mvn_project_basedir }}/{{ item }}"
+    dest: "{{ app_basedir }}/{{ item }}"
     mode: 0644
     owner: "{{ lookup('env', 'USER') }}"
     group: "{{ lookup('env', 'USER') }}"
@@ -24,10 +24,10 @@
   include_role:
     name: insert_template_after_another
   with_items:
-    - path: "{{ mvn_project_basedir }}/pom.xml"
+    - path: "{{ app_basedir }}/pom.xml"
       insert_after_template: "{{ role_path }}/templates/test_app/deps/parent/insert_after_template.j2"
       insert_template: "{{ role_path }}/templates/test_app/deps/parent/insert_template.j2"
-    - path: "{{ mvn_project_basedir }}/pom.xml"
+    - path: "{{ app_basedir }}/pom.xml"
       insert_after_template: "{{ role_path }}/templates/test_app/deps/parent/test_resources_insert_after_template.j2"
       insert_template: "{{ role_path }}/templates/test_app/deps/parent/test_resources_insert_template.j2"
 
@@ -36,6 +36,6 @@
     name: gen_java_class_from_template
   with_items:
     - src: test_app/src/main/java/AppBaseTest.java.j2
-      dst: "{{ mvn_project_basedir }}/test_app/src/main/java/{{ group_id_path }}/test/AppBaseTest.java"
+      dst: "{{ app_basedir }}/test_app/src/main/java/{{ group_id_path }}/test/AppBaseTest.java"
     - src: "test_app/src/test/resources/test.app.properties.j2"
-      dst: "{{ mvn_project_basedir }}/test_app/src/test/resources/test.{{ config_file_name }}"
+      dst: "{{ app_basedir }}/test_app/src/test/resources/test.{{ config_file_name }}"
