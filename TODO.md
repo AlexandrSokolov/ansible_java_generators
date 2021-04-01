@@ -1,3 +1,5 @@
+- use loop_control everywhere, instead of item!!!, adopt all tasks to the new, adopt readme.
+- document new role for the folder!
 - solve issue with the order dependency - config and rest service (config now must be run after rest service)
 - update project readme with using of appbasetest, basetest
 - server side raw request logging, update readme, adding ability to log the last request response
