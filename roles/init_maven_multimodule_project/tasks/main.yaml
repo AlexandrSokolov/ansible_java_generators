@@ -27,11 +27,18 @@
 
     - import_tasks: tasks/parent_module.yaml
 
-    - import_tasks: tasks/deps_module.yaml
-
-    - import_tasks: tasks/commons_test.yaml
-
-    - import_tasks: tasks/domain_module.yaml
+    - name: "Generate sources of maven modules"
+      include_role:
+        name: gen_java_class_from_path
+      with_items:
+        - src: "{{ role_path }}/templates/deps"
+          dst_src_path: "{{ app_basedir }}/deps"
+        - src: "{{ role_path }}/templates/commons_test"
+          dst_src_path: "{{ app_basedir }}/commons_test"
+        - src: "{{ role_path }}/templates/domain"
+          dst_src_path: "{{ app_basedir }}/domain"
+      loop_control:
+        loop_var: cs_gjcfp_templates
 
   when: not app_basedir_path.stat.exists
 
