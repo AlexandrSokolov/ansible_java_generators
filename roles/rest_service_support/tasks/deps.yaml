@@ -2,6 +2,8 @@
 - name: "Update the deps `pom.xml` with enunciate version"
   include_role:
     name: insert_text_after_another
+  loop_control:
+    loop_var: cs_itaa_txt_item
   with_items:
     - path: "{{ app_basedir }}/deps/pom.xml"
       insert_after: |
@@ -20,4 +22,5 @@
     - path: "{{ app_basedir }}/deps/pom.xml"
       insert_after_template: "{{ role_path }}/templates/deps/enunciate/insert_after_template.j2"
       insert_template: "{{ role_path }}/templates/deps/enunciate/insert_template.j2"
-
+  loop_control:
+    loop_var: cs_itaa_tmpl_item

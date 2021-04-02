@@ -59,3 +59,5 @@
     - path: "{{ app_basedir }}/domain/pom.xml"
       insert_after_template: "{{ role_path }}/templates/app_config/domain/insert_after_template.j2"
       insert_template: "{{ role_path }}/templates/app_config/domain/insert_template.j2"
+  loop_control:
+    loop_var: cs_itaa_tmpl_item

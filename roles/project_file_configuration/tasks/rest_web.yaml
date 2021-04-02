@@ -10,6 +10,8 @@
 - name: "Add import to `JAXRSConfiguration`"
   include_role:
     name: insert_text_after_another
+  loop_control:
+    loop_var: cs_itaa_txt_item
   with_items:
     - path: "{{ app_basedir }}/rest_web/src/main/java/{{ group_id_path }}/rest/config/JAXRSConfiguration.java"
       insert_after: |
@@ -21,6 +23,8 @@
 - name: "Register new rest service in `JAXRSConfiguration`"
   include_role:
     name: insert_text_after_another
+  loop_control:
+    loop_var: cs_itaa_txt_item
   with_items:
     - path: "{{ app_basedir }}/rest_web/src/main/java/{{ group_id_path }}/rest/config/JAXRSConfiguration.java"
       insert_after: |

@@ -2,6 +2,8 @@
 - name: "Add version properties to the parent pom.xml"
   include_role:
     name: insert_text_after_another
+  loop_control:
+    loop_var: cs_itaa_txt_item
   with_items:
     - path: "{{ app_basedir }}/pom.xml"
       insert_after: |
@@ -15,6 +17,8 @@
 - name: "Add version properties to the parent pom.xml"
   include_role:
     name: insert_text_after_another
+  loop_control:
+    loop_var: cs_itaa_txt_item
   with_items:
     - path: "{{ app_basedir }}/pom.xml"
       insert_after: |
@@ -25,6 +29,8 @@
 - name: "Add `rest_api` module to the parent pom.xml"
   include_role:
     name: insert_text_after_another
+  loop_control:
+    loop_var: cs_itaa_txt_item
   with_items:
     - path: "{{ app_basedir }}/pom.xml"
       insert_after: |
@@ -35,6 +41,8 @@
 - name: "Add `rest_web` module to the parent pom.xml"
   include_role:
     name: insert_text_after_another
+  loop_control:
+    loop_var: cs_itaa_txt_item
   with_items:
     - path: "{{ app_basedir }}/pom.xml"
       insert_after: |
@@ -49,3 +57,5 @@
     - path: "{{ app_basedir }}/pom.xml"
       insert_after_template: "{{ role_path }}/templates/parent_pom/insert_after_template.j2"
       insert_template: "{{ role_path }}/templates/parent_pom/insert_maven_plugins.j2"
+  loop_control:
+    loop_var: cs_itaa_tmpl_item

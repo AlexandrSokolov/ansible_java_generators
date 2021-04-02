@@ -6,3 +6,5 @@
     - path: "{{ app_basedir }}/code_quality/findbugs-exclude.xml"
       insert_after_template: "{{ role_path }}/templates/code_quality/findbug_filter_insert_after.j2"
       insert_template: "{{ role_path }}/templates/code_quality/findbug_filter_insert.j2"
+  loop_control:
+    loop_var: cs_itaa_tmpl_item

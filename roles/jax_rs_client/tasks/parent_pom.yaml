@@ -2,6 +2,8 @@
 - name: "Add `commons_jax_rs_client` module to the parent pom.xml"
   include_role:
     name: insert_text_after_another
+  loop_control:
+    loop_var: cs_itaa_txt_item
   with_items:
     - path: "{{ app_basedir }}/pom.xml"
       insert_after: |
