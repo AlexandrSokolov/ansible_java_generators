@@ -3,12 +3,25 @@
   include_role:
     name: load_maven_properties
 
-- import_tasks: tasks/app_config.yaml
+- name: "Generate sources of `app_config` module"
+  include_role:
+    name: gen_java_class_from_path
+  with_items:
+    - src: "{{ role_path }}/templates/app_config"
+      dst_src_path: "{{ app_basedir }}/app_config"
+  loop_control:
+    loop_var: cs_gjcfp_templates
 
 - import_tasks: tasks/parent_pom.yaml
 
 - import_tasks: tasks/config.yaml
 
-- import_tasks: tasks/rest_api.yaml
-
-- import_tasks: tasks/rest_web.yaml
+- name: "Add dependencies on 'app_config' module"
+  include_role:
+    name: insert_template_after_another
+  with_items:
+    - path: "{{ app_basedir }}/domain/pom.xml"
+      insert_after_template: "{{ role_path }}/templates/domain/insert_after_template.j2"
+      insert_template: "{{ role_path }}/templates/domain/insert_template.j2"
+  loop_control:
+    loop_var: cs_itaa_tmpl_item

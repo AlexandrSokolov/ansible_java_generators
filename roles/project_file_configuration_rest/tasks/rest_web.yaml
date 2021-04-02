@@ -5,6 +5,8 @@
   with_items:
     - src: rest_web/src/main/java/ConfigRestService.java.j2
       dst: "{{ app_basedir }}/rest_web/src/main/java/{{ group_id_path }}/rest/app/ConfigRestService.java"
+  loop_control:
+    loop_var: cs_gjcft_item
 
 
 - name: "Add import to `JAXRSConfiguration`"

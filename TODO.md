@@ -1,6 +1,10 @@
-- project file configuration, extract rest services, use the app_config new role for path
-  solve issue with the order dependency - config and rest service (config now must be run after rest service)
-- update project readme with using of appbasetest, basetest
+- DB module refactoring
+  1. only schema
+  2. only jdbc
+  3. schema with spring
+  4. only spring
+  Move documentation to role!!!
+- update project readme with using of appbasetest, basetest, about testResources
 - server side raw request logging, update readme, adding ability to log the last request response
 - add unit tests for serialisation, deser-n with custom serialiers/deserialiers
 - add unit to start server and check headers, response codes.

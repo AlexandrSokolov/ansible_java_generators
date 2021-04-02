@@ -52,12 +52,3 @@
     - src: "app_config/src/test/resources/test.config.properties.j2"
       dst: "{{ app_basedir }}/app_config/src/test/resources/test.config.properties"
 
-- name: "Add dependencies on 'config' module"
-  include_role:
-    name: insert_template_after_another
-  with_items:
-    - path: "{{ app_basedir }}/domain/pom.xml"
-      insert_after_template: "{{ role_path }}/templates/app_config/domain/insert_after_template.j2"
-      insert_template: "{{ role_path }}/templates/app_config/domain/insert_template.j2"
-  loop_control:
-    loop_var: cs_itaa_tmpl_item

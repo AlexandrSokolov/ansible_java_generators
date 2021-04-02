@@ -1,0 +1,8 @@
+---
+- name: "Loading projects properties"
+  include_role:
+    name: load_maven_properties
+
+- import_tasks: tasks/rest_api.yaml
+
+- import_tasks: tasks/rest_web.yaml

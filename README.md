@@ -109,8 +109,10 @@ In the output you'll find actual information about expected parameters.
 Prepare the full command and run from within you
 `${projects}/${artifact-id}` folder
 
-Note: `config-folder-sys-variable` is a system variable that refers
-to the folder that contains the configuration file.
+Notes: 
+- `config-folder-sys-variable` is a system variable that refers to the folder that contains the configuration file.
+- the rest service to allow you to download a configuration property file is not included.
+  You can do it later, after you add rest api and rest services support.
 
 After the code generation, remove the following folders if you do not need them:
 - `app_config/src/test/{{ group_id_path }}/config/commons` 
@@ -513,6 +515,10 @@ Now you can:
     }
   }
   ```
+
+#### Add rest service to allow you to download the configuration property file
+
+  Run: `javaAddFileConfigurationRest.sh`
 
 #### Add Jax WS (soap) client support  
 
