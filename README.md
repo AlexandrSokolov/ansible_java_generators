@@ -80,8 +80,6 @@ TODO (priority not clear):
   ```
   Read [Guide to using attached tests](http://maven.apache.org/guides/mini/guide-attached-tests.html) for more details.
 
-  TODO remove me after restructering `javaGenMultiModuleWarProject.sh` is divided and not used anymore!
-
 #### Git support
 
   Run from within the project base folder: `gitSupport.sh`
