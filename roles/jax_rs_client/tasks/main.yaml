@@ -7,7 +7,14 @@
 
 - import_tasks: tasks/parent_pom.yaml
 
-- import_tasks: tasks/commons_jax_rs_client.yaml
+- name: "Generate sources of `commons_jax_rs_client` module"
+  include_role:
+    name: gen_java_class_from_path
+  with_items:
+    - src: "{{ role_path }}/templates/commons_jax_rs_client"
+      dst_src_path: "{{ app_basedir }}/commons_jax_rs_client"
+  loop_control:
+    loop_var: cs_gjcfp_templates
 
 - import_tasks: tasks/domain.yaml
 

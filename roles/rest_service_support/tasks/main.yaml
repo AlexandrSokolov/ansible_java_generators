@@ -7,7 +7,7 @@
 
 - import_tasks: tasks/parent_pom.yaml
 
-- name: "Generate sources of `rest_api` module"
+- name: "Generate sources of `rest_api` and `rest_web` modules"
   include_role:
     name: gen_java_class_from_path
   with_items:
@@ -15,6 +15,8 @@
       dst_src_path: "{{ app_basedir }}/rest_api"
     - src: "{{ role_path }}/templates/rest_web"
       dst_src_path: "{{ app_basedir }}/rest_web"
+  loop_control:
+    loop_var: cs_gjcfp_templates
 
 # special hack, just to append file with the content
 - name: "Update `README.md`"
