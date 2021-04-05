@@ -561,7 +561,7 @@ Now you can:
 
 #### Jpa Datasource 
 
-  Run: `javaAddJpaDatasource.sh`
+  Run: `dbSchemaWithSpringDs.sh`
   In the output you'll find actual information about expected parameters.
 
 ## TODO (priority not clear):

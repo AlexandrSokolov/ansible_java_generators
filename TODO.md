@@ -1,9 +1,10 @@
 - DB module refactoring
-  1. only schema
-  2. only jdbc
-  3. schema with spring
-  4. only spring
-  Move documentation to role!!!
+  1. schema with spring with inserts and selects
+  2. persistence.xml for existing schema with jdbc select only, note that it is for not a huge amount of records 
+  3. like previous, but only spring 
+   documentation per role with a link from main readme
+   docs for the generated module
+   copy projects from the old laptop to github
 - update project readme with using of appbasetest, basetest, about testResources
 - server side raw request logging, update readme, adding ability to log the last request response
 - add unit tests for serialisation, deser-n with custom serialiers/deserialiers
@@ -13,19 +14,9 @@
   add unit tests for it
 - jax rs client, more example with authentication, README
 - jax rs client more clear logging, README
-- avoid using ansible file with variables, try to read them from pom.xml
-- ability to run with a changed version
 - config usage for test purpose
 - jax rs config for test purpose generation
-
-- fix changePwd2AnsibleJava $artifact_id it is not known
-- fix issue, when project folder name is renamed and 
-    does equal to `artifact_id`
-    
-- fix <version>1.0.0</version>, store variables from the main task
-   
 - JaxRsHandlerUtils docs, examples and tests
-- add dependency on bm nexus
 - rest-api tests
 - other tests
 - dataaccess mudule
