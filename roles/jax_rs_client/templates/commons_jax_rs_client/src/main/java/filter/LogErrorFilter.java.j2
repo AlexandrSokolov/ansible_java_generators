@@ -2,8 +2,8 @@ package {{ group_id }}.commons.jax.rs.client.filter;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.collect.Sets;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import javax.ws.rs.client.ClientRequestContext;
 import javax.ws.rs.client.ClientResponseContext;
@@ -12,7 +12,7 @@ import javax.ws.rs.core.Response;
 
 public class LogErrorFilter implements ClientResponseFilter {
 
-  private final Log logger;
+  private final Logger logger;
   private final ObjectMapper objectMapper;
 
   public static LogErrorFilter instance(
@@ -24,7 +24,7 @@ public class LogErrorFilter implements ClientResponseFilter {
   private LogErrorFilter(
     final Class<?> clazz,
     final ObjectMapper objectMapper) {
-    this.logger = LogFactory.getLog(clazz);
+    this.logger = LogManager.getLogger(clazz);
     this.objectMapper = objectMapper;
   }
 

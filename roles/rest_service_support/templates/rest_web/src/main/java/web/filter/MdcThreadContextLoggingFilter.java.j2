@@ -34,7 +34,7 @@ public class MdcThreadContextLoggingFilter implements Filter {
     final FilterChain filterChain) throws IOException, ServletException {
     final Principal principal = ((HttpServletRequest)servletRequest).getUserPrincipal();
     final String sessionId = ((HttpServletRequest) servletRequest).getSession().getId();
-    try (final CloseableThreadContext.Instance ctc =
+    try (CloseableThreadContext.Instance ctc =
            CloseableThreadContext.put(USER_SESSION_ID_MDC_KEY,
              principal == null ? sessionId : String.format("%s_%s", principal.getName(), sessionId))) {
       filterChain.doFilter(servletRequest, servletResponse);
