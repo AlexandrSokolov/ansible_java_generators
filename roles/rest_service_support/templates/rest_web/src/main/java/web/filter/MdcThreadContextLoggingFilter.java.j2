@@ -1,0 +1,48 @@
+package {{ group_id }}.web.filter;
+
+import org.apache.logging.log4j.CloseableThreadContext;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
+import javax.servlet.Filter;
+import javax.servlet.FilterChain;
+import javax.servlet.FilterConfig;
+import javax.servlet.ServletException;
+import javax.servlet.ServletRequest;
+import javax.servlet.ServletResponse;
+import javax.servlet.annotation.WebFilter;
+import javax.servlet.http.HttpServletRequest;
+import java.io.IOException;
+import java.security.Principal;
+
+@WebFilter(urlPatterns = {"/*"})
+public class MdcThreadContextLoggingFilter implements Filter {
+
+  public static final String USER_SESSION_ID_MDC_KEY = "user_session_id";
+
+  private static final Logger logger = LogManager.getLogger(MdcThreadContextLoggingFilter.class.getName());
+
+  @Override
+  public void init(FilterConfig filterConfig) {
+    logger.debug("MdcThreadContextLoggingFilter initialized");
+  }
+
+  @Override
+  public void doFilter(
+    final ServletRequest servletRequest,
+    final ServletResponse servletResponse,
+    final FilterChain filterChain) throws IOException, ServletException {
+    final Principal principal = ((HttpServletRequest)servletRequest).getUserPrincipal();
+    final String sessionId = ((HttpServletRequest) servletRequest).getSession().getId();
+    try (final CloseableThreadContext.Instance ctc =
+           CloseableThreadContext.put(USER_SESSION_ID_MDC_KEY,
+             principal == null ? sessionId : String.format("%s_%s", principal.getName(), sessionId))) {
+      filterChain.doFilter(servletRequest, servletResponse);
+    }
+  }
+
+  @Override
+  public void destroy() {
+    logger.debug("MdcThreadContextLoggingFilter destroyed");
+  }
+}
