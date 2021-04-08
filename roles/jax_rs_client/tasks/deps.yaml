@@ -7,7 +7,7 @@
   with_items:
     - path: "{{ app_basedir }}/deps/pom.xml"
       insert_after: |
-        </apache-commons-logging.version>
+        </apache-commons-lang3.version>
       insert_text: |4
               <commons-validator.version>{{ commons_validator_version }}</commons-validator.version>
 
@@ -19,7 +19,7 @@
   with_items:
     - path: "{{ app_basedir }}/deps/pom.xml"
       insert_after: |
-        </apache-commons-logging.version>
+        </log4j2.version>
       insert_text: |4
               <jackson.version>{{ jackson_version }}</jackson.version>
 
@@ -31,7 +31,7 @@
   with_items:
     - path: "{{ app_basedir }}/deps/pom.xml"
       insert_after: |
-        </commons-validator.version>
+        </log4j2.version>
       insert_text: |4
               <resteasy.version>{{ resteasy_version }}</resteasy.version>
 

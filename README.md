@@ -37,7 +37,7 @@ TODO (priority not clear):
 
 #### Generate Maven Project
 
-  Run: `javaGenMultiModuleMavenProject.sh`
+  Run: `javaMvnMultiModuleProject.sh`
   
   In the output you'll find actual information about expected parameters.
   Prepare the full command and run from within you `${projects}` folder.
@@ -437,7 +437,7 @@ Now you can:
   Use it if you want to have REST API with REST Services, which implements API.
 
   **Requirements**:
-  - You generated structure with: `javaGenMultiModuleMavenProject.sh`
+  - You generated structure with: `javaMvnMultiModuleProject.sh`
   - You added git support with: `gitSupport.sh`
   
   **Generation:** Run from within the project base folder: `restSupport.sh`

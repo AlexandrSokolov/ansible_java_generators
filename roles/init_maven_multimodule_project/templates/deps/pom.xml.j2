@@ -15,7 +15,7 @@
     <javaee-api.version>{{ javaee_api_version }}</javaee-api.version>
     <google-guava.version>{{ google_guava_version }}</google-guava.version>
     <apache-commons-lang3.version>{{ apache_commons_lang3_version }}</apache-commons-lang3.version>
-    <apache-commons-logging.version>{{ apache_commons_logging_version }}</apache-commons-logging.version>
+    <log4j2.version>{{ log4j2_version }}</log4j2.version>
 
     <!-- test frameworks -->
     <junit.version>{{ junit_version }}</junit.version>
@@ -43,9 +43,14 @@
         <version>${apache-commons-lang3.version}</version>
       </dependency>
       <dependency>
-        <groupId>commons-logging</groupId>
-        <artifactId>commons-logging</artifactId>
-        <version>${apache-commons-logging.version}</version>
+        <groupId>org.apache.logging.log4j</groupId>
+        <artifactId>log4j-api</artifactId>
+        <version>${log4j2.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.logging.log4j</groupId>
+        <artifactId>log4j-to-slf4j</artifactId>
+        <version>${log4j2.version}</version>
       </dependency>
 
       <!-- TEST START -->

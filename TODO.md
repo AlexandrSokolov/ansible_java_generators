@@ -5,6 +5,7 @@
    documentation per role with a link from main readme
    docs for the generated module
    copy projects from the old laptop to github
+   IT tests
 - update project readme with using of appbasetest, basetest, about testResources
 - server side raw request logging, update readme, adding ability to log the last request response
 - add unit tests for serialisation, deser-n with custom serialiers/deserialiers
