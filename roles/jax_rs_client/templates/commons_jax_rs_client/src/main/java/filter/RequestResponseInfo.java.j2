@@ -108,14 +108,21 @@ public class RequestResponseInfo {
 
       String originalRequestBody = IOUtils.toString(entityStream, StandardCharsets.UTF_8.name());
 
+      Object requestBody = originalRequestBody;
+      if (!StringUtils.isEmpty(originalRequestBody)) {
+        try {
+          requestBody = objectMapper.readValue(originalRequestBody, Object.class);
+        } catch (JsonProcessingException ignored) {
+          //we could not deserialize request into the Object, use it as plain string
+        }
+      }
+
       return RequestResponseInfo.builder()
         .url(requestContext.getUriInfo().getAbsolutePath())
         .httpMethod(requestContext.getMethod().toUpperCase(Locale.ENGLISH))
         .requestHeaders(requestContext.getHeaders())
         .objectMapper(objectMapper)
-        .requestBody(StringUtils.isEmpty(originalRequestBody)
-          ? null
-          : objectMapper.readValue(originalRequestBody, Object.class))
+        .requestBody(requestBody)
         .responseStatus(responseContext.getStatus())
         .responseHeaders(responseHeaders)
         .responseBody(responseContext.getEntity())
