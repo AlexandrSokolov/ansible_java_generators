@@ -1,0 +1,34 @@
+package {{ group_id }}.rest.filters;
+
+import {{ group_id }}.commons.jax.rs.client.filter.RequestResponseInfo;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
+import javax.ws.rs.container.ContainerRequestContext;
+import javax.ws.rs.container.ContainerRequestFilter;
+import javax.ws.rs.ext.Provider;
+import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
+
+/**
+ * To be able to read response body in LogDebugServerFilter,
+ * after the rest service handled request
+ * we need to make it reusable first
+ */
+@Provider
+public class ReusableInputStreamFilter implements ContainerRequestFilter {
+
+  private static final Logger logger = LogManager.getLogger(LogDebugServerFilter.class.getName());
+
+  @Override
+  public void filter(ContainerRequestContext requestContext) {
+    if (logger.isDebugEnabled()) {
+      StringBuilder sb = new StringBuilder();
+      InputStream reusable = RequestResponseInfo.logInboundEntity(
+        sb,
+        requestContext.getEntityStream(),
+        StandardCharsets.UTF_8);
+      requestContext.setEntityStream(reusable);
+    }
+  }
+}

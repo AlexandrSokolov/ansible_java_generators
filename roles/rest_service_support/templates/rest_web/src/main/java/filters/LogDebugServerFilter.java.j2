@@ -1,0 +1,26 @@
+package {{ group_id }}.rest.filters;
+
+import {{ group_id }}.commons.jax.rs.client.filter.RequestResponseInfo;
+import {{ group_id }}.rest.jackson.JacksonProvider;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
+import javax.ws.rs.container.ContainerRequestContext;
+import javax.ws.rs.container.ContainerResponseContext;
+import javax.ws.rs.container.ContainerResponseFilter;
+import javax.ws.rs.ext.Provider;
+
+@Provider
+public class LogDebugServerFilter implements ContainerResponseFilter {
+
+  private static final Logger logger = LogManager.getLogger(LogDebugServerFilter.class.getName());
+
+  private final ObjectMapper objectMapper = JacksonProvider.instance().objectMapper();
+
+  @Override
+  public void filter(ContainerRequestContext requestContext, ContainerResponseContext responseContext) {
+    logger.debug(() -> RequestResponseInfo.instance(
+      objectMapper, requestContext, responseContext));
+  }
+}

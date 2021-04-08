@@ -1,6 +1,8 @@
 package {{ group_id }}.rest.config;
 
 import {{ group_id }}.rest.app.MockRestService;
+import {{ group_id }}.rest.filters.LogDebugServerFilter;
+import {{ group_id }}.rest.filters.ReusableInputStreamFilter;
 import {{ group_id }}.rest.jackson.JacksonProvider;
 import {{ group_id }}.rest.providers.HttpSuccessfulStatusHandler;
 
@@ -24,6 +26,8 @@ public class JAXRSConfiguration extends Application {
       MockRestService.class,
       JacksonProvider.class,
       HttpSuccessfulStatusHandler.class,
+      ReusableInputStreamFilter.class,
+      LogDebugServerFilter.class,
       WebApplicationExceptionMapper.class
     );
   }

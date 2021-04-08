@@ -28,9 +28,7 @@ public class LogDebugFilter implements ClientResponseFilter {
 
   @Override
   public void filter(ClientRequestContext requestContext, ClientResponseContext responseContext) {
-    if (logger.isDebugEnabled()) {
-      logger.debug(RequestResponseInfo.instance(
-        objectMapper, requestContext, responseContext));
-    }
+    logger.debug(() -> RequestResponseInfo.instance(
+      objectMapper, requestContext, responseContext));
   }
 }
