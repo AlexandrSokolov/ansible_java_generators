@@ -1,0 +1,25 @@
+### Datasource module
+
+- [Requirements](#1-requirements)
+
+#### 1. Requirements
+
+##### 1.1 Create custom `bm_custom_db` database:
+
+Sql statement: `create database bm_custom_db;`
+
+On the `bm_my_sql` mysql docker container:
+```bash
+docker exec -it bm_my_sql sh -c "echo create database bm_custom_db | mysql -uroot -p"
+docker exec -it bm_my_sql sh -c "echo show databases | mysql -uroot -p"
+```
+
+##### 1.2 Configure Wildfly with a new datasource
+
+1.2.1 If you Wildfly docker image is not built and a docker container is not running yet, run:
+
+`installBmWfCustomDs.sh {{ jpa_jndi_name }} release-6.7`
+
+1.2.2 If the Widfly docker container is already running, adopt it with:
+
+`recreateBmWfWithCustomDs.sh {{ jpa_jndi_name }}`
