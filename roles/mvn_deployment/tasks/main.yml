@@ -3,6 +3,8 @@
   include_role:
     name: insert_template_after_another
   with_items:
-    - path: "{{ mvn_project_basedir }}/front_end_war/pom.xml"
-      insert_after_template: "{{ role_path }}/templates/front_end_war/insert_after.j2"
-      insert_template: "{{ role_path }}/templates/front_end_war/insert_template.j2"
+    - path: "{{ app_basedir }}/rest_web/pom.xml"
+      insert_after_template: "{{ role_path }}/templates/rest_web/insert_after.j2"
+      insert_template: "{{ role_path }}/templates/rest_web/insert_template.j2"
+  loop_control:
+    loop_var: cs_itaa_tmpl_item

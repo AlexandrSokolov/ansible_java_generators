@@ -552,7 +552,7 @@ Now you can:
   
 #### Add deployment support
   
-  Run: `javaMavenDeploymentSupport.sh`
+  Run: `javaMvnDeploymentSupport.sh`
   In the output you'll find actual information about expected parameters.
   
 #### Excel Module support  
