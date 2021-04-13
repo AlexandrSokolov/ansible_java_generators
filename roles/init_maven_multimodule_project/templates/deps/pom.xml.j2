@@ -16,6 +16,7 @@
     <google-guava.version>{{ google_guava_version }}</google-guava.version>
     <apache-commons-lang3.version>{{ apache_commons_lang3_version }}</apache-commons-lang3.version>
     <log4j2.version>{{ log4j2_version }}</log4j2.version>
+    <logback.version>{{ logback_version }}</logback.version>
 
     <!-- test frameworks -->
     <junit.version>{{ junit_version }}</junit.version>
@@ -51,6 +52,12 @@
         <groupId>org.apache.logging.log4j</groupId>
         <artifactId>log4j-to-slf4j</artifactId>
         <version>${log4j2.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>ch.qos.logback</groupId>
+        <artifactId>logback-classic</artifactId>
+        <version>${logback.version}</version>
+        <scope>test</scope>
       </dependency>
 
       <!-- TEST START -->

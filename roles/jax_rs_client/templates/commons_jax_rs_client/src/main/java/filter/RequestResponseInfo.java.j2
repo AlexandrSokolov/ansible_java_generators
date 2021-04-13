@@ -242,8 +242,7 @@ public class RequestResponseInfo {
   private static Object extractResponseBody(
     final ObjectMapper objectMapper, final ClientResponseContext responseContext) {
     try {
-      if (responseContext.getLength() != 0) {
-
+      if (responseContext.getLength() > 0 && responseContext.hasEntity()) {
 
         StringBuilder b = new StringBuilder();
 
