@@ -3,6 +3,7 @@ package {{ group_id }}.datasource.repository;
 import {{ group_id }}.datasource.entities.EntityExample;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.cdi.Eager;
 import org.springframework.data.repository.query.Param;
 
 import java.util.List;
@@ -12,6 +13,7 @@ import static {{ group_id }}.datasource.entities.EntityExample.Persistence.ENTIT
 import static {{ group_id }}.datasource.entities.EntityExample.Persistence.TABLE_NAME;
 import static {{ group_id }}.datasource.entities.EntityExample.Queries.NAME_PARAM;
 
+@Eager
 public interface EntityExampleRepository extends JpaRepository<EntityExample, Long> {
 
   //if query is defined via spring Query annotation, we can name method as we want
