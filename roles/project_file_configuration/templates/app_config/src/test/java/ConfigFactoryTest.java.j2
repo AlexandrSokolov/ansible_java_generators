@@ -3,8 +3,8 @@ package {{ group_id }}.config.commons;
 import {{ group_id }}.commons.test.BaseTest;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Lists;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -23,18 +23,18 @@ public class ConfigFactoryTest extends BaseTest {
 
     TestPropertiesConfig sm = Configs.fileConfig(testInputStream(SINGLE_STRING_PROPERTY))
       .proxy(TestPropertiesConfig.class);
-    Assert.assertEquals(
+    Assertions.assertEquals(
       STRING_PROP_VALUE1,
       sm.someProperty1());
 
-    Assert.assertEquals(
+    Assertions.assertEquals(
       STRING_PROP_VALUE2,
       sm.someProperty2());
   }
 
   @Test
   public void testOptionalString(){
-    Assert.assertEquals(
+    Assertions.assertEquals(
       STRING_PROP_VALUE2,
       Configs.fileConfig(testInputStream(SINGLE_STRING_PROPERTY))
         .proxy(TestPropertiesConfig.class)
@@ -47,7 +47,7 @@ public class ConfigFactoryTest extends BaseTest {
 
     TestPropertiesConfig sm = Configs.fileConfig(testInputStream(SINGLE_STRING_PROPERTY))
       .proxy(TestPropertiesConfig.class);
-    Assert.assertEquals(
+    Assertions.assertEquals(
       INT_PROP_VALUE,
       sm.intProperty());
   }
@@ -57,14 +57,14 @@ public class ConfigFactoryTest extends BaseTest {
 
     TestPropertiesConfig sm = Configs.fileConfig(testInputStream(SINGLE_STRING_PROPERTY))
       .proxy(TestPropertiesConfig.class);
-    Assert.assertEquals(
+    Assertions.assertEquals(
       (Integer) INT_PROP_VALUE,
       sm.integerProperty());
   }
 
   @Test
   public void testOptionalInteger(){
-    Assert.assertEquals(
+    Assertions.assertEquals(
       (Integer) INT_PROP_VALUE,
       Configs.fileConfig(testInputStream(SINGLE_STRING_PROPERTY))
         .proxy(TestPropertiesConfig.class)
@@ -74,7 +74,7 @@ public class ConfigFactoryTest extends BaseTest {
 
   @Test
   public void testListDefaultSeparator(){
-    Assert.assertEquals(
+    Assertions.assertEquals(
       Lists.newArrayList("item1", "item2", "item3"),
       Configs.fileConfig(testInputStream(SINGLE_STRING_PROPERTY))
         .proxy(TestPropertiesConfig.class)
@@ -84,7 +84,7 @@ public class ConfigFactoryTest extends BaseTest {
 
   @Test
   public void testListCustomSeparator(){
-    Assert.assertEquals(
+    Assertions.assertEquals(
       Lists.newArrayList("item1", "item2", "item3"),
       Configs.fileConfig(testInputStream(SINGLE_STRING_PROPERTY))
         .proxy(TestPropertiesConfig.class)
@@ -94,7 +94,7 @@ public class ConfigFactoryTest extends BaseTest {
 
   @Test
   public void testNotExistingList(){
-    Assert.assertTrue(
+    Assertions.assertTrue(
       Configs.fileConfig(testInputStream(SINGLE_STRING_PROPERTY))
         .proxy(TestPropertiesConfig.class)
         .emptyList()
@@ -103,7 +103,7 @@ public class ConfigFactoryTest extends BaseTest {
 
   @Test
   public void testMapDefaultSeparator(){
-    Assert.assertEquals(
+    Assertions.assertEquals(
       ImmutableMap.of(
         "key1", "value1",
         "key2", "value2",
@@ -116,7 +116,7 @@ public class ConfigFactoryTest extends BaseTest {
 
   @Test
   public void testMapCustomSeparator(){
-    Assert.assertEquals(
+    Assertions.assertEquals(
       ImmutableMap.of(
         "key1", "value1",
         "key2", "value2"),
@@ -128,7 +128,7 @@ public class ConfigFactoryTest extends BaseTest {
 
   @Test
   public void testEmptyMap(){
-    Assert.assertTrue(
+    Assertions.assertTrue(
       Configs.fileConfig(testInputStream(SINGLE_STRING_PROPERTY))
         .proxy(TestPropertiesConfig.class)
         .notExistingMap()
@@ -138,7 +138,7 @@ public class ConfigFactoryTest extends BaseTest {
 
   @Test
   public void testMapDefaultOfLists(){
-    Assert.assertEquals(
+    Assertions.assertEquals(
       ImmutableMap.of(
         "key1", Lists.newArrayList("value1", "value2", "value3"),
         "key2", Lists.newArrayList("value2"),
@@ -151,7 +151,7 @@ public class ConfigFactoryTest extends BaseTest {
 
   @Test
   public void testMapDefaultOfMaps(){
-    Assert.assertEquals(
+    Assertions.assertEquals(
       ImmutableMap.of(
         "key1", ImmutableMap.of("subkey1", "value1", "subkey2", "value2"),
         "key2", ImmutableMap.of("subkey3", "value2"),
@@ -164,7 +164,7 @@ public class ConfigFactoryTest extends BaseTest {
 
   @Test
   public void testMapDefaultOfMapsOfLists(){
-    Assert.assertEquals(
+    Assertions.assertEquals(
       ImmutableMap.of(
         "key1", ImmutableMap.of(
           "subkey1",
@@ -190,10 +190,10 @@ public class ConfigFactoryTest extends BaseTest {
     try {
       Configs.fileConfig(testInputStream(SINGLE_STRING_PROPERTY))
         .proxy(NotExistingStringConfig.class);
-      Assert.fail();
+      Assertions.fail();
     } catch (Exception e){
-      Assert.assertEquals(IllegalStateException.class, e.getClass());
-      Assert.assertEquals(
+      Assertions.assertEquals(IllegalStateException.class, e.getClass());
+      Assertions.assertEquals(
         String.format(FileConfig.WRONG_PROXY_CONFIG_FORMAT_MSG,
           String.format(FileConfig.PROPERTY_DOES_NOT_EXIST_FORMAT_MSG, TestPropertiesConfig.NOT_EXISTING_PROP_KEY)),
         e.getMessage());
@@ -203,7 +203,7 @@ public class ConfigFactoryTest extends BaseTest {
   @Test
   public void testNotExistingPropertyAsOptional(){
 
-    Assert.assertFalse(
+    Assertions.assertFalse(
       Configs.fileConfig(testInputStream(SINGLE_STRING_PROPERTY))
         .proxy(TestPropertiesConfig.class)
         .notExistingPropertyAsOptionalString()
@@ -216,10 +216,10 @@ public class ConfigFactoryTest extends BaseTest {
     try {
       Configs.fileConfig(testInputStream(SINGLE_STRING_PROPERTY))
         .proxy(UnsupportedReturnTypeConfig.class);
-      Assert.fail();
+      Assertions.fail();
     } catch (Exception e){
-      Assert.assertEquals(IllegalStateException.class, e.getClass());
-      Assert.assertEquals(
+      Assertions.assertEquals(IllegalStateException.class, e.getClass());
+      Assertions.assertEquals(
         String.format(FileConfig.WRONG_PROXY_CONFIG_FORMAT_MSG,
           String.format(
             FileConfig.UNSUPPORTED_RETURN_TYPE_FORMAT_MSG,
@@ -234,10 +234,10 @@ public class ConfigFactoryTest extends BaseTest {
     try {
       Configs.fileConfig(new FileInputStream(NOT_EXISTING_FILE))
         .proxy(TestPropertiesConfig.class);
-      Assert.fail();
+      Assertions.fail();
     } catch (Exception e){
-      Assert.assertEquals(FileNotFoundException.class, e.getClass());
-      Assert.assertTrue(e.getMessage().contains(NOT_EXISTING_FILE));
+      Assertions.assertEquals(FileNotFoundException.class, e.getClass());
+      Assertions.assertTrue(e.getMessage().contains(NOT_EXISTING_FILE));
     }
   }
 
@@ -247,10 +247,10 @@ public class ConfigFactoryTest extends BaseTest {
     try {
       Configs.fileConfig(testInputStream(SINGLE_STRING_PROPERTY))
         .proxy(DefaultMethodConfig.class);
-      Assert.fail();
+      Assertions.fail();
     } catch (Exception e){
-      Assert.assertEquals(IllegalStateException.class, e.getClass());
-      Assert.assertEquals(
+      Assertions.assertEquals(IllegalStateException.class, e.getClass());
+      Assertions.assertEquals(
         String.format(FileConfig.WRONG_PROXY_CONFIG_FORMAT_MSG,
           String.format(FileConfig.UNSUPPORTED_METHOD_FORMAT_MSG,"someDefault")),
         e.getMessage());

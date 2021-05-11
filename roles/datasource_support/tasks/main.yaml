@@ -32,11 +32,17 @@
       insert_after_template: "{{ role_path }}/templates/deps/properties/insert_after_template.j2"
       insert_template: "{{ role_path }}/templates/deps/properties/insert_template.j2"
     - path: "{{ app_basedir }}/deps/pom.xml"
+      insert_after_template: "{{ role_path }}/templates/deps/properties/insert_after_template_test.j2"
+      insert_template: "{{ role_path }}/templates/deps/properties/insert_template_test.j2"
+    - path: "{{ app_basedir }}/deps/pom.xml"
       insert_after_template: "{{ role_path }}/templates/deps/spring_data_jpa/insert_after_template.j2"
       insert_template: "{{ role_path }}/templates/deps/spring_data_jpa/insert_template.j2"
     - path: "{{ app_basedir }}/deps/pom.xml"
       insert_after_template: "{{ role_path }}/templates/deps/liquibase/insert_after_template.j2"
       insert_template: "{{ role_path }}/templates/deps/liquibase/insert_template.j2"
+    - path: "{{ app_basedir }}/deps/pom.xml"
+      insert_after_template: "{{ role_path }}/templates/deps/test/insert_after_template.j2"
+      insert_template: "{{ role_path }}/templates/deps/test/insert_template.j2"
   loop_control:
     loop_var: cs_itaa_tmpl_item
 

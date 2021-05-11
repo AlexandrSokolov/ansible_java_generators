@@ -4,5 +4,5 @@ google_guava_version: 18.0
 apache_commons_lang3_version: 3.9
 log4j2_version: 2.14.0
 logback_version: 1.2.3
-junit_version: 4.12
+junit5_version: 5.7.1
 mockito_version: 1.9.5

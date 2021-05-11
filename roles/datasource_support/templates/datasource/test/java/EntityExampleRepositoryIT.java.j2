@@ -1,0 +1,26 @@
+package {{ group_id }}.datasource.repository;
+
+import {{ group_id }}.datasource.MySqlLiquibaseBaseIT;
+import com.github.database.rider.core.api.configuration.DBUnit;
+import com.github.database.rider.core.api.configuration.Orthography;
+import com.github.database.rider.core.api.dataset.DataSet;
+import com.github.database.rider.spring.api.DBRider;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+
+@DBRider
+@DBUnit(caseInsensitiveStrategy = Orthography.LOWERCASE)
+public class EntityExampleRepositoryIT extends MySqlLiquibaseBaseIT {
+
+  public static final String NAME = "test entity 110";
+
+  @Autowired
+  private EntityExampleRepository entityExampleRepository;
+
+  @Test
+  @DataSet("examples.yml")
+  public void testCustomFindByName() {
+    Assertions.assertEquals(1, entityExampleRepository.customFindByName(NAME).size());
+  }
+}
