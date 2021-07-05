@@ -210,6 +210,7 @@ public interface Config {
 3.1 In tests:
 Add test dependency
 ```xml
+  <dependencies>
     <!-- TEST -->
     <dependency>
       <groupId>{{ group_id }}</groupId>
@@ -219,6 +220,15 @@ Add test dependency
       <type>test-jar</type>
       <scope>test</scope>
     </dependency>
+    <dependency>
+      <groupId>{{ group_id }}</groupId>
+      <artifactId>{{ artifact_id }}-commons-test</artifactId>
+      <version>${project.version}</version>
+      <classifier>tests</classifier>
+      <type>test-jar</type>
+      <scope>test</scope>
+    </dependency>
+  </dependencies>
 ```
 Extend your test class from `AppBaseTest`
 ```
@@ -226,6 +236,20 @@ public MyTest extends AppBaseTest {
   
   Configuration config = testConfig();
 }
+```
+
+Note: you need a test dependency on both `{{ artifact_id }}-config` and `{{ artifact_id }}-commons-test`.
+Otherwise in your test, that looks like:
+```java
+import AppBaseTest;
+
+public class ApplicationServiceIT extends AppBaseTest {
+}
+```
+you'll get an error about the base class of `AppBaseTest`:
+```text
+[ERROR] .../ApplicationServiceIT.java:[6,8] cannot access ...BaseTest
+[ERROR]   class file for ....BaseTest not found
 ```
 
 3.2 From a file, located on the path, managed by a combination of
