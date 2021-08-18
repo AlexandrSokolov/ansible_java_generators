@@ -1,23 +1,64 @@
+### Topics for testing
+
+- [Functionality of `BaseTest` and its generation](#functionality-of-basetest-and-its-generation)
+- [Functionality of `AppBaseTest` and its generation](#functionality-of-appbasetest-and-its-generation)
+- [Sharing files for different Maven modules](#sharing-files-for-different-maven-modules)
+- [Logging in tests](#logging-in-tests)
+- [How to expose your own test class for reusing](configuration.md)
 
 
-The script generates `commons_test` module for sharing test resources.
-To be able to extend the `BaseTest` class in your modules, add the following into the dependencies:
-  ```xml
-      <!-- TEST -->
-      <dependency>
-        <groupId>your.project.group.id</groupId>
-        <artifactId>your-project-artifact-id-commons-test</artifactId>
-        <version>${project.version}</version>
-        <classifier>tests</classifier>
-        <type>test-jar</type>
-        <scope>test</scope>
-      </dependency>
-  ```
-To share your tests sources between the other modules add to the module with the test sources:
-  ```xml
-    <plugin>
-      <groupId>org.apache.maven.plugins</groupId>
-      <artifactId>maven-jar-plugin</artifactId>
-    </plugin>
-  ```
-Read [Guide to using attached tests](http://maven.apache.org/guides/mini/guide-attached-tests.html) for more details.
+### Generation and Functionality of `BaseTest`
+
+`BaseTest` is defined in `commons_test` module and the `commons_test` module 
+gets created during multi-module Maven project generation.
+
+**It allows:** 
+
+1. Read file as `InputStream` from test resources:
+```
+InputStream fileFromTestResources = testInputStream("shared.test.xlsx");
+```
+2. Create `OutputStream` for writing into the temporary file:
+```
+File tempFile = tempTestFile(TEST_EXCEL_FILE_NAME);
+try (FileOutputStream fos = new FileOutputStream(tempFile)) {
+  service.writeIntoFile(fos);
+  System.out.println(tempFile.getAbsolutePath());
+}
+```
+
+3. Get an absolute path in test resources
+```
+String testResourcesFolderPath = testFileAbsolutePath("");
+String testFilePath = testFileAbsolutePath(TEST_FILE_NAME);
+```
+
+**To be able to use the `BaseTest` in your module:**
+
+1. Add a `test` scope dependency on `commons_test` module 
+  in your module `pom.xml`:
+```xml
+<dependency>
+  <groupId>${project.groupId}</groupId>
+  <artifactId>${artifact_id_used_for_generation}-commons-test</artifactId>
+  <version>${project.version}</version>
+  <classifier>tests</classifier>
+  <type>test-jar</type>
+  <scope>test</scope>
+</dependency>
+```
+**Note:** To get `${artifact_id_used_for_generation}`, find `${artifactId}` in parent `pom.xml`.
+The value is a combination of: `${artifact_id_used_for_generation}` and `-parent`
+
+2. Extend your test from `BaseTest`:
+```
+import {{ group_id }}.commons.test.BaseTest;
+
+public class MyTest extends BaseTest { ...
+```
+
+### Functionality of `AppBaseTest` and its generation
+
+### Sharing files for different Maven modules
+
+### Logging in tests
