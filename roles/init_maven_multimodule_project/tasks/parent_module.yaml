@@ -10,3 +10,4 @@
   with_items:
     - pom.xml
     - .gitignore
+    - README.md
