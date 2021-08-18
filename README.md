@@ -1,4 +1,4 @@
-### This project allows generating Java code for different layers
+### This project generates Java code for different layers/functionality
 
   Note: to undo the code generation, run: 
 
@@ -19,7 +19,10 @@
 
 ### Features:
 
-- [Generate Maven Multimodule Project](#generate-maven-project)
+- Maven Multimodule Project 
+  [functionality/structure](docs/multi.module.maven/functionality.md)
+  and [how to generate](docs/multi.module.maven/generation.md)
+- [Testing](docs/testing/README.md)
 - [Add Git Support](#git-support)
 - [Project configuration](#add-file-configuration-support)
 - [Jax Rs (Rest) Client Support](#add-jax-rs-rest-client-support)
@@ -34,51 +37,6 @@
 TODO (priority not clear):
 
 - [Add Cryptography support](#99-todo-add-cryptography-support)
-
-#### Generate Maven Project
-
-  Run: `javaMvnMultiModuleProject.sh`
-  
-  In the output you'll find actual information about expected parameters.
-  Prepare the full command and run from within you `${projects}` folder.
-
-  **Notes**:
-  
-  - Split names in `artifact-id` with `-` symbol, 
-    it should look like: `my-smart-project`. 
-    
-    Based on this name some other names are generated, like:
-    `my-smart-project-rest-api`
-    `my-smart-project-config`
-    
-  - `artifact-id` is used as a project base directory. 
-    So a new project will be generated in `${projects}/${artifact-id}` folder
-    
-  - All other Ansible scripts run from within the project base folder.
-
-  After the project generation via Ansible, build it, make sure it is built successfully.
-    
-  The script generates `commons_test` module for sharing test resources. 
-  To be able to extend the `BaseTest` class in your modules, add the following into the dependencies:
-  ```xml
-      <!-- TEST -->
-      <dependency>
-        <groupId>your.project.group.id</groupId>
-        <artifactId>your-project-artifact-id-commons-test</artifactId>
-        <version>${project.version}</version>
-        <classifier>tests</classifier>
-        <type>test-jar</type>
-        <scope>test</scope>
-      </dependency>
-  ```
-  To share your tests sources between the other modules add to the module with the test sources:
-  ```xml
-    <plugin>
-      <groupId>org.apache.maven.plugins</groupId>
-      <artifactId>maven-jar-plugin</artifactId>
-    </plugin>
-  ```
-  Read [Guide to using attached tests](http://maven.apache.org/guides/mini/guide-attached-tests.html) for more details.
 
 #### Git support
 
