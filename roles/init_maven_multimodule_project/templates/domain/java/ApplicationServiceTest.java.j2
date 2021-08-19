@@ -1,0 +1,14 @@
+package {{ group_id }}.app;
+
+import {{ group_id }}.commons.test.BaseTest;
+import org.junit.jupiter.api.Test;
+
+public class ApplicationServiceTest extends BaseTest {
+
+  ApplicationService applicationService = new ApplicationService();
+
+  @Test
+  public void testHandle() {
+    applicationService.handle();
+  }
+}

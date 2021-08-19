@@ -1,6 +1,6 @@
 ### Topics for testing
 
-- [Functionality of `BaseTest` and its generation](#functionality-of-basetest-and-its-generation)
+- [Functionality of `BaseTest` and its generation](#generation-and-functionality-of-basetest)
 - [Functionality of `AppBaseTest` and its generation](#functionality-of-appbasetest-and-its-generation)
 - [Sharing files for different Maven modules](#sharing-files-for-different-maven-modules)
 - [Logging in tests](#logging-in-tests)
