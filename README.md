@@ -24,7 +24,7 @@
   and [how to generate](docs/multi.module.maven/generation.md)
 - [Testing](docs/testing/README.md)
 - [Git Support](docs/git/README.md)
-- [Project configuration](#add-file-configuration-support)
+- [Project configuration](docs/configuration/file.based/README.md)
 - [Jax Rs (Rest) Client Support](#add-jax-rs-rest-client-support)
 - [Jax Ws (Soap) Client Support](#add-jax-ws-soap-client-support)
 - [JEE Async support for long running jobs](#jee-async-support-for-long-running-jobs)
@@ -37,21 +37,6 @@
 TODO (priority not clear):
 
 - [Add Cryptography support](#todo-add-cryptography-support)
-
-#### Add file configuration support
-
-- the rest service to allow you to download a configuration property file is not included.
-  You can do it later, after you add rest api and rest services support.
-
-After the code generation, remove the following folders if you do not need them:
-- `app_config/src/test/{{ group_id_path }}/config/commons` 
-- `app_config/src/test/resources/test.config.properties`
-Note make sure that `AppBaseTest` still exists.
-
-By default, a property file is stored in the resources of the jar file. See 5.2.1.
-If you plan to use it externally, see 5.2.2.
-
-Usage:
 
 ###### 3 Get a config proxy:
 
@@ -107,6 +92,7 @@ Now you can:
         .withClazz4Logging(SomeRestService.class)
         .build();
     }
+  }
   ```
 - provide the service, which consumes REST API with a helper method for tests:
   ```java
