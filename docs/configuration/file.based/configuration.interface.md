@@ -1,4 +1,4 @@
-**Configuration interface usage:**
+**`Configuration` interface usage:**
 
 ###### 1 Create a properties file:
 ```
