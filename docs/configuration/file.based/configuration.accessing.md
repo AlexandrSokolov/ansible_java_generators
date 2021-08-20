@@ -5,8 +5,9 @@ In the running environment this file could be located differently.
 The following issues are described:
 - [internally in web/jar modules as part of their resources](#1-config-file-as-part-of-resources-of-the-warjar)
 - [externally in the folder, controlled by system property](#2-external-config-located-in-the-folder-controlled-by-system-property)
-- [configuration it tests](#3-using-config-in-test)
-- [Configuration files for different environments](#4-different-configuration-files-could-be-used-for-different-environments-test-prod-local)
+- [Configuration it tests](#3-using-config-in-test)
+- [Overwriting methods of configuration in tests](#4-overwrite-certain-methods-of-configuration)
+- [Configuration files for different environments](#5-different-configuration-files-could-be-used-for-different-environments-test-prod-local)
 
 ### 1 Config file as part of resources of the war/jar
 
@@ -160,7 +161,52 @@ you'll get an error about the base class of `AppBaseTest`:
 [ERROR]   class file for ....BaseTest not found
 ```
 
-### 4. Different configuration files could be used for different environments: test, prod, local
+### 4. Overwrite certain methods of configuration
+
+You might decide to overwrite certain methods of configuration and at the same time to use real methods of the config.
+The standard way with `spy` not working. You need to use Mockito `mock-maker-inline` extension:
+
+4.1 Make sure you use mockito version at least: `3.11.2` or higher:
+```xml
+<properties>
+  <mockito.version>3.11.2</mockito.version>
+</properties>
+
+<dependency>
+  <groupId>org.mockito</groupId>
+  <artifactId>mockito-core</artifactId>
+  <version>${mockito.version}</version>
+  <scope>test</scope>
+</dependency>
+```
+
+4.2 Create `/your_module/src/test/resources/mockito-extensions/org.mockito.plugins.MockMaker` file it test resources
+with the following content: `mock-maker-inline`
+
+4.3 In test you overwrite method:
+```java
+import org.mockito.AdditionalAnswers;
+import org.mockito.Mockito;
+
+import static org.mockito.Mockito.when;
+
+public class ApplicationServiceIT extends AppBaseTest {
+
+  ApplicationService applicationService = new ApplicationService();
+  Configuration config = testConfig();
+  Configuration mockConfig = Mockito.mock(Configuration.class, AdditionalAnswers.delegatesTo(config));
+
+  @BeforeEach
+  public void init() {
+    when(mockConfig.methodYouWant2Overwrite()).thenReturn("some value");
+    applicationService.configuration = mockConfig;
+  }
+}
+```
+
+See [Mock Final Classes and Methods with Mockito](https://www.baeldung.com/mockito-final)
+
+### 5. Different configuration files could be used for different environments: test, prod, local
 
 You might put the different files with the same names in different locations:
 - `${project_folder}/config/local/my.properties`
@@ -202,48 +248,3 @@ For tests, for both options to store the config inside the package, or externall
       </testResource>
     </testResources>
 ```
-
-### 5. Overwrite certain methods of configuration
-
-You might decide to overwrite certain methods of configuration and at the same time to use real methods of the config.
-The standard way with `spy` not working. You need to use Mockito `mock-maker-inline` extension:
-
-5.1 Make sure you use mockito version at least: `3.11.2` or higher:
-```xml
-<properties>
-  <mockito.version>3.11.2</mockito.version>
-</properties>
-
-<dependency>
-  <groupId>org.mockito</groupId>
-  <artifactId>mockito-core</artifactId>
-  <version>${mockito.version}</version>
-  <scope>test</scope>
-</dependency>
-```
-
-5.2 Create `/your_module/src/test/resources/mockito-extensions/org.mockito.plugins.MockMaker` file it test resources
-with the following content: `mock-maker-inline`
-
-5.3 In test you overwrite method:
-```java
-import org.mockito.AdditionalAnswers;
-import org.mockito.Mockito;
-
-import static org.mockito.Mockito.when;
-
-public class ApplicationServiceIT extends AppBaseTest {
-
-  ApplicationService applicationService = new ApplicationService();
-  Configuration config = testConfig();
-  Configuration mockConfig = Mockito.mock(Configuration.class, AdditionalAnswers.delegatesTo(config));
-
-  @BeforeEach
-  public void init() {
-    when(mockConfig.methodYouWant2Overwrite()).thenReturn("some value");
-    applicationService.configuration = mockConfig;
-  }
-}
-```
-
-See [Mock Final Classes and Methods with Mockito](https://www.baeldung.com/mockito-final)
