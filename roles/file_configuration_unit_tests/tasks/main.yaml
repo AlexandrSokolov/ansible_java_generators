@@ -1,0 +1,13 @@
+---
+- name: "Loading projects properties"
+  include_role:
+    name: load_maven_properties
+
+- name: "Generate sources of `app_config` module"
+  include_role:
+    name: gen_java_class_from_path
+  with_items:
+    - src: "{{ role_path }}/templates/app_config"
+      dst_src_path: "{{ app_basedir }}/app_config"
+  loop_control:
+    loop_var: cs_gjcfp_templates

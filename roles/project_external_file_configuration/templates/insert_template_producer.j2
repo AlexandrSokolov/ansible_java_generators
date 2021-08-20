@@ -1,0 +1,7 @@
+
+  //From external location
+  @Produces
+  public Configuration produce(){
+    return Configs.fileConfig(CONFIG_FOLDER_VARIABLE, CONFIG_FILE)
+      .proxy(Configuration.class);
+  }

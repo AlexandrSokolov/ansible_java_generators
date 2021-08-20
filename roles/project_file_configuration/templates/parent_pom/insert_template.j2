@@ -1,4 +1,16 @@
 
+    <resources>
+      <resource>
+        <directory>src/main/resources</directory>
+      </resource>
+      <resource>
+        <directory>${basedir}/../config</directory>
+        <includes>
+          <include>{{ config_file_name }}</include>
+        </includes>
+      </resource>
+    </resources>
+
     <testResources>
       <testResource>
         <directory>${project.basedir}/src/test/resources</directory>

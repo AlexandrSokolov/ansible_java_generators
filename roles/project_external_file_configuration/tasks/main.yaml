@@ -1,0 +1,20 @@
+---
+- name: "Loading projects properties"
+  include_role:
+    name: load_maven_properties
+
+- name: "Add dependencies on 'app_config' module"
+  include_role:
+    name: insert_template_after_another
+  with_items:
+    - path: "{{ app_basedir }}/app_config/src/main/java/{{ group_id_path }}/config/Configuration.java"
+      insert_after_template: "{{ role_path }}/templates/insert_after_template_configuration.j2"
+      insert_template: "{{ role_path }}/templates/insert_template_configuration.j2"
+    - path: "{{ app_basedir }}/app_config/src/main/java/{{ group_id_path }}/config/ConfigurationProducer.java"
+      insert_after_template: "{{ role_path }}/templates/insert_after_template_producer.j2"
+      insert_template: "{{ role_path }}/templates/insert_template_producer.j2"
+    - path: "{{ app_basedir }}/app_config/src/test/java/{{ group_id_path }}/config/AppBaseTest.java"
+      insert_after_template: "{{ role_path }}/templates/insert_after_template_test.j2"
+      insert_template: "{{ role_path }}/templates/insert_template_test.j2"
+  loop_control:
+    loop_var: cs_itaa_tmpl_item

@@ -23,7 +23,7 @@
   [functionality/structure](docs/multi.module.maven/functionality.md)
   and [how to generate](docs/multi.module.maven/generation.md)
 - [Testing](docs/testing/README.md)
-- [Add Git Support](#git-support)
+- [Git Support](docs/git/README.md)
 - [Project configuration](#add-file-configuration-support)
 - [Jax Rs (Rest) Client Support](#add-jax-rs-rest-client-support)
 - [Jax Ws (Soap) Client Support](#add-jax-ws-soap-client-support)
@@ -36,39 +36,10 @@
 
 TODO (priority not clear):
 
-- [Add Cryptography support](#99-todo-add-cryptography-support)
-
-#### Git support
-
-  Run from within the project base folder: `gitSupport.sh`
-
-  In the output you'll find actual information about expected parameters.
-
-  Push project into an existing Git repo:
-  ```shell
-  cd existing_folder
-  git init
-  git config user.name "Your Name"
-  git config user.email "YouEmail@domain.com"
-  git remote add origin git@full.path.git
-  git add .
-  git commit -m "Initial commit"
-  git push -u origin master
-  ```
-  The certain commands you can find on the github/gitlab.
-
-  Note: do not config `user.name` and `user.email` globally if you use more than a single git host.
+- [Add Cryptography support](#todo-add-cryptography-support)
 
 #### Add file configuration support
 
-Run: `javaAddFileConfiguration.sh`
-
-In the output you'll find actual information about expected parameters.
-Prepare the full command and run from within you
-`${projects}/${artifact-id}` folder
-
-Notes: 
-- `config-folder-sys-variable` is a system variable that refers to the folder that contains the configuration file.
 - the rest service to allow you to download a configuration property file is not included.
   You can do it later, after you add rest api and rest services support.
 
@@ -82,133 +53,13 @@ If you plan to use it externally, see 5.2.2.
 
 Usage:
 
-###### 1 Create a properties file:
-```
-test.key1=test.value1
-test.key2=test.value2
-test.key4=23
-test.key.list=item1|item2|item3
-test.key.list.custom=item1,item2,item3
-test.key.map=key1->value1|key2->value2|key3->value3
-test.key.custom.map=key1&value1|key2&value2
-
-
-# constructs Map<String, List<String>>
-test.key.map.of.lists=key1->\
-    value1&value2&value3|\
-  key2->\
-    value2|key3->value4&value5
-
-# constructs Map<String, Map<String, String>>
-test.key.map.of.maps=key1->\
-      subkey1>value1&\
-      subkey2>value2|\
-  key2->\
-    subkey3>value2|\
-  key3->\
-    subkey4>value4&\
-    subkey5>value5
-
-# constructs Map<String, Map<String, List<String>>>
-test.key.map.of.maps.of.lists=key1->\
-      subkey1>\
-        value1:value2:value3&\
-      subkey2>\
-        value2_1:value2_2|\
-  key2->\
-    subkey3>value2|\
-  key3->\
-    subkey4>\
-        value4_1:value4_2&\
-    subkey5>value5
-```
-
-###### 2 Define config interface
-```
-public interface Config {
-
-  @PropertyKey("test.key1")
-  String someProperty1();
-
-  @PropertyKey("test.key2")
-  Optional<String> someProperty2ViaOptional();
-
-  @PropertyKey("test.key4"")
-  int intProperty();
-
-  @PropertyKey(value = "test.key4", optionalClass = Integer.class)
-  Optional<Integer> intProperty2ViaOptional();
-
-  @PropertyKey("test.key.list")
-  List<String> listDefaultSeparator();
-
-  @PropertyKey(value = "test.key.list.custom", itemsSeparator = ",")
-  List<String> listCustomSeparator();
-
-  @PropertyKey("test.key.map")
-  Map<String, String> configMap();
-
-  @PropertyKey(value = "test.key.custom.map", keyValueSeparator = "&")
-  Map<String, String> customMap();
-
-
-  @PropertyKey("test.key.map.of.lists")
-  Map<String, List<String>> defaultMapOfLists();
-
-  @PropertyKey("test.key.map.of.maps")
-  Map<String, Map<String, String>> defaultMapOfMaps();
-
-  @PropertyKey("test.key.map.of.maps.of.lists")
-  Map<String, Map<String, List<String>>> defaultMapOfMapsOfLists();
-}
-```
-
 ###### 3 Get a config proxy:
 
 3.1 In tests:
 Add test dependency
-```xml
-  <dependencies>
-    <!-- TEST -->
-    <dependency>
-      <groupId>{{ group_id }}</groupId>
-      <artifactId>{{ artifact_id }}-config</artifactId>
-      <version>${project.version}</version>
-      <classifier>tests</classifier>
-      <type>test-jar</type>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>{{ group_id }}</groupId>
-      <artifactId>{{ artifact_id }}-commons-test</artifactId>
-      <version>${project.version}</version>
-      <classifier>tests</classifier>
-      <type>test-jar</type>
-      <scope>test</scope>
-    </dependency>
-  </dependencies>
-```
-Extend your test class from `AppBaseTest`
-```
-public MyTest extends AppBaseTest {
-  
-  Configuration config = testConfig();
-}
-```
 
-Note: you need a test dependency on both `{{ artifact_id }}-config` and `{{ artifact_id }}-commons-test`.
-Otherwise in your test, that looks like:
-```java
-import AppBaseTest;
 
-public class ApplicationServiceIT extends AppBaseTest {
-}
-```
-you'll get an error about the base class of `AppBaseTest`:
-```text
-[ERROR] .../ApplicationServiceIT.java:[6,8] cannot access ...BaseTest
-[ERROR]   class file for ....BaseTest not found
-```
+
 
 3.2 From a file, located on the path, managed by a combination of
 a system property/variable, that refers to the folder location and a file name:
@@ -217,91 +68,11 @@ Config config = Configs.fileConfig(SYSTEM_VARIABLE_NAME, PROP_FILE_NAME)
       .proxy(TestPropertiesConfig.class);
 ```
 
-###### 4 Use a config proxy:
-```
-// returns 'test.value1'
-String value = config.someProperty1();
-```
+
 
 ###### 5 Produce configuration in the managed (JEE) environment:
 
-5.1. Define interface:
-
-    ```
-    public interface Configuration {
-
-      String CONFIG_FOLDER_VARIABLE = "config.dir";
-      String CONFIG_FILE = "$CONFIG_FILE";
-      ...
-    ```
-5.2. Create a producer:
-
-   The configuration file is named `your.config.properties` in the following examples.
-
-   5.2.1    A `$CONFIG_FILE` property file is located in the resources of the jar file. 
-
-   `$CONFIG_FILE` file is located in the `config` folder of the application:
-
-      ```
-      $ ls -1 config/
-      your.config.properties
-      pom.xml
-      src
-      ```
-
-   Extend your `app_config/pom.xml` to include the property file into the resources:
-
-      ```
-        <build>
-          <resources>
-            <resource>
-              <directory>src/main/resources</directory>
-            </resource>
-            <resource>
-              <directory>${basedir}</directory>
-              <includes>
-                <include>{{ your.config.properties }}</include>
-              </includes>
-            </resource>
-          </resources>
-      ```
-
-   Add a config producer:
-
-      ```
-      public class ConfigurationProducer {
-
-        @Produces
-        public Configuration produce(){
-          return Configs.fileConfig(
-             ConfigurationProducer.class.getResourceAsStream("/"+ CONFIG_FILE)))
-            .proxy(Configuration.class);
-        }
-      }
-      ```
-
-   5.2.2    In case an external property file is used.
-
-   In this example file is located under a folder, referred by `CONFIG_FOLDER_VARIABLE` system variable.
-
-   ```
-    public class ConfigurationProducer {
-
-      @Produces
-      public Configuration produce(){
-        return Configs.fileConfig(CONFIG_FOLDER_VARIABLE, CONFIG_FILE)
-          .proxy(Configuration.class);
-      }
-    }
-   ```
-
-   Remove the `<resources>` block from `app_config/pom.xml`. See 5.2.1.
-
-5.3. Now you can inject it:
-    ```
-    @Inject
-    Configuration config;
-    ```
+TODO
 
 #### Add Jax RS (rest) client support
 

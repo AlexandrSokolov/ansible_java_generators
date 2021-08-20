@@ -59,6 +59,12 @@ public class MyTest extends BaseTest { ...
 
 ### Functionality of `AppBaseTest` and its generation
 
+See [Using config in test](../configuration/file.based/configuration.accessing.md#3-using-config-in-test)
+
 ### Sharing files for different Maven modules
 
+[See `testResources` in Using config in test](../configuration/file.based/configuration.accessing.md#3-using-config-in-test)
+
 ### Logging in tests
+
+TODO

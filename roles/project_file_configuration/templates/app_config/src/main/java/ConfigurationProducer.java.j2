@@ -10,7 +10,6 @@ public class ConfigurationProducer {
 
   @Produces
   public Configuration produce(){
-    //return Configs.fileConfig(CONFIG_FOLDER_VARIABLE, CONFIG_FILE)
     return Configs.fileConfig(
       ConfigurationProducer.class.getResourceAsStream("/"+ CONFIG_FILE))
       .proxy(Configuration.class);
