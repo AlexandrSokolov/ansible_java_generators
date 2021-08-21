@@ -31,7 +31,7 @@
 - [Cron Jee Support](#cron-jee-support)
 - [Protect Web App with Auth](#add-authentication-support)
 - [Add deployment support](#add-deployment-support)
-- [Excel Support](#excel-module-support)
+- [Excel Support](docs/excel_xlsx/README.md)
 - [Jpa Datasource Support](#jpa-datasource)
 
 TODO (priority not clear):
@@ -117,6 +117,7 @@ Now you can:
 
     @Inject
     SomeDeps someDeps;
+  }
   ```
 - for external REST API write an integration test:
   ```java
@@ -124,6 +125,7 @@ Now you can:
 
     RestServiceConsumer restServiceConsumer = RestServiceConsumer
       .viaBasicAuthInstance(testConfig(), BASIC_AUTH_PASSWORD);
+  }
   ```
 - for REST service you provide, but do not use in the application, write an integration test:
   ```java
@@ -232,7 +234,6 @@ Now you can:
   are registered explicitly via `JAXRSConfiguration`:
 
   ```java
-  ...
   import javax.ws.rs.ApplicationPath;
   import javax.ws.rs.core.Application;
   
@@ -294,10 +295,6 @@ Now you can:
   Run: `javaMvnDeploymentSupport.sh`
   In the output you'll find actual information about expected parameters.
   
-#### Excel Module support  
-
-  Run: `javaExcelSupport.sh`
-
 #### Jpa Datasource 
 
   Run: `dbSchemaWithSpringDs.sh`

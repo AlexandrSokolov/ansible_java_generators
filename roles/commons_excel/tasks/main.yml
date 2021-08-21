@@ -1,20 +1,38 @@
 ---
-- name: "Ansible check for `commons_excel` module."
-  stat:
-    path: "{{ mvn_project_basedir }}/commons_excel"
-  register: commons_excel_path
+- name: "Loading projects properties"
+  include_role:
+    name: load_maven_properties
 
-- block:
+- name: "Add `commons_excel` module to the parent pom.xml"
+  include_role:
+    name: insert_text_after_another
+  loop_control:
+    loop_var: cs_itaa_txt_item
+  with_items:
+    - path: "{{ app_basedir }}/pom.xml"
+      insert_after: |
+        <module>commons_test</module>
+      insert_text: |4
+              <module>commons_excel</module>
 
-  - name: Load shared variables
-    include_vars: "{{ mvn_project_basedir }}/.ansible/ansible_shared_variables.yml"
+- name: "Update `deps.pom` with dependencies on 'commons_excel' module"
+  include_role:
+    name: insert_template_after_another
+  with_items:
+    - path: "{{ app_basedir }}/deps/pom.xml"
+      insert_after_template: "{{ role_path }}/templates/deps/properties/insert_after_template.j2"
+      insert_template: "{{ role_path }}/templates/deps/properties/insert_template.j2"
+    - path: "{{ app_basedir }}/deps/pom.xml"
+      insert_after_template: "{{ role_path }}/templates/deps/apache_poi/insert_after_template.j2"
+      insert_template: "{{ role_path }}/templates/deps/apache_poi/insert_template.j2"
+  loop_control:
+    loop_var: cs_itaa_tmpl_item
 
-  - import_tasks: tasks/commons_excel.yml
-
-  when: not commons_excel_path.stat.exists
-
-- debug:
-    msg:
-      - "ERROR: '{{ mvn_project_basedir }}/commons_excel' already exist"
-      - "       To generate 'commons_excel' module first delete the previous one."
-  when: commons_excel_path.stat.exists
+- name: "Generate `commons_excel` module"
+  include_role:
+    name: gen_java_class_from_path
+  with_items:
+    - src: "{{ role_path }}/templates/commons_excel"
+      dst_src_path: "{{ app_basedir }}/commons_excel"
+  loop_control:
+    loop_var: cs_gjcfp_templates

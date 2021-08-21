@@ -1,3 +1,5 @@
+Run: `javaExcelSupport.sh`
+
 Read from excel:
 ```
 ExcelReaderService service ...
