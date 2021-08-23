@@ -28,6 +28,7 @@
     <gmaven-plugin.version>{{ gmaven_plugin_version }}</gmaven-plugin.version>
     <maven-resources-plugin.version>{{ maven_resources_plugin_version }}</maven-resources-plugin.version>
     <maven-jar-plugin.version>{{ maven_jar_plugin_version }}</maven-jar-plugin.version>
+    <maven-surefire-plugin.version>{{ maven_surefire_plugin_version }}</maven-surefire-plugin.version>
 
     <findbugs-maven-plugin.version>{{ findbugs_maven_plugin_version }}</findbugs-maven-plugin.version>
     <maven-pmd-plugin.version>{{ maven_pmd_plugin_version }}</maven-pmd-plugin.version>
@@ -72,6 +73,12 @@
               </goals>
             </execution>
           </executions>
+        </plugin>
+
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-surefire-plugin</artifactId>
+          <version>${maven-surefire-plugin.version}</version>
         </plugin>
 
         <plugin>

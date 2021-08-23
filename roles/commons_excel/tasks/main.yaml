@@ -15,7 +15,7 @@
       insert_text: |4
               <module>commons_excel</module>
 
-- name: "Update `deps.pom` with dependencies on 'commons_excel' module"
+- name: "Update `deps/pom.pom` with dependencies on 'commons_excel' module"
   include_role:
     name: insert_template_after_another
   with_items:

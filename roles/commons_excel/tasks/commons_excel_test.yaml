@@ -1,0 +1,28 @@
+---
+- name: "Loading projects properties"
+  include_role:
+      name: load_maven_properties
+
+- name: "Update `commons_excel/pom.xml` with test dependencies"
+  include_role:
+      name: insert_template_after_another
+  with_items:
+      - path: "{{ app_basedir }}/commons_excel/pom.xml"
+        insert_after_template: "{{ role_path }}/templates/commons_excel_tests/commons_excel/insert_after_template.j2"
+        insert_template: "{{ role_path }}/templates/commons_excel_tests/commons_excel/insert_template.j2"
+  loop_control:
+      loop_var: cs_itaa_tmpl_item
+
+- name: "Generate tests in `commons_excel` module"
+  include_role:
+      name: gen_java_class_from_path
+  with_items:
+      - src: "{{ role_path }}/templates/test/commons_excel"
+        dst_src_path: "{{ app_basedir }}/commons_excel"
+  loop_control:
+      loop_var: cs_gjcfp_templates
+
+- name: "Copy `9Columns2Rows.xlsx` directly, without template handling"
+  copy:
+    src: "{{ role_path }}/templates/test/resources"
+    dest: "{{ app_basedir }}/commons_excel/src/test"

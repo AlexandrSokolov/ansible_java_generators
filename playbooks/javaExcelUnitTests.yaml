@@ -1,0 +1,8 @@
+---
+- hosts: all
+
+  tasks:
+
+    - include_role:
+        name: commons_excel
+        tasks_from: commons_excel_test

@@ -18,8 +18,8 @@ public abstract class BaseTest {
   Path tempTestFolder;
 
   @BeforeAll
-  public static void init() {
-    System.out.println("Test init");
+  public static void initAllTests() {
+    System.out.println("BaseTest init");
   }
 
   public InputStream testInputStream(String filePath) {

@@ -1,0 +1,151 @@
+package {{ group_id }}.commons.excel;
+
+import {{ group_id }}.commons.excel.dto.ExcelLine;
+import {{ group_id }}.commons.test.BaseTest;
+import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
+import org.apache.commons.lang3.StringUtils;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.math.BigDecimal;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
+public class ExcelReaderServiceTest extends BaseTest {
+
+  private static final String EXCEL_SHEET_NAME = "Test 1";
+  private static final String EXCEL_FILE = "9Columns2Rows.xlsx";
+
+  ExcelReaderService configuredService;
+  ExcelReaderService nonConfiguredService = ExcelReaderService.instance();
+
+  @BeforeEach
+  public void init() {
+    Map<String, String> configuration = Maps.newLinkedHashMap();
+    //attribute names for C and D are not set
+    configuration.putAll(ImmutableMap.of(
+      "A", "colA",
+      "B", "colB"));
+    configuration.putAll(ImmutableMap.of(
+      "E", "money",
+      "F", "persentage",
+      "G", "someDate",
+      "H", "time",
+      "I", "number"));
+    configuredService = ExcelReaderService.instance(configuration);
+  }
+
+  @Test
+  public void testConfigurable() throws IOException {
+
+    List<ExcelLine> expectedLines = Lists.newArrayList(
+      line1(), line3(), line4(), line5());
+
+    try (InputStream stream = testInputStream(EXCEL_FILE)) {
+
+      List<ExcelLine> actual = configuredService.linesStream(EXCEL_SHEET_NAME, stream).collect(Collectors.toList());
+      Assertions.assertEquals(expectedLines, actual);
+    }
+  }
+
+  @Test
+  public void testReadExcelWithSheetName() throws IOException {
+    try (InputStream stream = testInputStream(EXCEL_FILE)) {
+      Stream<ExcelLine> excelStream = nonConfiguredService.linesStream(EXCEL_SHEET_NAME, stream);
+      Assertions.assertNotNull(excelStream);
+      Assertions.assertEquals(4, excelStream.count());
+    }
+  }
+
+  @Test
+  public void testFilteringAndValidation() throws IOException {
+    try (InputStream stream = testInputStream(EXCEL_FILE)) {
+
+      Map<Boolean, List<ExcelLine>> validAndInvalid = configuredService.linesStream(EXCEL_SHEET_NAME, stream)
+        .filter(excelLine -> excelLine.getExcelLineNumber() > 3)
+        .collect(Collectors.partitioningBy(excelLine -> excelLine.valueByColumn("D")
+          .map(value -> (String) value)
+          .map(StringUtils::isNoneEmpty)
+          .isPresent()));
+      Assertions.assertEquals(2, validAndInvalid.size());
+      Assertions.assertEquals(1, validAndInvalid.get(true).size());
+      Assertions.assertEquals(1, validAndInvalid.get(false).size());
+    }
+  }
+
+  @Test
+  public void testTransformer() throws IOException {
+    try (InputStream stream = testInputStream(EXCEL_FILE)) {
+      List<Map<String, Object>> result = configuredService.linesStream(EXCEL_SHEET_NAME, stream)
+        .filter(excelLine -> excelLine.getExcelLineNumber() > 3)
+        .map(configuredService::transformer)
+        .collect(Collectors.toList());
+      Assertions.assertEquals(2, result.size());
+    }
+  }
+
+  @Test
+  public void testTransformer2Dto() throws IOException {
+    try (InputStream stream = testInputStream(EXCEL_FILE)) {
+      List<TestDto> result = configuredService.linesStream(EXCEL_SHEET_NAME, stream)
+        .filter(excelLine -> excelLine.getExcelLineNumber() > 3)
+        .map(configuredService::transformer)
+        .map(attribute2Value -> configuredService.transformer(
+            TestDto::new,
+            attribute2Value))
+        .collect(Collectors.toList());
+      Assertions.assertEquals(2, result.size());
+    }
+  }
+
+  private ExcelLine line1() {
+    return ExcelLine.instance(1).put("B", "colB", "test");
+  }
+
+  private ExcelLine line3() {
+    return ExcelLine.instance(3)
+      .put("A", "colA", "colA")
+      .put("B", "colB", "colB")
+      .put("E", "money", "money")
+      .put("F", "persentage", "persentage")
+      .put("G", "someDate", "someDate")
+      .put("H", "time", "time")
+      .put("I", "number", "number");
+  }
+
+  private ExcelLine line4() {
+    return ExcelLine.instance(4)
+      .put("A", "colA", "line_4a")
+      .put("B", "colB", "line_4b")
+      .put("C", null, "line_4_c")
+      .put("E", "money", BigDecimal.valueOf(32.5))
+      .put("F", "persentage", BigDecimal.valueOf(23.5))
+      .put("G", "someDate",
+        LocalDateTime.parse("2021-08-06T00:00", DateTimeFormatter.ISO_LOCAL_DATE_TIME))
+      .put("H", "time", LocalTime.parse("16:12:37.239"))
+      .put("I", "number", BigDecimal.valueOf(23.4));
+  }
+
+  private ExcelLine line5() {
+    return ExcelLine.instance(5)
+      .put("A", "colA", "line_5a")
+      .put("B", "colB", "line_5b")
+      .put("D", null, "line_5D")
+      .put("E", "money", BigDecimal.valueOf(44.80))
+      .put("F", "persentage", BigDecimal.valueOf(47.89))
+      .put("G", "someDate",
+        LocalDateTime.parse("23-08-2021T00:00", DateTimeFormatter.ofPattern("dd-MM-yyyy'T'HH:mm")))
+      .put("H", "time", LocalTime.parse("16:12:44.723"))
+      .put("I", "number", BigDecimal.valueOf(43.884));
+  }
+}

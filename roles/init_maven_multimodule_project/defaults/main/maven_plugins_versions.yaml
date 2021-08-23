@@ -1,5 +1,6 @@
 ---
 maven_jar_plugin_version: 3.2.0
+maven_surefire_plugin_version: 3.0.0-M5
 buildnumber_maven_plugin_version: 1.4
 gmaven_plugin_version: 1.0
 maven_resources_plugin_version: 3.1.0
