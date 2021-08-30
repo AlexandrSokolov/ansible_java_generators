@@ -66,9 +66,15 @@ public class ExcelReaderService {
   }
 
   public Map<String, Object> transformer(ExcelLine excelLine) {
-    return excelLine.getColumnName2Attribute2Value().entrySet().stream()
-      .map(Map.Entry::getValue)
-      .collect(toMap(Map.Entry::getKey, Map.Entry::getValue));
+    try {
+      return excelLine.getColumnName2Attribute2Value().values().stream()
+        .filter(entry -> StringUtils.isNoneEmpty(entry.getKey()))
+        .collect(toMap(
+          Map.Entry::getKey,
+          Map.Entry::getValue));
+    } catch (Exception e) {
+      throw new IllegalStateException("Could not transform: " + excelLine + " to map, error: " + e.getMessage());
+    }
   }
 
   /**

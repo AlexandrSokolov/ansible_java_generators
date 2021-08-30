@@ -1,4 +1,6 @@
 TODO, write values not as string, but according to cell format
+see example also in IkeaExcelGridImporter ExcelWriterService.java
+
 add jax rs interface example
 add jax rs service generation
 
