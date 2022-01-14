@@ -6,7 +6,7 @@
   <parent>
     <groupId>{{ group_id }}</groupId>
     <artifactId>{{ artifact_id }}-parent</artifactId>
-    <version>1.0.0</version>
+    <version>{{ version }}</version>
     <relativePath>..</relativePath>
   </parent>
 
@@ -25,8 +25,8 @@
       <artifactId>commons-lang3</artifactId>
     </dependency>
     <dependency>
-      <groupId>commons-logging</groupId>
-      <artifactId>commons-logging</artifactId>
+      <groupId>org.apache.logging.log4j</groupId>
+      <artifactId>log4j-api</artifactId>
     </dependency>
     <dependency>
       <groupId>org.junit.jupiter</groupId>

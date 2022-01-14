@@ -1,14 +1,10 @@
 #!/usr/bin/env bash
 
-source `dirname "$0"`/commons.sh
+source ansible.commons.sh
 
-changePwd2AnsibleJava $artifact_id
+changePwd2AnsibleScriptsFolder
 
-#  --ask-become-pass \
-#ANSIBLE_KEEP_REMOTE_FILES=1 ansible-playbook \
-#   --extra-vars "some-variable=${someValue}" \
-ansible-playbook \
-  -v \
-  -i inventories/local \
-  --extra-vars "mvn_project_basedir=$mvn_project_basedir" \
-  playbooks/javaAddCronJobsSupport.yml
+ansible localhost -v \
+  --module-name include_role \
+  --args name=cron_jobs \
+  --extra-vars "${extra_vars} app_basedir=$app_basedir"

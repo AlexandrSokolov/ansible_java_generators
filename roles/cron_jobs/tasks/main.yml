@@ -1,28 +1,65 @@
 ---
-- name: "Ansible check for `commons_cron` module."
-  stat:
-    path: "{{ mvn_project_basedir }}/commons_cron"
-  register: commons_cron_path
+- name: "Loading projects properties"
+  include_role:
+    name: load_maven_properties
 
-- block:
+- name: "Add main sources to `commons_cron` module"
+  include_role:
+    name: gen_java_class_from_path
+  with_items:
+    - src: "{{ role_path }}/templates/commons_cron"
+      dst_src_path: "{{ app_basedir }}/commons_cron"
+  loop_control:
+    loop_var: cs_gjcfp_templates
 
-    - name: Load shared variables
-      include_vars: "{{ mvn_project_basedir }}/.ansible/ansible_shared_variables.yml"
+- name: "Add 'commons_cron' module in parent"
+  include_role:
+    name: insert_text_after_another
+  loop_control:
+    loop_var: cs_itaa_txt_item
+  with_items:
+    - path: "{{ app_basedir }}/pom.xml"
+      insert_after: |
+        <module>deps</module>
+      insert_text: |4
+              <module>commons_cron</module>
 
-    - import_tasks: tasks/commons_cron.yml
+- name: "Add dependencies on 'commons_cron' module"
+  include_role:
+    name: insert_template_after_another
+  with_items:
+    - path: "{{ app_basedir }}/domain/pom.xml"
+      insert_after_template: "{{ role_path }}/templates/domain/deps/insert_after_template.j2"
+      insert_template: "{{ role_path }}/templates/domain/deps/insert_template.j2"
+  loop_control:
+    loop_var: cs_itaa_tmpl_item
 
-    - import_tasks: tasks/parent_pom.yml
+- name: "Add cron service example to `domain` module"
+  include_role:
+    name: gen_java_class_from_template
+  with_items:
+    - src: domain/src/main/java/ApplicationTimer.java.j2
+      dst: "{{ app_basedir }}/domain/src/main/java/{{ group_id_path }}/cron/ApplicationTimer.java"
+  loop_control:
+    loop_var: cs_gjcft_item
 
-    - import_tasks: tasks/domain.yml
+- name: "Add rest api interface"
+  include_role:
+    name: insert_template_after_another
+  with_items:
+    - path: "{{ app_basedir }}/rest_api/pom.xml"
+      insert_after_template: "{{ role_path }}/templates/rest_api/deps/insert_after_template.j2"
+      insert_template: "{{ role_path }}/templates/rest_api/deps/insert_template.j2"
+  loop_control:
+    loop_var: cs_itaa_tmpl_item
 
-    - import_tasks: tasks/rest_api.yml
+- name: "Add cron service rest api to `rest_api` module"
+  include_role:
+    name: gen_java_class_from_template
+  with_items:
+    - src: rest_api/src/main/java/TimerRestApi.java.j2
+      dst: "{{ app_basedir }}/rest_api/src/main/java/{{ group_id_path }}/rest/api/TimerRestApi.java"
+  loop_control:
+    loop_var: cs_gjcft_item
 
-    - import_tasks: tasks/front_end_war.yml
-
-  when: not commons_cron_path.stat.exists
-
-- debug:
-    msg:
-      - "ERROR: '{{ mvn_project_basedir }}/commons_cron' already exist"
-      - "       To generate a new 'commons_cron' module delete the previous one."
-  when: commons_cron_path.stat.exists
+- import_tasks: tasks/rest_web.yaml

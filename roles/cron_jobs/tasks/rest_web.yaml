@@ -1,0 +1,22 @@
+---
+- name: "Generate cron rest service for `rest_web` module"
+  include_role:
+    name: gen_java_class_from_template
+  with_items:
+    - src: rest_web/src/main/java/rest/TimerRestService.java.j2
+      dst: "{{ app_basedir }}/rest_web/src/main/java/{{ group_id_path }}/rest/app/TimerRestService.java"
+  loop_control:
+    loop_var: cs_gjcft_item
+
+- name: "Update jax rs configuration with new config service"
+  include_role:
+    name: insert_template_after_another
+  with_items:
+    - path: "{{ app_basedir }}/rest_web/src/main/java/{{ group_id_path }}/rest/config/JAXRSConfiguration.java"
+      insert_after_template: "{{ role_path }}/templates/rest_web/src/main/java/rest/config/import_insert_after.j2"
+      insert_template: "{{ role_path }}/templates/rest_web/src/main/java/rest/config/import_insert.j2"
+    - path: "{{ app_basedir }}/rest_web/src/main/java/{{ group_id_path }}/rest/config/JAXRSConfiguration.java"
+      insert_after_template: "{{ role_path }}/templates/rest_web/src/main/java/rest/config/jax_rs_config_insert_after.j2"
+      insert_template: "{{ role_path }}/templates/rest_web/src/main/java/rest/config/jax_rs_config_insert.j2"
+  loop_control:
+    loop_var: cs_itaa_tmpl_item
